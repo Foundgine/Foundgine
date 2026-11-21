@@ -57,7 +57,7 @@ The core security boundary: identity, tenant, audience, secrets and other author
  
 The Foundgine.SupplyChain sample and AgentEndToEnd benchmark demonstrate an agent-facing business workload through MCP, semantic execution, authorization, ExecutionIR and PostgreSQL. The associated PenTest suite contains 14 deterministic cases: 7 MCP and 7 GraphQL. Benchmark pages separate measured performance from modeled efficiency estimates.
  
-The Java advanced sample covers the MCP → semantic model → authorization → mutation engine → PostgreSQL path with claims-based authorization, high-assurance place_order/cancel_order, and adversarial invariants (recursive supplier-risk/BOM traversal, tenant isolation). The Java core implements semantic lexical grounding with alias-weight evidence and a REQUIRES_CLARIFICATION outcome.
+The Java core implements semantic lexical grounding with alias-weight evidence and a REQUIRES_CLARIFICATION outcome.
  
 ## Client SDKs
  
