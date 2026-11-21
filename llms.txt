@@ -39,7 +39,7 @@ Discovery, retrieval, model output and caller input are never authority. The app
 - **Java:** Java implementation with idiomatic fluent configuration and provider integrations. See `src/java/` and the Supply Chain samples.
 - **GraphQL:** Hot Chocolate (.NET) and GraphQL Java adapters.
 - **Persistence:** EF Core (.NET), JPA (Java) and other provider paths.
-- **Integrations:** MCP, Temporal, Microsoft Agent Framework, LangChain4j, Spring Boot.
+- **Integrations:** MCP and Temporal. Microsoft Agent Framework, LangChain4j and Spring Boot adapter source is included in the provider packages.
 - **Client SDKs:** published TypeScript, Python and WebAssembly packages that communicate with a running server. They are thin clients, not semantic-runtime ports.
  
 ## Start here
