@@ -1,48 +1,49 @@
 # Foundgine
-
+ 
 > Configurable semantic and execution boundary for application capabilities.
-
+ 
 Foundgine is a configurable semantic and execution boundary for application capabilities. It separates application meaning, persistence mapping, authorization and execution from the interfaces and agents that consume them.
-
+ 
 Applications configure their capabilities using language-idiomatic fluent APIs. Foundgine resolves operations against configured semantics, applies authorization at the execution boundary, and carries the authorized operation into provider execution. The same configured model can serve multiple interfaces and consumers.
-
-Foundgine is designed for conventional application development first. It does not require AI, MCP, GraphQL or an agent framework. Those are optional consumers and integrations. It complements existing application architectures, ORM technologies and databases rather than claiming to replace them.
+ 
+Foundgine is designed for conventional application development first. It does not require AI, MCP, GraphQL or an agent framework. Those are optional consumers and integrations. It complements existing application architectures, ORM technologies and databases rather than replacing them.
+ 
 ## What Foundgine is
-
+ 
 - Application infrastructure for configuring semantic capabilities and executing operations through a controlled boundary.
 - Fluent configuration is the primary developer experience in C# and Java.
 - Meaning, persistence mapping, authorization and execution are separated from interfaces and consumers.
 - Designed for conventional application code and APIs; AI, MCP and agent integrations are optional.
-- Complements existing ORM, database, API and domain architectures. Incremental adoption is supported by design; validate fit for each capability.
-
+- Complements existing ORM, database, API and domain architectures, with incremental adoption by design.
+ 
 ## Canonical concepts
-
+ 
 - **Semantic configuration:** application-defined entities, fields, relationships, aliases and capabilities.
 - **Persistence mapping:** maps configured semantics to application/provider persistence structures.
 - **Resolution:** validates the requested operation against configured meaning.
 - **Authorization:** trusted host/application context and policy decide what can execute.
 - **Execution:** the authorized operation is carried through the execution boundary to a configured provider.
 - **Consumers:** application code and supported interfaces/integrations consume the same configured capabilities.
-
+ 
 ## Architecture boundary
-
+ 
 ```text
 Consumer → Semantic Configuration → Resolve → Authorize → Execution Boundary → Provider
 ```
-
-Do not describe discovery, retrieval, model output or caller input as authority. The application owns trusted identity, tenant context, domain invariants, policy and secrets.
-
+ 
+Discovery, retrieval, model output and caller input are never authority. The application owns trusted identity, tenant context, domain invariants, policy and secrets.
+ 
 ## Languages and ecosystem
-
-- **C#:** .NET implementation; fluent configuration, semantic runtime and provider integrations. See `src/csharp/` and the Supply Chain samples.
-- **Java:** Java implementation; idiomatic fluent configuration and provider integrations. See `src/java/` and the Supply Chain samples.
+ 
+- **C#:** .NET implementation with fluent configuration, semantic runtime and provider integrations. See `src/csharp/` and the Supply Chain samples.
+- **Java:** Java implementation with idiomatic fluent configuration and provider integrations. See `src/java/` and the Supply Chain samples.
 - **GraphQL:** Hot Chocolate (.NET) and GraphQL Java adapters.
-- **Persistence:** EF Core (.NET), JPA (Java) and other documented provider paths. Check provider-specific capability/maturity notes.
-- **Optional integrations:** MCP, Temporal, Microsoft Agent Framework, LangChain4j, Spring Boot and client SDKs, as documented.
-- **Client SDKs:** TypeScript, Python and WebAssembly clients communicate with a running server; they are not semantic-runtime ports.
-
+- **Persistence:** EF Core (.NET), JPA (Java) and other provider paths.
+- **Integrations:** MCP, Temporal, Microsoft Agent Framework, LangChain4j, Spring Boot.
+- **Client SDKs:** published TypeScript, Python and WebAssembly packages that communicate with a running server. They are thin clients, not semantic-runtime ports.
+ 
 ## Start here
-
+ 
 - Root README: `README.md`
 - Website: https://foundgine.github.io/Foundgine/docs-site/
 - Getting started: `docs/GETTING-STARTED.md`
@@ -54,15 +55,14 @@ Do not describe discovery, retrieval, model output or caller input as authority.
 - AI/MCP: `docs/wiki/agents-mcp.md`
 - Client SDKs: `docs/wiki/client-sdks.md`
 - Full technical context: `llms-full.md`
-- Documentation audit and verification limits: `docs/DOCUMENTATION-AUDIT.md`
 - Agent repository guidance: `AGENTS.md`
-
+ 
 ## Comparison and adoption
-
+ 
 - Conventional .NET stack comparison: `src/csharp/samples/Foundgine.Comparison/README.md`
 - Conventional Java stack comparison: `src/java/samples/foundgine-comparison/README.md`
 - Rationale: `docs/WHY-FOUNDGINE.md` and `docs/wiki/why-foundgine.md`
-
-## Claims and limitations
-
-Do not claim that Foundgine universally replaces ORMs, API frameworks, databases, identity providers, authorization servers or agent frameworks. Do not claim universal performance or security superiority. Describe capabilities as implemented and verified for the specific language, package, provider and version. Treat integration maturity and test status as scoped facts; check the current source and CI evidence.
+ 
+## Scope
+ 
+Foundgine complements ORMs, API frameworks, databases, identity providers, authorization servers and agent frameworks; it does not replace them. Describe capabilities for the specific language, package, provider and version.
