@@ -79,7 +79,7 @@ or a bounded revocation-loss window. Redis `WAIT`/replication acknowledgements a
 part of the provider contract. A successful `Probe()` establishes primary read/write availability
 at that moment only; it is not evidence of replica durability.
 
-## Durable cross-process rollback anchor (checkpoints 7–8)
+## Durable cross-process rollback anchor
 
 For deployments that need a newly started host to detect Redis state rollback, wrap the Redis store with
 `AnchoredSecurityWarrantRevocationStore` and provide an `ISecurityWarrantRevocationEpochAnchor` implementation:
@@ -108,5 +108,4 @@ is intended to detect. A relational implementation should use a single-row monot
 `GREATEST`/conditional update inside a committed transaction) and a strongly consistent read. `Foundgine.Providers` now includes `PostgresSecurityWarrantRevocationEpochAnchor`, its explicit migrator, and a readiness
 health check. The PostgreSQL data source must target the writable primary. Its transactional upsert uses
 `GREATEST` and `synchronous_commit=on`; surviving primary failover still requires a correctly configured synchronous
-replication/fencing policy. See [`warrant-revocation-checkpoint-8.md`](../../../docs/security/warrant-revocation-checkpoint-8.md)
-for deployment constraints and verification limits.
+replication/fencing policy.

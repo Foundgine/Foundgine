@@ -8,7 +8,7 @@ using ExecutionContext = Foundgine.Core.Execution.ExecutionContext;
 namespace Foundgine.Extensions.GraphQL.HotChocolate;
 
 /// <summary>
-/// Secure GraphQL query executor (Increment 9e-1). Pipeline, in order:
+/// Secure GraphQL query executor. Pipeline, in order:
 /// <list type="number">
 ///   <item>cancellation check;</item>
 ///   <item>host-provided <see cref="SecurityExecutionContext"/> is required and validated

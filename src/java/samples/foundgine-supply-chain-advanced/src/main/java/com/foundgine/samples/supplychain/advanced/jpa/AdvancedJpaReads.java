@@ -14,7 +14,7 @@ import java.util.List;
  * JPA + PostgreSQL execution for the advanced sample's read path. {@link AdvancedJpaSemantics} does the Foundgine
  * half; this class only opens JPA and runs the plan through the JPA Criteria adapter on Hibernate.
  *
- * <p>UNVERIFIED: not compiled or run against Hibernate/PostgreSQL where it was written (no jars, no network).
+ * <p>Not yet verified against Hibernate/PostgreSQL.
  */
 public final class AdvancedJpaReads implements AutoCloseable {
     private final EntityManagerFactory emf;

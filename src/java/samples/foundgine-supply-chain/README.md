@@ -8,7 +8,7 @@ fluent pattern as the e2e CRM reference. Everything is configured through the fl
 
 > **Verification note.** The migration generator and starter migration tests have been exercised
 > against PostgreSQL 16. The Flyway Java integration and Hibernate/JPA path still need a local
-> `mvn verify`; they were not verified in the environment used for this checkpoint.
+> `mvn verify`.
 
 ## Layout
 

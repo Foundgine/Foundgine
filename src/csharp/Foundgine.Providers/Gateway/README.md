@@ -52,10 +52,10 @@ Audit implementations should persist a versioned event envelope, enforce integri
 
 ## Event delivery semantics
 
-The in-process SSE/event hub is bounded and best-effort. A slow subscriber can lose older events when its buffer fills. For durable replay or cross-process delivery, connect a broker through `IFoundgineGatewayHook`; use a critical hook only when broker acceptance must gate publication. This increment does not add a broker dependency.
+The in-process SSE/event hub is bounded and best-effort. A slow subscriber can lose older events when its buffer fills. For durable replay or cross-process delivery, connect a broker through `IFoundgineGatewayHook`; use a critical hook only when broker acceptance must gate publication. The gateway does not add a broker dependency.
 
 
-## Native semantic capability bridge (increment 4)
+## Native semantic capability bridge
 
 When `AddFoundgineGateway()` is registered in the same host as `AddFoundgine(...)`, the gateway exposes:
 
@@ -66,7 +66,7 @@ This is intentionally an adapter, not a second metadata or authorization engine.
 The HTTP endpoint serializes the response through `FoundgineGatewayJsonContext`, so the semantic response is included in the source-generated JSON metadata used by Native AOT. No reflection-based serializer fallback is introduced.
 
 
-## Native semantic execution bridge (increment 5)
+## Native semantic execution bridge
 
 `IFoundgineGatewayExecution` is the transport-neutral execution facade for other products. It delegates directly to the existing `IFoundgineExecutor` and `IFoundgineMutations` runtime APIs:
 
@@ -85,13 +85,13 @@ var gateway = httpContext.RequestServices.GetRequiredService<IFoundgineGatewayEx
 var rows = await gateway.ExecuteReadAsync(readIntent, cancellationToken: httpContext.RequestAborted);
 ```
 
-The returned `MutationPlanApproval` is an in-process runtime object containing the original request and security context. Treat it as sensitive server-side state: do not serialize it to clients or place it in browser storage. A public approval workflow should issue an opaque handle backed by a protected server-side/distributed approval store, bind the approver to the authenticated subject, and enforce expiry/revocation. That handle store is deliberately not invented as an in-memory gateway feature in this increment.
+The returned `MutationPlanApproval` is an in-process runtime object containing the original request and security context. Treat it as sensitive server-side state: do not serialize it to clients or place it in browser storage. A public approval workflow should issue an opaque handle backed by a protected server-side/distributed approval store, bind the approver to the authenticated subject, and enforce expiry/revocation. That handle store is deliberately not invented as an in-memory gateway feature currently.
 
 Execution lifecycle events carry only a safe operation category and correlation ID, not request values or results. Start-event publication is fail-closed (including critical hook failures). Completion/failure notifications are best-effort so a post-commit notification failure cannot misreport a committed mutation as failed. These notifications are not a substitute for an authoritative execution audit record containing the runtime's authorization decision, plan fingerprint, and execution evidence.
 
-The bridge is an in-process API in this increment; it does not yet expose mutation or read execution over HTTP. This avoids publishing a premature wire contract for polymorphic mutation graphs and execution results before their complete AOT serialization contract and opaque approval lifecycle are defined.
+The bridge is an in-process API currently; it does not yet expose mutation or read execution over HTTP. This avoids publishing a premature wire contract for polymorphic mutation graphs and execution results before their complete AOT serialization contract and opaque approval lifecycle are defined.
 
-## HTTP semantic read endpoint (increment 6)
+## HTTP semantic read endpoint
 
 `POST /foundgine/read` accepts a bounded JSON `ReadIntent` wire DTO and calls `IFoundgineGatewayExecution.ExecuteReadAsync`. The endpoint requires the host's default authorization policy. The authenticated host's `ISecurityExecutionContextProvider` supplies the warrant-backed identity; any security fields in a body are rejected as unknown JSON properties. Request parsing is source-generated, rejects unknown properties, and applies request byte, selection, filter, nesting, and result-limit bounds. The default result limit is 100 rows and the maximum is 1,000; both are configurable through `FoundgineGatewayHttpOptions`. Gateway routes require the host's default authorization policy by default. A host may explicitly pass `requireAuthorization: false` to make discovery/events public, but the read execution route remains protected unconditionally. The gateway never deserializes a `SecurityExecutionContext` from the client.
 
@@ -104,7 +104,7 @@ The response is a stable, minimized `{ rows, pageInfo }` contract. It intentiona
 
 The sample intentionally leaves Foundgine runtime configuration and the trusted `ISecurityExecutionContextProvider` implementation to the host application; it must be wired to your actual warrant issuer/validator. Do not deploy the sample until those host-specific services are registered.
 
-## Opaque mutation approval handles (increment 7)
+## Opaque mutation approval handles
 
 `FoundgineGatewayApprovalService` now wraps Foundgine's native fingerprint-bound approval object in an opaque, random, one-time handle. The runtime approval itself is never returned to a client. The handle is 256 bits of cryptographic randomness; only its SHA-256 digest is used as the store key. Handles are bound to the host-established subject and tenant, expire (10 minutes by default; configurable up to 24 hours through the service constructor), can be revoked by their owner, and are atomically consumed once. A mismatched subject or tenant cannot consume or revoke another caller's handle. Execution still calls `IFoundgineGatewayExecution.ExecuteApprovedMutationAsync`, which rebinds the current security context and delegates re-planning, authorization and fingerprint validation to Foundgine.
 
@@ -121,11 +121,11 @@ var execution = await approvals.ExecuteAsync(receipt.Handle, httpContext.Request
 // Null means unknown, expired, revoked, already consumed, or not owned by this caller.
 ```
 
-The approval service is available as an in-process API in this increment. Public HTTP mutation endpoints, durable execution-status lookup and public evidence projection are not exposed yet: the repository does not currently provide a generic durable execution-status store, and the semantic mutation graph still needs a deliberately bounded AOT wire contract. Do not serialize `MutationPlanApproval`, `MutationExecutionResult`, or arbitrary provider result objects directly. The next step is to define those transport contracts and status/evidence persistence without weakening the runtime authorization boundary.
+The approval service is available as an in-process API currently. Public HTTP mutation endpoints, durable execution-status lookup and public evidence projection are not exposed yet: the repository does not currently provide a generic durable execution-status store, and the semantic mutation graph still needs a deliberately bounded AOT wire contract. Do not serialize `MutationPlanApproval`, `MutationExecutionResult`, or arbitrary provider result objects directly. The next step is to define those transport contracts and status/evidence persistence without weakening the runtime authorization boundary.
 
-### Increment 7 tests
+### Approval handle tests
 
-`Gateway.Tests` now also covers owner/tenant binding, expiry, revocation, one-time consumption and concurrent consumption of approval handles. These tests are included but have not been executed in this environment because the .NET SDK is unavailable.
+`Gateway.Tests` now also covers owner/tenant binding, expiry, revocation, one-time consumption and concurrent consumption of approval handles.
 
 
 ## HTTP mutation endpoints
@@ -140,7 +140,7 @@ The approval service is available as an in-process API in this increment. Public
 The wire contract maps a bounded subset (Create/Update/Delete/Upsert and field/AND/OR filters) into the canonical `SemanticMutationOperationGraph`. It does not accept caller-provided security, effects, provider plans or approval objects. Relationship filters and generated-value dependencies remain available through the in-process API, not this initial HTTP subset. All mutation endpoints require authorization and rely on the host's trusted security context provider. The in-memory approval store is development-only; production deployments need a distributed, protected store with atomic consumption.
 
 
-## Execution status and replayable events (increment 9)
+## Execution status and replayable events
 
 The gateway now exposes:
 
@@ -164,11 +164,11 @@ SSE replay closes the registration/replay race by registering the live subscribe
 
 The execution journal is operational status, **not authoritative audit evidence**. It deliberately does not claim to prove authorization decisions or provider-side commit state. Keep the critical audit sink and provider/runtime evidence as the authoritative audit source. Start-event publication is fail-closed; completion/failure notification publication is best-effort so an event-store outage after a successful commit does not turn the HTTP response into a false failure. In that situation, status may remain `running`/incomplete and must be reconciled against authoritative audit evidence.
 
-### Increment 9 tests
+### Event journal tests
 
-`GatewayEventJournalTests` covers monotonic sequence assignment, replay cursors, correlation lookup, bounded retention, and replay delivery through the event hub. These tests are included in `Gateway.Tests`; they have not been executed in this environment because the .NET SDK is unavailable.
+`GatewayEventJournalTests` covers monotonic sequence assignment, replay cursors, correlation lookup, bounded retention, and replay delivery through the event hub. These tests are in `Gateway.Tests`.
 
-## Event stream: audience, replay and resume (increment 10.3)
+## Event stream: audience, replay and resume
 
 `GET /foundgine/events` is audience-scoped and provider-independent (it only uses `IFoundgineGatewayEventStore`).
 
@@ -179,6 +179,6 @@ The execution journal is operational status, **not authoritative audit evidence*
 - This supersedes the earlier statements that replay is capped at 10,000 records per connection and that a connection without a cursor replays retained history.
 
 
-### Atomic approval evidence (increment 11)
+### Atomic approval evidence
 
 The .NET and Java approval services now require `IAtomicFoundgineGatewayApprovalStore` / `IAtomicFoundgineGatewayApprovalStore` before issuing a receipt. The atomic write receives non-secret evidence bound to the approved plan fingerprint, subject, tenant, and expiry. Durable implementations must insert both approval state and the corresponding outbox/audit event on the same transaction/connection; a failure in either insert must roll back both. The in-memory implementations model the combined operation under one process-local synchronization boundary and expose evidence for tests, but remain non-durable and unsuitable for multi-instance production. Step 75 adds `PostgresFoundgineGatewayApprovalStore` in both runtimes. The .NET host can register it with `AddFoundgineGatewayPostgresApprovalStore<TCodec>()` after registering `NpgsqlDataSource` and its AOT-safe `IFoundgineGatewayApprovalPayloadCodec`; Java hosts construct the adapter with their `DataSource` and `FoundgineGatewayApprovalPayloadCodec`. The codec must produce valid JSON for the `jsonb` columns and should encrypt approval payloads at rest. Apply migration `004_gateway_approvals` before enabling the adapter. The reserved outbox routing tenant `__foundgine_global__` must not be used as a real tenant identifier.

@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-/** Increment 9: OIDC discovery ({@code MetadataAddress}) parity with the C# JwtBearer configuration. */
+/** OIDC discovery ({@code MetadataAddress}) parity with the C# JwtBearer configuration. */
 class KeycloakDiscoveryTest {
     private static final Instant NOW = Instant.parse("2026-11-09T10:00:00Z");
     private HttpServer server;

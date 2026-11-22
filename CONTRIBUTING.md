@@ -1,16 +1,16 @@
-# Repository guidance for coding agents
+# Contributing to Foundgine
 
 ## Project identity
 
-Foundgine is a configurable semantic and execution boundary for application capabilities. It separates application meaning, persistence mapping, authorization and execution from the interfaces and agents that consume them. Fluent configuration is the primary developer experience in C# and Java. AI/MCP/agent integrations are optional consumers; do not frame the project as AI-only.
+Foundgine is a configurable semantic and execution boundary for application capabilities. It separates application meaning, persistence mapping, authorization and execution from the interfaces and consumers that use them. Fluent configuration is the primary developer experience in C# and Java. AI, MCP and agent integrations are optional consumers; the project is conventional application infrastructure first.
 
 ## Architectural principles
 
-- Preserve the separation of semantic configuration, persistence mapping, authorization and execution.
+- Keep semantic configuration, persistence mapping, authorization and execution separate.
 - The application/host owns trusted identity, tenant context, secrets, domain invariants and policy.
 - Treat caller input, retrieval, capability discovery and model output as untrusted; discovery is not authorization.
-- Keep providers and interface adapters from creating or elevating authority.
-- Prefer language-idiomatic fluent configuration; avoid introducing annotations as the primary configuration mechanism unless the current module explicitly requires them.
+- Providers and interface adapters must not create or elevate authority.
+- Prefer language-idiomatic fluent configuration; do not introduce annotations as the primary configuration mechanism unless the module explicitly requires them.
 - Preserve existing ORM, database and domain infrastructure when designing integrations. Foundgine is not a universal replacement for them.
 - Support incremental adoption and conventional use without AI or MCP.
 
@@ -21,7 +21,7 @@ Foundgine is a configurable semantic and execution boundary for application capa
 - Keep .NET and Java behavior aligned where shared contracts require it, while respecting idiomatic implementation differences.
 - Update documentation when public behavior, configuration, package layout, integration status or supported capabilities change.
 - Avoid unsupported claims of universal performance, security superiority or replacement of existing technologies.
-- Run the narrowest relevant tests first, then broader build/test commands where practical. Report commands actually run and results accurately.
+- Run the narrowest relevant tests first, then broader build/test commands. Report the commands you ran and their results accurately.
 - Do not mark a feature verified merely because it compiles in a different module or language.
 
 ## Documentation hierarchy
@@ -31,4 +31,4 @@ Foundgine is a configurable semantic and execution boundary for application capa
 3. `docs/ARCHITECTURE.md`, `docs/wiki/` and language implementation maps.
 4. Root README, `llms.txt` and `llms-full.md` for product framing and discovery.
 
-If sources conflict, verify the implementation and update the affected docs. Keep the canonical product message consistent across README, website, wiki and AI context files.
+If sources conflict, verify the implementation and update the affected docs. Keep the product message consistent across the README, website, wiki and `llms*` files.

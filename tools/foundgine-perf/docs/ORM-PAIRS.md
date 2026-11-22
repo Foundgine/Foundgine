@@ -22,7 +22,7 @@ NHibernate is deliberately not an arm: .NET only, no Hot Chocolate integration (
 - Plan cache: `foundgine-ef` runs the `warm` endpoint (provider-plan cache on). The `cold` endpoint exists in the code but has no target yet.
 
 ## Status (step 1)
-Written, **not compiled, not run** (no .NET SDK, Docker or Maven here). Verified: `python3 -m unittest discover -s tests` (43 tests, includes `test_orm_pairs.py` wiring checks).
+Written, **not yet compiled or run**. Verified: `python3 -m unittest discover -s tests` (43 tests, includes `test_orm_pairs.py` wiring checks).
 
 Risks to check first when you build:
 1. `ContractType` is `int?` in the hand-written metadata but an enum on the EF entity; the `FluentOrmMap` reads the CLR type, but the mutation path's int-to-enum conversion is unconfirmed.

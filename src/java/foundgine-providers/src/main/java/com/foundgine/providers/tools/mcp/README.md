@@ -71,7 +71,7 @@ Requires `jackson-databind` and `jackson-datatype-jsr310` (receipts carry timest
 
 ## Cancellation, Spring and LangChain4j
 
-Verification status: the Spring Boot and LangChain4j adapters and their tests now live inside the `foundgine-providers` Maven module. A full Maven build of the consolidated artifact has not been run in this environment; the available local JDK is Java 21 while the Maven reactor targets Java 27. Do not treat the package as build-verified until the Java CI workflow passes.
+Verification status: the Spring Boot and LangChain4j adapters and their tests now live inside the `foundgine-providers` Maven module. Do not treat the package as build-verified until the Java CI workflow passes.
 
 - `FoundgineMcpServer` handles `notifications/cancelled` (the in-flight `tools/call` token is cancelled and, per the MCP spec,
   no response is sent) and `handleAsync(body, transportToken)` lets the host cancel on client disconnect.
@@ -96,7 +96,7 @@ bytes; after verification, the MCP adapter must parse it, bind the current host 
 engine re-authorize and compare the plan fingerprint. Signing an approval does not replace authorization, replay
 protection, expiry policy, or the engine's execute-time checks.
 
-**Integration status:** this checkpoint adds the shared codec primitives and Java tamper test. The existing MCP
+**Integration status:** the shared codec primitives and Java tamper test are in place. The existing MCP
 `approve` / `execute-approved` methods still use their prior record-serialization path until host key configuration
 is threaded through both adapters. Do not treat the old JSON approval object as a signed token.
 

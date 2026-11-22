@@ -20,7 +20,7 @@ The SVGs in `docs/diagrams/` are generated assets. PlantUML source (`.puml`) has
 
 The same recovery was applied to `docs/assets/` (11 `.puml` files).
 
-Do not hand-edit SVG output. Change the `.puml`, regenerate the SVG with PlantUML, and keep both in sync. The recovered sources have not been re-rendered in this environment (PlantUML is not installed), so confirm a clean render before committing a regenerated SVG.
+Do not hand-edit SVG output. Change the `.puml`, regenerate the SVG with PlantUML, and keep both in sync. The recovered sources have not been re-rendered, so confirm a clean render before committing a regenerated SVG.
 
 ## Numbered `*-plantuml-NN.svg` files
 

@@ -36,7 +36,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import org.junit.jupiter.api.Test;
 
-/** Tests for increment 9e-1: missing context, authorization isolation, execution failures, cancellation, success. */
+/** Tests for the query executor: missing context, authorization isolation, execution failures, cancellation, success. */
 class FoundgineGraphQLQueryExecutorTest {
     private static final String QUERY = "query { customer { id name } }";
 

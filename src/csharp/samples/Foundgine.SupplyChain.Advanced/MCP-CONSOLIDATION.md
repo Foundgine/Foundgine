@@ -6,4 +6,4 @@ The canonical semantic MCP API is located at `Semantic/Api/Mcp`. It exposes `/mc
 
 The PostgreSQL benchmark host is a separate sibling project at `../Foundgine.SupplyChain.Advanced.Benchmark/`. It is not part of the Advanced sample solution or its canonical semantic API. No consolidation is intended.
 
-Validation in this environment: source-level route check and ZIP integrity check only. .NET build and runtime tests were not available, so no build/test success is claimed.
+Validation: source-level route check only. No .NET build or runtime test success is claimed for this host.

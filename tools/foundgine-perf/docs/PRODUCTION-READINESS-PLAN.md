@@ -1,4 +1,4 @@
-# Production-readiness plan (checkpoint 5, WIP)
+# Production-readiness plan (work in progress)
 
 Goal: a verdict that can only say PRODUCTION GRADE when every criterion in `readiness/criteria.json` has recorded evidence.
 

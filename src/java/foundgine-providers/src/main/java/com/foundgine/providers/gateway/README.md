@@ -1,6 +1,6 @@
-# Foundgine Java Gateway — Increment 1
+# Foundgine Java Gateway
 
-This increment adds the Java 27 gateway/provider foundation in `foundgine-providers`.
+This package adds the Java 27 gateway/provider foundation in `foundgine-providers`.
 
 ## Included
 
@@ -26,7 +26,7 @@ IFoundgineGateway gateway = new FoundgineGateway(gatewayOptions);
 var discovery = gateway.describe();
 
 IFoundgineGatewayEventPublisher events = (type, subject, correlationId, providerId, attributes) -> {
-    // Connect to the application's event pipeline. This increment defines the stable contract.
+    // Connect to the application's event pipeline. This defines the stable contract.
 };
 var registry = new FoundgineGatewayProviderRegistry(events);
 registry.register(new FoundgineGatewayProviderDescriptor(
@@ -52,8 +52,8 @@ FoundgineProviderNegotiator.negotiate(providers, List.of(requirement))
 
 ## Deliberate boundaries
 
-This increment does **not** add persistence, replay, HTTP endpoints, approvals, execution, or authorization policy. The event publisher is an integration contract; durable event storage and streaming belong to the next increment. The registry is discovery/lifecycle metadata only and must not be treated as an authorization decision or a substitute for tenant-scoped execution checks.
+The gateway does **not** yet add persistence, replay, HTTP endpoints, approvals, execution, or authorization policy. The event publisher is an integration contract; durable event storage and streaming are not yet implemented. The registry is discovery/lifecycle metadata only and must not be treated as an authorization decision or a substitute for tenant-scoped execution checks.
 
 ## Verification
 
-Production sources compile with `javac --release 27`. Maven was not available in the implementation environment, so the Maven/JUnit suite could not be executed here.
+Production sources compile with `javac --release 27`. Run the Maven/JUnit suite for this module to verify it.

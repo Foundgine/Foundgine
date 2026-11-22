@@ -41,7 +41,6 @@ nav:
   - "Example: alias grounding": ALIAS-EXAMPLE.md
   - Public API and provider independence: PUBLIC-API.md
   - Security: SECURITY.md
-  - Warrant revocation durability: security/warrant-revocation-checkpoint-8.md
   - Runtime: RUNTIME.md
   - AOT: AOT.md
   - AI agent integration: AI-AGENT.md
@@ -77,5 +76,3 @@ nav:
       - Operations and testing: wiki/operations.md
       - Cross-language implementation map: wiki/implementation-map.md
       - Glossary (plain words): wiki/glossary.md
-  - Verification report: VERIFICATION-REPORT.md
-  - Documentation audit: DOCUMENTATION-AUDIT.md

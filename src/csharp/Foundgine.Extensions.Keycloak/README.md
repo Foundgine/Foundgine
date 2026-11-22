@@ -122,8 +122,8 @@ Admin API address is derived from `Authority` (`https://host/realms/<realm>` →
 5. `docker compose -f docker-compose.keycloak.yml up` imports a dev realm (`alice`/`alice`, tenant `acme`) with the
    admin-only user profile and a worker service account.
 
-## Verification status
+## Test coverage
 
-Checked by running the code against the real `Foundgine.Core` assemblies (issue → verify → authorize → replay) and a fake
-Admin API (52 checks). **Not** verified: the dev realm import and the Admin API paths/permissions against a live Keycloak,
+Covered by tests that run the code against the real `Foundgine.Core` assemblies (issue → verify → authorize → replay) and a fake
+Admin API (52 checks). **Not** covered: the dev realm import and the Admin API paths/permissions against a live Keycloak,
 the `Authentication/` code against a restored `Microsoft.AspNetCore.Authentication.JwtBearer`, and the Temporal worker with `Temporalio`.

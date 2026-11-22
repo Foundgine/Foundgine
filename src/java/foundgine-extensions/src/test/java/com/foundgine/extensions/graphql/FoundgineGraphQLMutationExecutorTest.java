@@ -44,7 +44,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import org.junit.jupiter.api.Test;
 
-/** Tests for increment 9e-2: missing context, authorization isolation, execution failures, cancellation, success. */
+/** Tests for the mutation executor: missing context, authorization isolation, execution failures, cancellation, success. */
 class FoundgineGraphQLMutationExecutorTest {
     private static final String MUTATION = "mutation { createCustomer(input: { name: \"Ada\" }) { id name } }";
 

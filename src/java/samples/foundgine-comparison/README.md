@@ -14,16 +14,16 @@ The comparison is about architecture, not a claim that Foundgine replaces Spring
 
 Rules: managers read all rows; customers read only their own Customer row and Orders derived from the `customer_id` claim, can reach Products and OrderLines through those Orders, and cannot start at `orderLine`. Invalid/missing JWT returns 401; missing `tenant_id` is denied.
 
-## Status — source checkpoint
+## Status
 
-| Part | State in this archive |
+| Part | State |
 |---|---|
-| `spring-shop/` baseline | Written; build/runtime parity not verified in this checkpoint |
-| `foundgine-shop/` | Written; build/runtime parity not verified in this checkpoint |
+| `spring-shop/` baseline | Written; build/runtime parity not yet verified |
+| `foundgine-shop/` | Written; build/runtime parity not yet verified |
 | Java GraphQL HTTP handler | Reusable extension implementation; sample integration has not been verified against resolved dependency jars |
-| `tools/parity.py` | Two-app comparison and one-URL expectation mode are present; not executed here |
+| `tools/parity.py` | Two-app comparison and one-URL expectation mode are present; not yet executed |
 
-The prior source notes report that Maven and a full dependency classpath were unavailable when the sample was first authored. A syntax-only pass is not a substitute for Maven compilation or integration testing. Do not treat the behavior or security assertions below as runtime-verified until `./run.sh` and the parity checks pass.
+A syntax-only pass is not a substitute for Maven compilation or integration testing. Do not treat the behavior or security assertions below as runtime-verified until `./run.sh` and the parity checks pass.
 
 ## Fluent configuration is the Foundgine model
 
@@ -54,7 +54,7 @@ The semantic model is not defined by GraphQL schema declarations or by JPA relat
 
 ### Why the Java persistence classes still have annotations
 
-This checkpoint uses two different annotation systems for two different jobs:
+This sample uses two different annotation systems for two different jobs:
 
 - `jakarta.persistence` annotations (`@Entity`, `@Table`, `@Id`, `@Column`) are Hibernate/JPA mapping metadata.
 - `@FoundgineOrmEntity` is currently a Foundgine AOT-discovery marker. The Java annotation processor uses it to generate `GeneratedOrmMaps` and `GeneratedJpaModels`, which `Main` supplies to the ORM provider.
@@ -80,12 +80,12 @@ The sample currently declares identity maps (`Customer -> Customer`, etc.) while
 
 This is an architectural comparison, not a performance result. The filter dialects differ and the parity script is intended to compare equivalent behavior rather than identical syntax.
 
-## Measured source size (from the checkpoint's original count)
+## Measured source size
 
 | Measure | Foundgine shop | Spring shop |
 |---|---:|---:|
 | Java sample lines, non-blank/non-comment | 441 | 329 |
-| Other files noted in the original count | `persistence.xml`: 19 | GraphQL SDL: 24; `application.yml`: 14 |
+| Other files | `persistence.xml`: 19 | GraphQL SDL: 24; `application.yml`: 14 |
 
 Foundgine has more application code in this small sample. The useful argument is not fewer lines. It is that semantic relationships, storage mapping and execution policy are declared in a reusable model rather than reimplemented for each API surface.
 
@@ -101,7 +101,7 @@ Requires Docker, JDK 21 and Maven. The first command starts PostgreSQL, both app
 
 ## Caveats
 
-- No build, runtime or parity result is asserted by this checkpoint README; execute the commands above before publishing functional claims.
+- No build, runtime or parity result is asserted by this README; execute the commands above before publishing functional claims.
 - The JPA relationship traversal path is marked `correlated-exists-bounded-depth-source-unverified` in `../../conformance/orm-jpa-parity-plan.json`.
 - Warrant signing and replay storage are ephemeral/in-memory in this local sample; multi-instance production use needs durable shared infrastructure and managed keys.
 - The Java comparison does not currently prove an annotation-free AOT registration experience.
