@@ -61,8 +61,7 @@ Do not describe discovery, retrieval, model output or caller input as authority.
 - AI/MCP: `docs/wiki/agents-mcp.md`
 - Client SDKs: `docs/wiki/client-sdks.md`
 - Full technical context: `llms-full.md`
-- Documentation audit and verification limits: https://github.com/Foundgine/Foundgine/blob/main/docs/DOCUMENTATION-AUDIT.md
-- Agent repository guidance: `AGENTS.md`
+- Contributor guidance: `CONTRIBUTING.md`
 
 ## Comparison and adoption
 

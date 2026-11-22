@@ -1,7 +1,7 @@
-# EF Core comparator (UNBUILT)
+# EF Core comparator
 
-Hand-written EF Core 10 equivalents of the 11 `Scenarios/`. **Never compiled**: the authoring sandbox cannot restore NuGet packages.
-Only a Roslyn *syntax* check was run, so EF API usage (e.g. `UsingEntity`, `OwnsOne(...).ToTable`, `UseTptMappingStrategy`) is unverified
+Hand-written EF Core 10 equivalents of the 11 `Scenarios/`. **Not yet compiled against the EF Core packages.**
+Only a Roslyn *syntax* check has been run, so EF API usage (e.g. `UsingEntity`, `OwnsOne(...).ToTable`, `UseTptMappingStrategy`) is unverified
 against the real library and may need fixes.
 
 Hot Chocolate has no separate column: its data layer is EF Core, and GraphQL is outside the mapping benchmark, so Hot Chocolate + EF Core

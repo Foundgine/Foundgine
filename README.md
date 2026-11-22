@@ -109,11 +109,11 @@ cd src/java && mvn -U clean verify -Dgpg.skip=true
  
 See [testing](https://github.com/Foundgine/Foundgine/blob/main/docs/TESTING.md), [PostgreSQL E2E](https://github.com/Foundgine/Foundgine/blob/main/docs/POSTGRES-E2E.md) and [changelog](https://github.com/Foundgine/Foundgine/blob/main/CHANGELOG.md) for prerequisites and verification details.
  
-## AI and repository guidance
+## AI and discovery files
  
 - [`llms.txt`](https://github.com/Foundgine/Foundgine/blob/main/llms.txt): concise discovery and canonical links
 - [`llms-full.md`](https://github.com/Foundgine/Foundgine/blob/main/llms-full.md): extended technical context
-- [`AGENTS.md`](https://github.com/Foundgine/Foundgine/blob/main/AGENTS.md): coding-agent guidance for this repository
+- [`CONTRIBUTING.md`](https://github.com/Foundgine/Foundgine/blob/main/CONTRIBUTING.md): contributor guidance for this repository
 - [`docs/AI-AGENT.md`](https://github.com/Foundgine/Foundgine/blob/main/docs/AI-AGENT.md): runtime AI integration and security boundary
 ## License
  

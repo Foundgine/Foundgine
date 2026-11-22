@@ -69,9 +69,9 @@ python3 -m fpbench run          configs/supplychain-csharp.json --out out/sc-cs 
 ## Status
 Source-level implementation now exists for all four arms. Redis 7.4 is shared across the compose stack with AOF and `appendfsync=always`; Redis resource usage is included in every arm's resource sample. C# uses `benchmark:csharp:` and Java uses `benchmark:java:` namespaces. Each arm has its own PostgreSQL durable revocation epoch table in its own benchmark database. The baseline implementations use direct Redis/JDBC or Redis/Npgsql APIs; the Foundgine implementations use the corresponding provider packages.
 
-**Verified in this environment:** compose YAML and project XML parse; the supply-chain wiring suite passes (8 tests); migration-history expectations now distinguish the C# baseline `*_Baseline` migration from the Foundgine `*_Initial` migration.
+**Verified:** compose YAML and project XML parse; the supply-chain wiring suite passes (8 tests); migration-history expectations now distinguish the C# baseline `*_Baseline` migration from the Foundgine `*_Initial` migration.
 
-**Not verified here:** .NET compilation, Maven compilation (the project requires Java 27; this environment has Java 21 and no Maven executable), live Redis/PostgreSQL integration, Keycloak import/token validation, actual migration application, HTTP response equivalence, and performance runs. Do not treat the benchmark as accepted or its results as comparable until those runtime gates pass.
+**Not yet verified:** .NET compilation, Maven compilation (the project requires Java 27), live Redis/PostgreSQL integration, Keycloak import/token validation, actual migration application, HTTP response equivalence, and performance runs. Do not treat the benchmark as accepted or its results as comparable until those runtime gates pass.
 
 ## Run and verify
 

@@ -417,4 +417,4 @@ A successful anchor update commits a monotonic `GREATEST` upsert with `synchrono
 durability, not automatic failover durability: production failover guarantees require synchronous replication, a safe
 synchronous-standby policy, and fencing/promotion procedures that prevent promotion of a lagging replica. Redis and
 PostgreSQL must be independent failure domains. If the anchor is unavailable or Redis is behind the durable mark,
-warrant authorization fails closed. See [`warrant-revocation-checkpoint-8.md`](security/warrant-revocation-checkpoint-8.md).
+warrant authorization fails closed.

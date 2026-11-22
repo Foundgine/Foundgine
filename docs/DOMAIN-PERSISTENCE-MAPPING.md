@@ -2,8 +2,8 @@
 
 `Foundgine.Core.Mapping` keeps **domain types** and **persistence structures** (tables, columns) independent. Neither refers to the other; a mapping model is the only link. Tenant and ownership rules are declared once on the domain type and resolved to concrete table and column filters through the mapping.
 
-!!! warning "Status: Checkpoint 2, work in progress"
-    The metadata, builders, scope resolver and bridge were compiled and run by a console harness in earlier checkpoints. The **source emitter and the generated-vs-runtime checks were added later in a sandbox without a .NET SDK and have not been built or run**. Nothing here is wired into the EF Core provider or `Foundgine.Orm`, and there is no database execution. See `CHECKPOINT-2.md` and `MEASUREMENTS.md` at the repository root for the exact status and numbers. This page is separate from [Mapping and connections](MAPPING.md), which documents relationship connections.
+!!! warning "Status: work in progress"
+    The metadata, builders, scope resolver and bridge have been compiled and run by a console harness. The **source emitter and the generated-vs-runtime checks have not yet been built or run**. Nothing here is wired into the EF Core provider or `Foundgine.Orm`, and there is no database execution. This page is separate from [Mapping and connections](MAPPING.md), which documents relationship connections.
 
 ## Concepts
 
@@ -103,7 +103,7 @@ This emitter covers the **mapping model** only. The Roslyn `FoundgineMetadataGen
 - Not wired into the EF Core provider or `Foundgine.Orm`.
 - No execution against a database; correctness is shown at the metadata and scope-resolution level only.
 - No comparison against Hot Chocolate + EF Core is verified: the EF comparator was written by the same author and never built. Do not quote its ratios externally (see `MEASUREMENTS.md`).
-- The emitter and generated-vs-runtime checks are unbuilt and unrun (above).
+- The emitter and generated-vs-runtime checks have not yet been built or run (above).
 
 ---
 

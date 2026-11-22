@@ -28,4 +28,4 @@ The migration must be committed under this project before building the benchmark
 
 ## Current limitation
 
-The EF-generated migration is checked in, but .NET compilation and live PostgreSQL/Redis/Keycloak verification have not been run in this environment. Do not treat this arm as accepted until the build, migration-history, schema-parity, authorization and response-equivalence gates pass.
+The EF-generated migration is checked in. Live PostgreSQL/Redis/Keycloak verification is not yet recorded. Do not treat this arm as accepted until the build, migration-history, schema-parity, authorization and response-equivalence gates pass.

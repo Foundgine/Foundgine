@@ -3,7 +3,7 @@
 ## Purpose and current decision
 
 The Advanced sample's `V1__supply_chain_advanced.sql` remains the reviewed physical baseline until
-JDK 27 Maven tests and PostgreSQL 16 comparison pass. Checkpoint 13 adds
+JDK 27 Maven tests and PostgreSQL 16 comparison pass. The sample includes
 `AdvancedPhysicalSchemaModel`, a physical-schema projection that registers exactly the eleven V1
 persistence configurations from the same `PersistenceConfigurations` used by
 `SupplyChainFoundgineModel`. It prevents the seventeen semantic/planning persistence placeholders
@@ -60,7 +60,7 @@ the SQL ever differ).
 | `ComplianceIncident` | `ComplianceIncident` | — | No V1 table |
 
 The physical transactional tables `customers`, `orders`, `order_items`, `order_allocations`, and both
-idempotency tables now have dedicated persistence row configurations (Checkpoint 10). These rows are
+idempotency tables now have dedicated persistence row configurations These rows are
 kept separate from semantic/planning records where the shapes differ. Several of the original fluent
 entities remain semantic/planning concepts rather than tables in this database.
 
@@ -90,7 +90,7 @@ is represented by the fluent model.
    PostgreSQL 16 and the existing V1. Do not create an automatic V2 that duplicates or renames the
    existing V1 objects.
 
-## Checkpoint 9 — first persistence reconciliation increment
+## Persistence reconciliation: JPA-backed entities
 
 The fluent persistence configurations for the three entities already backed by the Advanced JPA
 path now describe their physical V1 columns rather than relying on Java member-name conventions:
@@ -114,16 +114,15 @@ model/storage mismatches and unsupported DDL are still unresolved.
 - `V1__supply_chain_advanced.sql` and Flyway history remain unchanged.
 - No new migration or snapshot was generated.
 - Foreign keys, CHECK constraints, defaults, identity behavior, and the `pg_trgm` GIN/operator-class index are still outside the fluent model's generated-schema contract.
-- Maven verification remains pending because this environment has JDK 21 and no Maven executable;
-  the project targets JDK 27.
+- Maven verification remains pending; the project targets JDK 27.
 
 ## Next reconciliation boundary
 
-The next increment should extend the generator's relational metadata for identity generation, foreign
+The next step is to extend the generator's relational metadata for identity generation, foreign
 keys and CHECK constraints, and add explicit support for PostgreSQL extensions and index access methods
 /operator classes. Until then, preserve the reviewed V1 SQL for those clauses.
 
-## Checkpoint 10 — transactional persistence-row reconciliation
+## Transactional persistence-row reconciliation
 
 The six transactional V1 tables that were previously represented only by direct SQL/domain records
 now have explicit physical persistence row types in `AdvancedPersistenceRows`. They are separate
@@ -154,14 +153,13 @@ not complete DDL parity. In particular, the current generator still cannot expre
 
 Those clauses remain owned by the unchanged V1 migration. No generated migration or snapshot was
 created, and no Flyway SQL was modified. The two ambiguity-resolution tables (`suppliers` and
-`purchase_orders`) remain for the next reconciliation increment.
+`purchase_orders`) remain to be reconciled.
 
-Build verification was not run in this environment: the project requires JDK 27, while the
-available runtime is JDK 21, and Maven is not installed. The test source and POM were updated but
+Build verification is pending: the project requires JDK 27 and Maven. The test source and POM were updated but
 must be executed in the supported build environment.
 
 
-## Checkpoint 11 — supplier and purchase-order reconciliation
+## Supplier and purchase-order reconciliation
 
 The physical ambiguity-resolution tables now have dedicated row types and persistence configurations:
 
@@ -178,11 +176,10 @@ not yet encode identity generation, foreign keys, CHECK constraints, or defaults
 repeatable demo-data SQL remain unchanged and authoritative for those behaviors.
 
 No generated migration or snapshot was created. The Advanced sample is not yet safe to switch to
-model-generated migrations. Maven/JUnit verification remains pending in an environment with JDK 27
-and Maven; this checkpoint was statically inspected only.
+model-generated migrations. Maven/JUnit verification remains pending (it requires JDK 27 and Maven); these changes have been statically inspected only.
 
 
-## Checkpoint 13 — fluent physical-schema integration
+## Fluent physical-schema integration
 
 Core metadata and the fluent persistence API now carry SQL types/precision, defaults, identity
 generation, named foreign keys and referential actions, CHECK constraints, index access methods and
@@ -202,11 +199,10 @@ The full semantic registry intentionally still contains additional semantic/plan
 metadata. It is not itself a physical-schema projection and must not be passed directly to the
 migration baseline generator for Advanced.
 
-Verification remains pending: this environment has JDK 21, no Maven executable, and no PostgreSQL
-16 server/client. The archive has not been compiled or integration-tested here. V1 remains unchanged.
+Verification remains pending: it requires JDK 27, Maven and a PostgreSQL 16 server. The source has not been compiled or integration-tested. V1 remains unchanged.
 
 
-## Checkpoint 13 follow-up — complete V1 declaration coverage
+## Complete V1 declaration coverage
 
 A source review against `V1__supply_chain_advanced.sql` found that the fluent `InventoryLotStorage`
 configuration had the two non-null V1 defaults missing even though it modeled the corresponding
@@ -279,7 +275,7 @@ not sufficient evidence of parity. Keep the generated file outside Flyway's conf
 location during this comparison to avoid accidental double application.
 
 
-### Checkpoint 13 follow-up — handwritten/generated catalog parity harness
+### Handwritten/generated catalog parity harness
 
 The PostgreSQL 16 integration test now applies both schema sources side-by-side: the checked-in
 `V1__supply_chain_advanced.sql` and the SQL generated from `AdvancedPhysicalSchemaModel`. It
@@ -289,5 +285,4 @@ placement does not contaminate the schema comparison. Equivalent constraint defi
 compared independently of PostgreSQL-generated constraint names; unique constraints are compared
 through their unique indexes because the fluent model exposes the existing unique-index API.
 
-This is a stronger test harness, not a passing parity result. The test has not been executed: this
-environment has JDK 21, no Maven, and no PostgreSQL 16 server. The V1 migration remains unchanged.
+This is a stronger test harness, not a passing parity result. The test has not yet been executed; it requires JDK 27, Maven and a PostgreSQL 16 server. The V1 migration remains unchanged.

@@ -38,9 +38,9 @@ Package-specific architecture and usage guidance lives beside each implementatio
 - [.NET: Foundgine vs Hot Chocolate + EF Core](../src/csharp/samples/Foundgine.Comparison/README.md).
 - [Java: Foundgine vs Spring GraphQL + JPA](../src/java/samples/foundgine-comparison/README.md) — includes the current AOT annotation caveat.
 
-## Documentation audit
+## Link checking
 
-- [Documentation audit checkpoint](DOCUMENTATION-AUDIT.md) — local link validation, source-checked corrections, and outstanding verification limits.
+Run `python tools/doc-audit-links.py` to validate local Markdown/HTML links.
 
 ## Documentation rules
 

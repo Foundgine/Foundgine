@@ -77,4 +77,4 @@ Also available: `processes`, `describe`, `start`, `status`, `decide`, `cancel`, 
 
 Implemented and tested: typed errors, SSE parser, MCP session initialization, JSON-RPC requests, paged capability listing (`listCapabilities`), tool execution (`execute`), cancellation, resumable notification streaming, Temporal start/status/decision/cancel routes, `waitForCompletion`, `watch`, `startAndWatch`, and the workflow catalog (`processes()`, `describe()`).
 
-Not yet done or verified: exhaustive shared-vector coverage for the SDK, browser/Web Worker/Service Worker execution checks, and package installation from the npm registry in the offline authoring environment. This is a development package, not a release-ready SDK.
+Not yet done or verified: exhaustive shared-vector coverage for the SDK, browser/Web Worker/Service Worker execution checks, and package installation from the npm registry. This is a development package, not a release-ready SDK.

@@ -89,15 +89,15 @@ Also available: `processes`, `describe`, `start`, `status`, `decide`, `cancel`, 
 - **Layered boundary.** Pure Rust modules (no I/O) $\rightarrow$ `src/bindings.rs` (`wasm-bindgen`; JSON strings in and out, errors thrown as JSON `{name, message, status?, ...}`) $\rightarrow$ `js/` wrapper (everything requiring `fetch`, a clock, or an `AbortSignal`). `pkg/` is build output and is not committed.
 - **Wire JSON stays camelCase**; the Rust API is `snake_case`, as in Python.
 
-| TypeScript | Python | Rust (this crate) | Checkpoint |
-|---|---|---|---|
-| `errors.ts` (class hierarchy) | `errors.py` | `errors.rs` (`FoundgineError` enum, `is_http_error()`) | 1 |
-| `sse.ts` `SseParser` | `sse.py` | `sse.rs` `SseParser` (`push_bytes`, `push_str`) | 1 |
-| `http.ts` | `http.py` | `http.rs` (`join_url`, `encode_path_segment`, `error_for`, token helpers) | 1 |
-| `mcp.ts` `McpSession` | `mcp.py` | `mcp.rs` `McpProtocol` (request builders + response interpreters, no I/O) | 2 |
-| `client.ts` `FoundgineClient` | `client.py` | `client.rs` (URL check, `tools/list` paging and `tools/call` shapes) | 2 |
-| `workflows.ts` `WorkflowClient` | `workflows.py` | `workflows.rs` (`WorkflowRoutes`, parsers, `WatchPoller`/`WaitPoller` with an injected clock) | 3 |
-| `fetch` option | `http_client=` | `bindings.rs` (JSON-string boundary) + `js/` wrapper: injected `fetch`, tokens, abort, sleeping, stream reading | 4 |
+| TypeScript | Python | Rust (this crate) |
+|---|---|---|
+| `errors.ts` (class hierarchy) | `errors.py` | `errors.rs` (`FoundgineError` enum, `is_http_error()`) |
+| `sse.ts` `SseParser` | `sse.py` | `sse.rs` `SseParser` (`push_bytes`, `push_str`) |
+| `http.ts` | `http.py` | `http.rs` (`join_url`, `encode_path_segment`, `error_for`, token helpers) |
+| `mcp.ts` `McpSession` | `mcp.py` | `mcp.rs` `McpProtocol` (request builders + response interpreters, no I/O) |
+| `client.ts` `FoundgineClient` | `client.py` | `client.rs` (URL check, `tools/list` paging and `tools/call` shapes) |
+| `workflows.ts` `WorkflowClient` | `workflows.py` | `workflows.rs` (`WorkflowRoutes`, parsers, `WatchPoller`/`WaitPoller` with an injected clock) |
+| `fetch` option | `http_client=` | `bindings.rs` (JSON-string boundary) + `js/` wrapper: injected `fetch`, tokens, abort, sleeping, stream reading |
 | `FoundgineClient`, `client.mcp`, `client.workflows`, async iterators | same shape | `js/client.js`, `js/mcp.js`, `js/workflows.js`, typed in `js/index.d.ts` | 4 |
 
 ## Deliberate differences and parity gaps
@@ -114,6 +114,6 @@ Also available: `processes`, `describe`, `start`, `status`, `decide`, `cancel`, 
 
 ## Status and known limits
 
-Implemented and tested (checkpoint 4): typed errors, SSE parser (including shared SSE vectors), MCP session initialization, JSON-RPC requests, paged capability listing, tool execution, cancellation, resumable notification streaming, Temporal start/status/decision/cancel routes, workflow polling/watch helpers, the `wasm-bindgen` layer, and the ES-module wrapper—backed by 53 Rust unit tests and a 29-test Node harness driving the compiled `.wasm` against a real in-process HTTP server.
+Implemented and tested: typed errors, SSE parser (including shared SSE vectors), MCP session initialization, JSON-RPC requests, paged capability listing, tool execution, cancellation, resumable notification streaming, Temporal start/status/decision/cancel routes, workflow polling/watch helpers, the `wasm-bindgen` layer, and the ES-module wrapper—backed by 53 Rust unit tests and a 29-test Node harness driving the compiled `.wasm` against a real in-process HTTP server.
 
 Not yet done or verified: running in CI or against a real Foundgine server. Developed and tested on Node 22 (CI targets Node 20). This is a development package, not a release-ready SDK.

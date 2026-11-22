@@ -55,7 +55,7 @@ Discovery, retrieval, model output and caller input are never authority. The app
 - AI/MCP: `docs/wiki/agents-mcp.md`
 - Client SDKs: `docs/wiki/client-sdks.md`
 - Full technical context: `llms-full.md`
-- Agent repository guidance: `AGENTS.md`
+- Contributor guidance: `CONTRIBUTING.md`
  
 ## Comparison and adoption
  

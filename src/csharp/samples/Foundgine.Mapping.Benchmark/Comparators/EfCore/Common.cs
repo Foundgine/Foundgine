@@ -1,4 +1,4 @@
-// UNBUILT COMPARATOR (EF Core 10). Not compiled in the authoring sandbox (NuGet unreachable); only syntax-checked.
+// EF Core 10 comparator. Not yet compiled against the EF Core packages; only syntax-checked.
 // Shared plumbing, excluded from line counts (the Foundgine harness's shared Domain.cs is excluded the same way).
 using Microsoft.EntityFrameworkCore;
 namespace Mapping.Benchmark.Comparators;

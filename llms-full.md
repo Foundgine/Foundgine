@@ -1,4 +1,4 @@
-# Foundgine 3.4.0 — Technical context
+# Foundgine 3.4.1 — Technical context
  
 Foundgine is a configurable semantic and execution boundary for application capabilities. It separates application meaning, persistence mapping, authorization and execution from the interfaces and agents that consume them.
  
@@ -91,6 +91,6 @@ Three thin transport clients for a running Foundgine server are published as pac
 - **foundgine-extensions** — GraphQL, Keycloak and Temporal extensions.
 ## Current release
  
-3.4.0 · .NET 10 and Java 27
+3.4.1 · .NET 10 and Java 27
  
 The fluent configuration API (introduced in 2.3.0) is part of the current model API (`FoundgineModel`) in both .NET and Java. It compiles to the same metadata registry as attributes/annotations and the AOT generator.

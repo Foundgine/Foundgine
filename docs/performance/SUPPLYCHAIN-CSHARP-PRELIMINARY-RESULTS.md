@@ -80,7 +80,7 @@ the harness design**, not findings, and each lists how to confirm or reject it.
 
 - One scenario of the six in `configs/supplychain-csharp.json`; the other five (operator, products,
   mixed identity, shipment update, order create) were not run or not captured.
-- The configuration calls for five sessions of 20 s; the supplied output shows one value per cell, and
+- The configuration calls for five sessions of 20 s; the recorded output shows one value per cell, and
   whether it is a single session or an aggregate is not recorded.
 - Not recorded in the supplied output: run date, host and CPU/memory allocation, the commit or build
   under test, resource telemetry, error counts, and whether the schema-parity, authorization-vector

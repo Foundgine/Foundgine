@@ -8,7 +8,7 @@ using ExecutionContext = Foundgine.Core.Execution.ExecutionContext;
 namespace Foundgine.Extensions.GraphQL.HotChocolate;
 
 /// <summary>
-/// Secure GraphQL mutation executor (Increment 9e-2), the write-side counterpart of
+/// Secure GraphQL mutation executor, the write-side counterpart of
 /// <see cref="FoundgineGraphQLQueryExecutor"/>. Pipeline, in order:
 /// <list type="number">
 ///   <item>cancellation check;</item>

@@ -77,7 +77,7 @@ The baseline is not inherently insecure. Its resolver scoping is valid for the d
 
 ## Honest cost and limitations
 
-The measured sample application code in this checkpoint is:
+The measured sample application code is:
 
 | Measure | Foundgine.Shop | HotChocolate.Shop |
 |---|---:|---:|

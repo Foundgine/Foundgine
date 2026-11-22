@@ -11,11 +11,11 @@ The .NET package family is organized around four architectural packages (client 
 
 The .NET `Foundgine.Providers` package includes the Foundgine-owned ORM and EF Core provider assemblies, Redis and Microsoft Agent Framework adapters, and both source generators. EF Core 10 and its relational / DI dependencies are restored through NuGet dependency declarations; third-party DLLs are not bundled in the Foundgine package.
 
-The Java artifacts use the `io.github.cristianbarragan` groupId and the repository has a Maven Central publishing configuration. The source POM version is 3.4.0; verify the exact artifact/version is available in Central before pinning it, because the publishing configuration alone is not publication evidence.
+The Java artifacts use the `io.github.cristianbarragan` groupId and the repository has a Maven Central publishing configuration. The source POM version is 3.4.1; verify the exact artifact/version is available in Central before pinning it, because the publishing configuration alone is not publication evidence.
 
 | Java module | Purpose | Audit status |
 | --- | --- | --- |
-| `foundgine-core`, `foundgine-runtime`, `foundgine-providers`, `foundgine-extensions` | Main server implementation; `foundgine-providers` also contains Redis, Spring Boot and LangChain4j adapters | Source and tests present; full Maven verification for this checkpoint remains pending |
+| `foundgine-core`, `foundgine-runtime`, `foundgine-providers`, `foundgine-extensions` | Main server implementation; `foundgine-providers` also contains Redis, Spring Boot and LangChain4j adapters | Source and tests present; full Maven verification remains pending |
 | `foundgine-migrations` | PostgreSQL schema diff and Flyway migration generation | Source and tests present; Maven/runtime verification pending; see [module README](https://github.com/Foundgine/Foundgine/blob/main/src/java/foundgine-migrations/README.md) |
 | `foundgine-aot-generator` | Build-time annotation processor module | Not published as a standalone runtime artifact |
 
@@ -25,22 +25,22 @@ The Central publishing configuration includes the Maven artifacts above except t
 <dependency>
   <groupId>io.github.cristianbarragan</groupId>
   <artifactId>foundgine-runtime</artifactId>
-  <version>3.4.0</version>
+  <version>3.4.1</version>
 </dependency>
 <dependency>
   <groupId>io.github.cristianbarragan</groupId>
   <artifactId>foundgine-providers</artifactId>
-  <version>3.4.0</version>
+  <version>3.4.1</version>
 </dependency>
 <dependency>
   <groupId>io.github.cristianbarragan</groupId>
   <artifactId>foundgine-extensions</artifactId>
-  <version>3.4.0</version>
+  <version>3.4.1</version>
 </dependency>
 <dependency>
   <groupId>io.github.cristianbarragan</groupId>
   <artifactId>foundgine-migrations</artifactId>
-  <version>3.4.0</version>
+  <version>3.4.1</version>
 </dependency>
 ```
 

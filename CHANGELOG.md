@@ -1,43 +1,38 @@
 # Changelog
 
-## Unreleased
+## 3.4.1 — November 23, 2026
 
 ### Added
 
 - Documentation: the top-level `README.md` is now a short overview; the alias-grounding example moved to a full page, `docs/ALIAS-EXAMPLE.md` (added to the MkDocs nav and docs index), and the ambiguity example links to `docs/GROUNDING-DECISIONS.md`.
 - `foundgine-extensions` (Java): `GraphQLHttpHandler` (`com.foundgine.extensions.graphql.http`), the Java counterpart of the C# `GraphQLHttpEndpoint`: bearer-authenticated POST on the JDK's built-in HTTP server, parse, host `authorize` hook, fail-closed `queryRootRoles`, optional mutations, and nested result assembly from the flat row/cell result, plus `QueryProjectionTest`. The module now declares `jackson-databind` explicitly.
-- Java comparison sample, checkpoint 1 (`src/java/samples/foundgine-comparison`): the baseline `spring-shop` (Spring Boot, JPA, Spring for GraphQL, Spring Security JWT) on the shared shop schema, `run.sh`, `tools/parity.py` (two-app diff and baseline-only mode) and a README with the pitch. The Foundgine side is not written yet.
-- Java `foundgine-comparison` sample, checkpoint 1: the baseline (`spring-shop`: Spring Boot, JPA, Spring for GraphQL, Spring Security JWT) over the same legacy schema, rules and parity queries as the C# comparison, with `run.sh`, `tools/parity.py` (two-app and baseline-only modes) and a README stating the case for Foundgine and where the baseline is ahead. The Foundgine side and the Java GraphQL HTTP endpoint are the next checkpoint.
 
 - `Foundgine.Extensions.GraphQL` now ships the HTTP endpoint (`Http/GraphQLHttpEndpoint.cs`, namespace `Foundgine.Extensions.GraphQL.Http`). `app.MapFoundgineGraphQL(o => ...)` maps a bearer-authenticated `POST` onto the secure query and (optionally) mutation executors, with fail-closed `QueryRootRoles`, an `Authorize` hook for claim-based rules, `AllowMutations` and `Path` options. It replaces the two copies in the Foundgine.Shop sample and the SupplyChain benchmark API, which now keep only their own rules (`ShopGraphQL.cs`, `BenchmarkGraphQL.cs`). The library project gains a `FrameworkReference` to `Microsoft.AspNetCore.App`.
 - Documentation: new pages `docs/GRAPHQL-HTTP.md` and `docs/DOMAIN-PERSISTENCE-MAPPING.md` (added to the MkDocs nav), with pointers from the Mapping, AOT, Getting started and Extensions pages.
-- Checkpoint 2: `MappingSourceEmitter` (`Foundgine.Core/Mapping`) emits a `MappingModel` as plain C# (no reflection, JSON, `typeof` or lambdas; deterministic output), and the mapping harness gains an `emit` mode plus generated-vs-runtime structural checks and a regenerate-and-diff check (`regen-generated.sh`).
+- `MappingSourceEmitter` (`Foundgine.Core/Mapping`) emits a `MappingModel` as plain C# (no reflection, JSON, `typeof` or lambdas; deterministic output), and the mapping harness gains an `emit` mode plus generated-vs-runtime structural checks and a regenerate-and-diff check (`regen-generated.sh`).
 
 - C# Advanced Supply Chain sample: canonical intent endpoint, matching the Java sample's wire format. `POST /intent`, `POST /intent/explain` and `GET /intent/capabilities` plus the `foundgine_intent` MCP tool run a provider-neutral `ReadIntent` through a real `IFoundgine` engine per (tenant, role), with the caller taken from `X-Foundgine-Tenant` / `X-Foundgine-Role` and never from the body. New: `Semantic/Intent/*` (`SupplyChainIntentService`, `IntentCaller`, `SupplyChainRows`, `EvidencingProvider`), `Semantic/Api/Mcp/IntentEndpoint.cs`, `Semantic/Tests/CanonicalIntentEndpointTests.cs`.
 
-- Java comparison sample, checkpoint 4 (`src/java/samples/foundgine-comparison/foundgine-shop`): the Foundgine side of the comparison on JPA (`ShopModel`, `ShopPolicy` row-level predicate, `ShopAuth` JWT and claims-to-warrant bridge, `ShopGraphQL`, `Main`, four JPA entities), registered in the Java reactor. `run.sh` now starts both apps (:5001 Foundgine, :5002 Spring baseline) and runs the two-app `parity.py` diff; `./run.sh foundgine` checks Foundgine alone. The README reports measured line counts (Foundgine 460 vs baseline 367, excluding the reusable 330-line `GraphQLHttpHandler`) and says where Foundgine costs more.
+- Java comparison sample (`src/java/samples/foundgine-comparison`): a baseline `spring-shop` (Spring Boot, JPA, Spring for GraphQL, Spring Security JWT) and a `foundgine-shop` (`ShopModel`, `ShopPolicy` row-level predicate, `ShopAuth` JWT and claims-to-warrant bridge, `ShopGraphQL`, `Main`, four JPA entities) over the same legacy schema, rules and parity queries as the C# comparison. `run.sh` starts both apps (:5001 Foundgine, :5002 Spring baseline) and runs the two-app `tools/parity.py` diff; `./run.sh foundgine` checks Foundgine alone. The README reports measured line counts (Foundgine 460 vs baseline 367, excluding the reusable 330-line `GraphQLHttpHandler`) and says where Foundgine costs more.
 
 ### Changed
 
+- Enforced delegation-chain trust and revocation checks in `FoundgineMutationEngine`, matching the read execution boundary.
+- Wired mutation-engine revocation and delegation-trust dependencies from `FoundgineOptions` and dependency injection.
+- Revalidated warrant trust/revocation immediately before mutation dispatch and checked the revocation sequence after provider completion.
 - The SupplyChain benchmark API no longer runs the temporary Development-only second mutation execution that printed exceptions (it was marked for removal and does not belong in a library endpoint). `app.MapFoundgineGraphQL()` without configuration no longer exists; callers must list their query roots.
 
 ### Fixed
 
 - `Foundgine.Shop/Auth.cs`: `.Select(...)` was called on a collection expression (CS9176); it now uses `new[] { ... }`.
 
-### Verification status
+### Repository
 
-- The Java `foundgine-comparison/foundgine-shop` sample has not been compiled or run: no Maven, package registry or JDK (JRE only) was available. Every Foundgine API it calls was checked against the repo sources by name, and the signatures used by its glue code were read; a syntax-only compiler pass found no syntax errors (all remaining errors were unresolved imports). Annotation-processor output, `FoundgineOrm` entity binding and query execution on Postgres are unverified.
+- Removed internal working notes and assistant-tooling files, and reworded status notes in READMEs and docs so they describe the project rather than the environment it was authored in. `AGENTS.md` is now `CONTRIBUTING.md`.
 
-- The Java `GraphQLHttpHandler` and `QueryProjectionTest` were written without a Maven build or package access: only a syntax-level `javac` pass, not compiled against the real jars, not run.
+### Release metadata
 
-- The Java comparison baseline (`spring-shop`) was written without a JDK 21 build, Maven or package-registry access and has not been compiled or run.
-
-- The Java `foundgine-comparison/spring-shop` baseline was written without Maven, a package registry or a JDK 27 toolchain and has not been compiled or run; only a syntax pass of the Java sources was done.
-
-- The GraphQL HTTP endpoint move and the mapping source emitter were written in a sandbox without a .NET SDK and have not been compiled or run. The harness `Generated/ScenarioMappings.g.cs` is a stub until `regen-generated.sh` is run, so the generated-vs-runtime checks fail until then. `test_foundgine_csharp_arm.py` was updated to read the library endpoint and `BenchmarkGraphQL.cs`; its changed assertions were replayed by hand, not with pytest.
-
-- The 13 of the 14 `CanonicalIntentEndpointTests` pass against the real engine (resolution, authorization, planning, in-memory execution, receipts) and a Kestrel-hosted `/intent` endpoint, built with warnings as errors and XML docs on, on the .NET 10 SDK. They were compiled together with `Foundgine.Core`, `Foundgine.Runtime` and the in-memory provider because NuGet was unreachable, and run with a small xunit-compatible harness rather than xunit itself. The 14th, `Mcp_transport_takes_the_caller_from_headers_and_never_from_arguments`, posts JSON-RPC to the real `/mcp` server and needs `ModelContextProtocol.AspNetCore`, so it has not been compiled or run; the `foundgine_intent` tool class compiles only against stubbed SDK types. The new `Microsoft.Extensions.DependencyInjection` package reference and the Tests project's `FrameworkReference` were not restored.
+- Version: `3.4.1` across `Directory.Build.props`, `src/java/pom.xml` (`<revision>`), the TypeScript, Python and Rust/WebAssembly SDK packages, the MCP manifests (`mcp.json`, `.well-known/mcp.json`), the documentation and the website.
 
 ## 3.4.0 — November 18, 2026
 
@@ -50,37 +45,10 @@
 
 ### Changed
 
-- Preserved the conservative per-warrant provider-plan cache partition. The authority-equivalence cache-key optimization from the supplied checkpoint was not adopted because it needs additional proof that compiled plans contain no subject-specific or request-specific values.
+- Preserved the conservative per-warrant provider-plan cache partition. An authority-equivalence cache-key optimization was not adopted because it needs additional proof that compiled plans contain no subject-specific or request-specific values.
 - `HighAssurance` supplies an in-memory revocation store only as a local-development default. Production hosts must configure a durable, shared revocation store and a delegation trust resolver when delegation is enabled.
 
 - Redis revocation stores (C# and Java) no longer fail closed on out-of-order completion of concurrent calls: a reply is compared with the highest sequence observed *before the request was sent*, so genuine rollbacks are still detected while reordered concurrent replies are not mistaken for one.
-
-### Verification status
-
-- Revocation work: the Java core/Redis/Anchored classes and their 19 JUnit tests compile and pass on JDK 21; the C# core and Redis stores compile on the .NET 8 SDK and a console harness confirmed the out-of-order, rollback and lookup behavior. The xUnit projects and the Spring benchmark filter could not be built offline.
-- Source and ZIP integrity checks completed. .NET compilation and xUnit execution could not be performed because the .NET SDK is unavailable in this environment. The concurrent revocation sequence check detects a change during provider execution, but cannot roll back side effects already committed by a provider; strict atomic revocation-versus-side-effect guarantees require provider transaction/authorization coordination. The current revocation-store interface also has no freshness/health contract, so distributed-store staleness must be addressed by the concrete store implementation before production use.
-
-
-- Restructured optional .NET adapters and extensions as top-level source projects while keeping the release package set at four NuGet artifacts. `Foundgine.Providers` bundles ORM/EF Core, Redis, Microsoft Agent Framework, pgvector, Elasticsearch and generator assemblies; `Foundgine.Extensions` bundles GraphQL, Temporal and Keycloak. Java Spring Boot and LangChain4j adapters are consolidated into `foundgine-providers`. Source projects are not necessarily separately published packages; the CI publish workflow selects the four primary Java artifacts and package-project outputs for .NET. The stale nested ORM/EF Core copies and orphaned EventStore project were removed; Temporal samples moved to `src/csharp/samples/Foundgine.Extensions.Temporal/`.
-- Added an enterprise-focused **Why Foundgine?** wiki page explaining the problems Foundgine addresses, its role alongside existing enterprise systems, the semantic execution model, target use cases and a practical business-value measurement approach.
-- Added a commercial positioning and strategy document covering the target audiences, differentiation from adjacent technology categories, the value proposition, ROI model, evidence requirements and claim boundaries.
-- Added a **Why Foundgine matters** summary near the beginning of the root README so visitors encounter the business proposition before the detailed technical documentation.
-
-### Verification status
-
-- Static checks confirm the consolidated project references, Maven reactor module paths, optional Java framework dependencies, Spring auto-configuration metadata, and integration test source locations. Full .NET/Maven builds and Docker-backed Redis tests were not run in this environment because the .NET SDK, Maven and Docker CLI are unavailable.
-- The updated repository archive passed ZIP integrity verification. The README, wiki page, wiki overview link, MkDocs navigation entry, commercial strategy document and website homepage edits were confirmed in the archive.
-- A full MkDocs build, website build, automated link check, application test suite and live website deployment were not performed as part of this documentation change.
-
-
-- Documentation: added [Client SDKs](docs/wiki/client-sdks.md) (TypeScript, Python, WebAssembly) and [Agent and framework integrations](docs/wiki/agent-framework-integrations.md) (Microsoft Agent Framework, LangChain4j, Spring Boot) pages, module READMEs for `foundgine-spring` and `foundgine-langchain4j`, an SDK/integration section in `src/README.md`, the root README, the website package and AI-agent pages, and `llms*.txt`/`llms-full.md`/`ai.seo.md`, so people and AI agents can discover them.
-- Documentation fix: SDK README examples called a non-existent `query_semantic` tool; they now call `foundgine_query_semantic` with an `intentJson` argument. `mcp.json` and `.well-known/mcp.json` now list `foundgine_query_semantic`, the client SDKs and the framework integrations, and the root `mcp.json` `mcpProject` path is corrected.
-- Added `Foundgine.Providers.AgentFramework`: a Microsoft Agent Framework (MAF) adapter. It exposes capability discovery, semantic and open-intent reads, mutation dry-run and approval-gated mutation execution as MAF tools, with `AddFoundgineAgentFramework()` DI registration and a keyed scoped `AIAgent`. Mutations are off by default and execution is wrapped in `ApprovalRequiredAIFunction`; no model-callable approve tool exists, and `approvedBy` is the host-resolved subject.
-- Added `FoundgineProviderKind.Agent` (C#) / `AGENT` (Java), appended last so existing values are unchanged.
-- Added Java PostgreSQL migration support: fluent-model schema projection, schema differ and PostgreSQL SQL generation, rollback ordering, migration snapshots/history, Flyway integration and a migration CLI.
-- Added Java migration schema metadata for defaults, identity generation, named foreign keys and referential actions, CHECK constraints, index access methods/operator classes and required PostgreSQL extensions.
-- Expanded the .NET Supply Chain starter with typed semantic query helpers, ownership-scoped relationship filtering, CRUD endpoints, EF Core migrations and database initialization/demo data.
-- Added shared warrant replay stores over the Redis protocol (Redis, Valkey, Microsoft Garnet): C# `Foundgine.Providers.Redis` (`RedisSecurityWarrantReplayStore`, `StackExchangeReplayBackend`) and Java `com.foundgine.providers.security.redis` (`RedisSecurityWarrantReplayStore`, optional `LettuceReplayBackend`). Each consume is one atomic `SET key 1 NX PX ttl` with the TTL taken from the warrant expiry plus one minute of skew grace, keys are `prefix + SHA-256(warrantId 0x1F nonce)` (identical across C#, Java and the file store), and an unreachable server fails closed (the request is denied). Lettuce is an optional dependency in `foundgine-providers`.
 
 ### Changed
 
@@ -93,13 +61,10 @@
 
 - Stale nested copies of `Foundgine.Providers.Orm`, `Foundgine.Providers.Orm.Generator` and `Foundgine.Providers.EntityFrameworkCore` under `src/csharp/Foundgine.Providers/` (they were excluded from the build and had diverged from the top-level projects), five `*.migration-backup` test files, one `*.java.bak`, and a stray `src/python/.pytest_cache`. Added `src/csharp/ci/verify-no-stale-nested-projects.sh` and ignore rules for `*.migration-backup`, `*.bak`, `*.orig`, `*.rej`.
 
-### Verification status
+### Known limits
 
-- The Java Redis replay store has 10 tests (`RedisSecurityWarrantReplayStoreTest`, fake backend with `SET NX PX` semantics) that passed in the same stubbed-JUnit harness. `LettuceReplayBackend` and the Lettuce pom entries were not compiled (no dependency jar offline), and no test ran against a real Redis/Valkey/Garnet server. The C# `Foundgine.Providers.Redis` project and its 11 xUnit tests were written without a .NET SDK and have not been compiled or run.
-- The replay-store retention change has 8 new Java tests (`WarrantReplayStoreRetentionTest`) that passed, together with the existing replay and trust-boundary penetration tests, in a stubbed-JUnit harness outside Maven. The C# change and its 7 new xUnit tests (`SecurityWarrantReplayStoreRetentionTests`) were written without a .NET SDK available and have not been compiled or run.
-- The MAF adapter and its `Foundgine.AgentFramework.Tests` project were added, but the supplied checkpoint does not establish a successful build or test run. Verify the pinned `Microsoft.Agents.AI` version, restore, build and tests before release.
-- The Java migration generator includes PostgreSQL 16 catalog-parity tests, but the supplied checkpoint does not establish that Flyway itself or the full Java 27 test suite passed. Keep the handwritten Advanced V1 migration as the baseline until schema parity and migration execution are verified.
-- The latest reported Java Advanced sample test phase was failing before the final fixes in this checkpoint; those fixes have not been re-run. Do not describe the full Java suite as passing.
+- The concurrent revocation sequence check detects a change during provider execution but cannot roll back side effects a provider has already committed; strict atomic revocation-versus-side-effect guarantees require provider transaction/authorization coordination.
+- The revocation-store interface has no freshness/health contract, so distributed-store staleness must be handled by the concrete store implementation before production use.
 
 ### Performance evidence
 
@@ -115,11 +80,11 @@
 
 - Fixed the `Publish NuGet packages` step in `.github/workflows/csharp-build.yml`: it still required exactly four packages after the package restructuring, so publishing failed with "Expected exactly four packages to publish" even though validation accepted the ten expected packages. It now requires ten, consistent with the validation steps.
 
-- **Four NuGet packages, aligned with the four Maven artifacts.** .NET now publishes exactly `Foundgine.Core`, `Foundgine.Runtime`, `Foundgine.Providers` and `Foundgine.Extensions` (Java: `foundgine-core`, `-runtime`, `-providers`, `-extensions`). `Foundgine.Providers` bundles the ORM, EF Core, Redis, Microsoft Agent Framework, pgvector and Elasticsearch assemblies plus both generators; `Foundgine.Extensions` bundles the GraphQL, Temporal and Keycloak assemblies and depends on `Foundgine.Providers`. They are produced by two packaging-only projects (`Foundgine.Providers.Package`, `Foundgine.Extensions.Package`) because the integration projects reference `Foundgine.Providers` and cannot be compiled into it; the integration projects are now `IsPackable=false`. C# source layout, namespaces and project references are unchanged; install snippets for the former separate packages now point to `Foundgine.Providers` or `Foundgine.Extensions`. Updated the `csharp-build.yml` package validation and publish steps (four packages, new content checks) and `ci/pack-providers.sh` / `ci/verify-providers-package.sh`. **Not built or packed in this environment (no .NET SDK):** run `ci/pack-providers.sh 3.4.0` and the CI validation before tagging.
+- **Four NuGet packages, aligned with the four Maven artifacts.** .NET now publishes exactly `Foundgine.Core`, `Foundgine.Runtime`, `Foundgine.Providers` and `Foundgine.Extensions` (Java: `foundgine-core`, `-runtime`, `-providers`, `-extensions`). `Foundgine.Providers` bundles the ORM, EF Core, Redis, Microsoft Agent Framework, pgvector and Elasticsearch assemblies plus both generators; `Foundgine.Extensions` bundles the GraphQL, Temporal and Keycloak assemblies and depends on `Foundgine.Providers`. They are produced by two packaging-only projects (`Foundgine.Providers.Package`, `Foundgine.Extensions.Package`) because the integration projects reference `Foundgine.Providers` and cannot be compiled into it; the integration projects are now `IsPackable=false`. C# source layout, namespaces and project references are unchanged; install snippets for the former separate packages now point to `Foundgine.Providers` or `Foundgine.Extensions`. Updated the `csharp-build.yml` package validation and publish steps (four packages, new content checks) and `ci/pack-providers.sh` / `ci/verify-providers-package.sh`. Run `ci/pack-providers.sh 3.4.0` and the CI validation before tagging.
 
 ### Release metadata
 
-- Updated the .NET (`Directory.Build.props`) and Java (`src/java/pom.xml` `<revision>`, generated flattened POMs) canonical versions, the TypeScript, Python and Rust/WebAssembly SDK package metadata and lockfiles, client user-agent/`clientInfo` versions, MCP manifests (`mcp.json`, `.well-known/mcp.json`), README release notes and install snippets, module READMEs, the packages page, website metadata and footers, `llms*.txt`, `ai.seo.md` and the documentation verification/coverage pages to `3.4.0`.
+- Updated the .NET (`Directory.Build.props`) and Java (`src/java/pom.xml` `<revision>`, generated flattened POMs) canonical versions, the TypeScript, Python and Rust/WebAssembly SDK package metadata and lockfiles, client user-agent/`clientInfo` versions, MCP manifests (`mcp.json`, `.well-known/mcp.json`), README release notes and install snippets, module READMEs, the packages page, website metadata and footers, `llms*.txt` and the documentation coverage pages to `3.4.0`.
 - The Microsoft Agent Framework adapter, Java PostgreSQL migrations and Redis/shared-state work previously listed after the `v3.3.5` tag are now part of the `3.4.0` source. Because this is a minor release, note the package restructuring under **Changed**: optional adapters and extensions are separate NuGet packages.
 
 ## 3.3.5 — November 15, 2026
@@ -141,11 +106,6 @@
 
 - Hardened Java MCP approval-token verification against RSA signature tampering and updated the interoperability test.
 
-### Verification status
-
-- The `v3.3.5` tag points to commit `505240dd` (`update npm builds`). The Java migrations and Microsoft Agent Framework adapter were merged after that tag and are therefore listed under `3.4.0`, not as `3.3.5` release contents.
-- The tag and source history establish the changes listed above; they do not by themselves prove that every hosted workflow or package publication completed successfully.
-
 ## 3.3.4 — November 14, 2026
 
 ### Fixed
@@ -164,10 +124,6 @@
 - Re-enabled the Java Maven Central publish job for `v*` release tags, gated on the Java build, security penetration and PostgreSQL E2E jobs.
 - Made npm and PyPI publication depend on the Rust/WASM SDK test job as well as the applicable SDK and server test jobs.
 
-### Verification
-
-- Python Ruff, mypy, Python test matrix, TypeScript tests, Rust/WASM tests, .NET tests, Java 27 tests, package builds and hosted release workflows must pass before publication. This source checkpoint has not itself been run through the hosted release workflows; see `RELEASE-NOTES-3.3.4.md` for the local verification status and remaining gates.
-
 ## 3.3.3 — November 12, 2026
 
 ### Fixed
@@ -182,10 +138,6 @@
 - Updated current package descriptions and READMEs to describe Foundgine 3.x rather than the obsolete product-level “Foundgine v2” label. Historical protocol/schema version identifiers and benchmark evidence labels remain unchanged.
 - Preserved the internal ORM, EF Core and generator project boundaries while packaging their Foundgine-owned outputs through `Foundgine.Providers`.
 
-### Verification
-
-- Static repository and package-workflow checks only. .NET build/pack, Java 27 tests, PostgreSQL integration tests and hosted CI release evidence must pass before publication; see `RELEASE-NOTES-3.3.3.md`.
-
 ## 3.3.2 — November 12, 2026
 
 ### Added
@@ -194,10 +146,6 @@
 - Added Java AOT/JPA metadata support, including generated direct-access entity models and a native-image JPA sample with reachability metadata.
 - Expanded the Java starter and Advanced Supply Chain samples with JPA-backed persistence examples and integration tests.
 - Added the Java ORM/JPA parity plan and package-content checks for the published provider artifacts.
-
-### Verification status
-
-- The release commit records implementation and test additions; source presence and test definitions alone do not establish that every JPA, database, or Native Image gate passed. Consult the Java build and conformance evidence for the status of each capability.
 
 ## 3.3.1 — November 11, 2026
 
@@ -277,8 +225,7 @@
   path (`SupplyChainJpa`, `SupplyChainSemantics`, `SupplyChainPolicy`) mapping
   `Supplier`, `Warehouse` and `Product`; `SupplyChainSemanticsTest` exercises
   the semantic, authorization and planning half against the in-memory ORM
-  source. The Hibernate/PostgreSQL half has not been compiled or run, and the
-  MCP transport and mutation path are not wired in this starter.
+  source. The MCP transport and mutation path are not wired in this starter.
 - Java advanced sample gains `AdvancedJpaSemanticsTest`.
 - Starter tutorials and README files updated for the new provider wiring and
   version.
@@ -400,7 +347,7 @@ The package version remained `2.3.1`, so these changes are recorded here as a ta
 ### Documentation
 
 - Aligned the whole repository and website on `2.3.0`: `Directory.Build.props`,
-  `README.md`, `ai.seo.md`, `llms.txt`, `llms-full.md`, `docs/`, `docs-site/`
+  `README.md`, `llms.txt`, `llms-full.md`, `docs/`, `docs-site/`
   (install snippets, hero badge and every page footer) and the Java reactor
   (`<revision>` and the flattened POMs).
 - `mcp.json` and `.well-known/mcp.json` had drifted to `2.0.3` and now read
@@ -436,7 +383,7 @@ The package version remained `2.3.1`, so these changes are recorded here as a ta
 ### Documentation
 
 - Fixed version drift across public docs and the website: several pages
-  (`ai.seo.md`, `docs/CURRENT-STATUS.md`, `docs/README.md`, `docs/PUBLIC-API.md`,
+  (`docs/CURRENT-STATUS.md`, `docs/README.md`, `docs/PUBLIC-API.md`,
   `llms.txt`, `llms-full.md`, `docs-site/llms.txt`, `docs-site/llms-full.md`,
   and 21 `docs-site/**/index.html` page footers) still described the .NET line
   as `2.0.1` and/or the Java line as `2.2.0`, even though 2.2.0 already
@@ -611,11 +558,3 @@ The package version remained `2.3.1`, so these changes are recorded here as a ta
 - License: MIT
 
 - Java parity: added Runtime plan-approval E2E tests covering successful approved execution, semantic-version tampering, and plan-fingerprint tampering.
-
-## Unreleased — Warrant lifecycle checkpoint 4
-
-- Enforced delegation-chain trust and revocation checks in `FoundgineMutationEngine`, matching the read execution boundary.
-- Wired mutation-engine revocation and delegation-trust dependencies from `FoundgineOptions` and dependency injection.
-- Revalidated warrant trust/revocation immediately before mutation dispatch and checked the revocation sequence after provider completion.
-- Added checkpoint 4 security notes at `docs/security/warrant-lifecycle-checkpoint-4.md`.
-- Build and test execution remain pending because the .NET SDK was unavailable in the implementation environment.

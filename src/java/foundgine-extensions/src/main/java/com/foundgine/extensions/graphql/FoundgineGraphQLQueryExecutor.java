@@ -18,7 +18,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Supplier;
 
 /**
- * Secure GraphQL query executor (increment 9e-1). Port of {@code FoundgineGraphQLQueryExecutor}.
+ * Secure GraphQL query executor. Port of {@code FoundgineGraphQLQueryExecutor}.
  *
  * <p>Pipeline, in order: cancellation check; host-provided security context is required and validated (fail closed)
  * before any GraphQL text is parsed; translation through {@link GraphQLSemanticAdapter}; the host context replaces

@@ -3,7 +3,7 @@
 `Foundgine.Extensions.GraphQL.Http` ships a ready-made HTTP front door for Foundgine GraphQL. It maps one bearer-authenticated `POST` route onto the secure query executor (and, when you opt in, the mutation executor), so a host no longer needs its own copy of the parsing, authorization and result-shaping code.
 
 !!! note "Status"
-    The endpoint was moved out of the Foundgine.Shop sample and the SupplyChain benchmark API in this snapshot. It has **not been compiled or run yet** (the authoring sandbox had no .NET SDK). Build the solution and run the benchmark/sample tests before relying on it. There is no Java equivalent; the Java GraphQL extension has executors but no HTTP endpoint.
+    The endpoint was moved out of the Foundgine.Shop sample and the SupplyChain benchmark API. It has **not yet been built or run**. Build the solution and run the benchmark/sample tests before relying on it. There is no Java equivalent; the Java GraphQL extension has executors but no HTTP endpoint.
 
 ## What it does
 

@@ -16,4 +16,4 @@ then `python3 -m fpbench journey-report results/e2e --slo-p99-s <SLO>`.
 - The CRM-side outbox (SQL Server) has no probe yet; the ERP outbox probe uses `erp_temporal_event_outbox` (published_at, created_at).
 - Calls inside a journey are not retried, so an outage shows as failed journeys plus a drain time for journeys that survived; model client retry separately if you want to measure that.
 - Fixture must be reset between sessions (new tenant or DB restore) so outbox/stock state does not drift; use `reset_cmd` per journey.
-- Everything here was tested only against `selftest/mock_e2e.py`. The e2e example itself has never been built or run.
+- The runner is tested against `selftest/mock_e2e.py`; run it against the real e2e stack before relying on any result.

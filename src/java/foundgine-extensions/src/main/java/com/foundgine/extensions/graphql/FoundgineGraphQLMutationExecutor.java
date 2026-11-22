@@ -23,7 +23,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Supplier;
 
 /**
- * Secure GraphQL mutation executor (increment 9e-2), write-side counterpart of
+ * Secure GraphQL mutation executor, write-side counterpart of
  * {@link FoundgineGraphQLQueryExecutor}.
  *
  * <p>Pipeline, in order: cancellation check; host-provided security context is required and validated (fail closed)
