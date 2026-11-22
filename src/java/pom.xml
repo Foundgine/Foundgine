@@ -310,16 +310,12 @@
           <plugin>
             <groupId>org.sonatype.central</groupId>
             <artifactId>central-publishing-maven-plugin</artifactId>
+            <!-- As an extension the plugin binds its own publish goal to the deploy
+                 phase and replaces maven-deploy-plugin. Do not add an explicit
+                 <execution> for it: the extension then detects a "preexisting
+                 publish binding", does not install itself, and the default deploy
+                 goal fails with no distributionManagement repository. -->
             <extensions>true</extensions>
-            <executions>
-              <execution>
-                <id>deploy-public-artifacts</id>
-                <phase>deploy</phase>
-                <goals>
-                  <goal>publish</goal>
-                </goals>
-              </execution>
-            </executions>
             <configuration>
               <publishingServerId>central</publishingServerId>
               <autoPublish>true</autoPublish>
