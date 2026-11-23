@@ -105,5 +105,3 @@ Also available: `processes`, `describe`, `start`, `status`, `decide`, `cancel`, 
 ## Status and known limits
 
 Implemented and tested: typed errors, SSE parser (including shared conformance vectors), MCP session initialization (once, even under concurrency), JSON-RPC requests, paged `list_capabilities`, `execute`, cancellation, resumable notification streaming, Temporal start/status/decision/cancel routes, `wait_for_completion`, `watch`, `start_and_watch`, and the workflow catalog (`processes()`, `describe()`). As in `@foundgine/typescript`, `watch` retries other polling errors up to `max_consecutive_errors`, but a 401 is fatal at once.
-
-Not yet done or verified: an integration test against a real Foundgine server. Developed and tested on Python 3.12; CI covers 3.11–3.14. `tests/test_conformance.py` runs the shared vectors in `src/conformance`; they skip locally when absent and fail when `CI` is set. This is a development package, not a release-ready SDK.

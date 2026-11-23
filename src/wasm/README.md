@@ -115,5 +115,3 @@ Also available: `processes`, `describe`, `start`, `status`, `decide`, `cancel`, 
 ## Status and known limits
 
 Implemented and tested: typed errors, SSE parser (including shared SSE vectors), MCP session initialization, JSON-RPC requests, paged capability listing, tool execution, cancellation, resumable notification streaming, Temporal start/status/decision/cancel routes, workflow polling/watch helpers, the `wasm-bindgen` layer, and the ES-module wrapper—backed by 53 Rust unit tests and a 29-test Node harness driving the compiled `.wasm` against a real in-process HTTP server.
-
-Not yet done or verified: running in CI or against a real Foundgine server. Developed and tested on Node 22 (CI targets Node 20). This is a development package, not a release-ready SDK.
