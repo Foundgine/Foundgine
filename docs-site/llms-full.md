@@ -80,8 +80,8 @@ Three thin **transport clients** for a running Foundgine server live in this rep
 | SDK | Directory | Package | Import | Runtime |
 |---|---|---|---|---|
 | TypeScript | `src/typescript/` | `@foundgine/typescript` (npm) | `import { FoundgineClient } from "@foundgine/typescript"` | Node.js 20+ or any runtime with `fetch` |
-| Python | `src/python/` | `foundgine-sdk` (PyPI name) | `from foundgine import FoundgineClient` (also `FoundgineSyncClient`) | Python 3.11+, `httpx` |
-| Rust / WebAssembly | `src/wasm/` | `@foundgine/wasm` (npm); crate `foundgine-sdk-wasm` is `publish = false` | `import { FoundgineClient, init } from "@foundgine/wasm"` | Node.js 20+, browsers, Workers, Deno; host supplies `fetch` |
+| Python | `src/python/` | `foundgine` (PyPI name) | `from foundgine import FoundgineClient` (also `FoundgineSyncClient`) | Python 3.11+, `httpx` |
+| Rust / WebAssembly | `src/wasm/` | `@foundgine/wasm` (npm); crate `foundgine-wasm` is `publish = false` | `import { FoundgineClient, init } from "@foundgine/wasm"` | Node.js 20+, browsers, Workers, Deno; host supplies `fetch` |
 
 - **Protocols:** MCP over Streamable HTTP (default path `/mcp`, default protocol version `2025-06-18`) and the Temporal workflow HTTP routes under `/foundgine/workflows` (`processes`, `describe`, `start`, `status`, `decide`, `cancel`, plus `waitForCompletion`, `watch`, `startAndWatch`).
 - **Main calls:** `listCapabilities()` / `list_capabilities()`, `execute(toolName, args)`, `notifications()`, `close()`, and the `workflows` client.

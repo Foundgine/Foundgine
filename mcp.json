@@ -59,7 +59,7 @@
       "runtime": "Node.js 20+ or any runtime with fetch"
     },
     {
-      "name": "foundgine-sdk",
+      "name": "foundgine",
       "language": "Python",
       "registry": "PyPI",
       "source": "src/python",

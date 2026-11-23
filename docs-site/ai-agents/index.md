@@ -18,7 +18,7 @@ Authentication, actor identity, tenant context, secrets and model orchestration 
 
 ## Calling from TypeScript, Python or WebAssembly
 
-Thin client SDKs (`@foundgine/typescript`, `foundgine-sdk`, `@foundgine/wasm`) connect to a Foundgine server's MCP endpoint and Temporal workflow routes. They are transport only and grant no authority; see the [client SDK overview](https://github.com/Foundgine/Foundgine/blob/main/docs/wiki/client-sdks.md).
+Thin client SDKs (`@foundgine/typescript`, `foundgine`, `@foundgine/wasm`) connect to a Foundgine server's MCP endpoint and Temporal workflow routes. They are transport only and grant no authority; see the [client SDK overview](https://github.com/Foundgine/Foundgine/blob/main/docs/wiki/client-sdks.md).
 
 ## Go deeper
 

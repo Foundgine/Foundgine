@@ -25,7 +25,7 @@ src/
 │   └── samples/
 ├── conformance/                    # shared cross-language fixtures and generators
 ├── typescript/                     # @foundgine/typescript  — client SDK (npm)
-├── python/                         # foundgine-sdk          — client SDK (PyPI name)
+├── python/                         # foundgine              — client SDK (PyPI name)
 └── wasm/                           # @foundgine/wasm        — client SDK (Rust core + ES-module wrapper)
 ```
 
@@ -46,7 +46,7 @@ The three SDK directories are **not** ports of the semantic runtime. They are th
 | SDK | Directory | Package | Runtime | README |
 |---|---|---|---|---|
 | TypeScript | `src/typescript/` | `@foundgine/typescript` (npm) | Node.js 20+ or any runtime with `fetch` | [`typescript/README.md`](typescript/README.md) |
-| Python | `src/python/` | `foundgine-sdk` (PyPI name) | Python 3.11+, `httpx`; async and sync clients | [`python/README.md`](python/README.md) |
+| Python | `src/python/` | `foundgine` (PyPI name) | Python 3.11+, `httpx`; async and sync clients | [`python/README.md`](python/README.md) |
 | Rust / WebAssembly | `src/wasm/` | `@foundgine/wasm` (npm) | Node.js 20+, browsers, Workers, Deno; host supplies `fetch` | [`wasm/README.md`](wasm/README.md) |
 
 Each SDK has the same shape: `FoundgineClient` (`listCapabilities` / `list_capabilities`, `execute`, `notifications`, `close`) plus a `workflows` client (`processes`, `describe`, `start`, `status`, `decide`, `cancel`, `waitForCompletion`, `watch`, `startAndWatch`) and typed errors. A minimal call looks like this (TypeScript shown; the Python and WASM READMEs have their own forms):

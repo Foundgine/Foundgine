@@ -132,7 +132,7 @@ An application can use either or both.
 
 ### Calling the MCP endpoint from TypeScript, Python or WebAssembly
 
-Agent code written outside .NET or Java can use the repository's thin client SDKs (`@foundgine/typescript`, `foundgine-sdk`, `@foundgine/wasm`; see [Client SDKs](wiki/client-sdks.md)). They connect to the server's MCP endpoint (default `/mcp`), call `foundgine_capabilities` to discover the contract, then call `foundgine_query` (natural-language or JSON open intent) or `foundgine_query_semantic` (already-structured JSON intent). Mutations go through `foundgine_mutation_dry_run`, `foundgine_mutation_approve` and `foundgine_mutation_execute_approved`. The SDKs are transport only; authority stays on the server.
+Agent code written outside .NET or Java can use the repository's thin client SDKs (`@foundgine/typescript`, `foundgine`, `@foundgine/wasm`; see [Client SDKs](wiki/client-sdks.md)). They connect to the server's MCP endpoint (default `/mcp`), call `foundgine_capabilities` to discover the contract, then call `foundgine_query` (natural-language or JSON open intent) or `foundgine_query_semantic` (already-structured JSON intent). Mutations go through `foundgine_mutation_dry_run`, `foundgine_mutation_approve` and `foundgine_mutation_execute_approved`. The SDKs are transport only; authority stays on the server.
 
 ## Relationship to GraphQL/JSON
 

@@ -3,7 +3,7 @@
 //! a payload must stay payload. Set FOUNDGINE_CONFORMANCE_DIR to override the vector directory.
 //! The replay-buffer vectors are server state machines and are not driven from a client.
 
-use foundgine_sdk_wasm::SseParser;
+use foundgine_wasm::SseParser;
 use serde_json::Value;
 use std::path::PathBuf;
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- CI: the C# penetration jobs moved from `security.yml` into `csharp-build.yml` (which keeps dependency audit, SBOM and ZAP). Both `csharp-build.yml` and `java-build.yml` now use the same layout: semantic, adversarial and authorization penetration jobs, 30-minute timeouts, evidence upload on failure, a guard that fails when no tests executed, and one aggregate gate (`security-penetration-gate` / `java-security-penetration-gate`) that blocks NuGet and Maven Central publication.
+- CI: the SupplyChain GraphQL/MCP penetration jobs now set `FOUNDGINE_SUPPLYCHAIN_PENTEST=1`; previously every case was skipped.
+- Java: `RedTeamHarnessPenetrationTest` runs the `foundgine-redteam` harness under Maven; the Java penetration job previously never executed it.
+- README: added a C# Penetration Tests badge and pointed the Java badge at the aggregate gate.
+
 ## 3.4.1 — November 23, 2026
 
 ### Added

@@ -808,6 +808,540 @@ jobs:
           exit 1
 
   # ============================================================
+  # GraphQL penetration tests
+  # ============================================================
+  security-penetration-graph:
+    needs:
+      - build-pack
+    name: Security Penetration Test — SupplyChain GraphQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore pentest suite
+        run: |
+          dotnet restore \
+            src/csharp/benchmarks/AgentEndToEnd/Fixtures/SupplyChain.PenTest/Tests/Foundgine.SupplyChain.PenTest.Tests.csproj
+
+      - name: Build pentest suite
+        run: |
+          dotnet build \
+            src/csharp/benchmarks/AgentEndToEnd/Fixtures/SupplyChain.PenTest/Tests/Foundgine.SupplyChain.PenTest.Tests.csproj \
+            --no-restore \
+            --configuration Release
+
+      - name: Start isolated PostgreSQL 17
+        run: |
+          docker compose \
+            -f src/csharp/benchmarks/AgentEndToEnd/Fixtures/SupplyChain.PenTest/docker-compose.yml \
+            up -d --wait postgres
+
+      - name: Seed isolated pentest database
+        run: |
+          docker compose \
+            -f src/csharp/benchmarks/AgentEndToEnd/Fixtures/SupplyChain.PenTest/docker-compose.yml \
+            run --rm seed
+
+      - name: Run GraphQL penetration tests
+        env:
+          FOUNDGINE_SUPPLYCHAIN_PENTEST: "1"
+          SupplyChainConnectionString: Host=localhost;Port=4431;Database=foundgine_supply_chain_pentest;Username=benchmark;Password=benchmark
+        run: |
+          set -euo pipefail
+
+          dotnet test \
+            src/csharp/benchmarks/AgentEndToEnd/Fixtures/SupplyChain.PenTest/Tests/Foundgine.SupplyChain.PenTest.Tests.csproj \
+            --no-build \
+            --configuration Release \
+            --filter 'FullyQualifiedName~GraphPenetrationTests' \
+            --results-directory artifacts/pentest/security-penetration-graph \
+            --logger "trx;LogFileName=security-penetration-graph-1.trx" \
+            --logger 'console;verbosity=normal'
+
+      - name: Teardown isolated database
+        if: always()
+        run: |
+          docker compose \
+            -f src/csharp/benchmarks/AgentEndToEnd/Fixtures/SupplyChain.PenTest/docker-compose.yml \
+            down --volumes --remove-orphans
+
+      - name: Upload penetration test evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: security-penetration-graph-results
+          path: artifacts/pentest/security-penetration-graph/**
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Verify penetration tests executed
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Guard against a silent zero-test pass: at least one TRX must exist and tests must have executed.
+          python3 - security-penetration-graph <<'PY'
+          import glob, sys
+          import xml.etree.ElementTree as ET
+
+          job = sys.argv[1]
+          files = glob.glob(f"artifacts/pentest/{job}/*.trx")
+          if not files:
+              print(f"::error::No TRX results were produced for {job}; the penetration tests did not run.")
+              sys.exit(1)
+
+          failed = False
+          for f in sorted(files):
+              counters = None
+              for el in ET.parse(f).getroot().iter():
+                  if el.tag.rsplit("}", 1)[-1] == "Counters":
+                      counters = el
+                      break
+              total = int(counters.get("total", 0)) if counters is not None else 0
+              executed = int(counters.get("executed", 0)) if counters is not None else 0
+              print(f"{f}: {executed} executed of {total}")
+              if executed == 0:
+                  print(f"::error::{f} executed no tests (all skipped or none discovered).")
+                  failed = True
+          sys.exit(1 if failed else 0)
+          PY
+
+  # ============================================================
+  # Authorization penetration tests
+  # ============================================================
+  security-penetration:
+    needs:
+      - build-pack
+    name: Security Penetration Test — Authorization
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore src/csharp/Foundgine.sln
+
+      - name: Build
+        run: |
+          dotnet build src/csharp/Foundgine.sln \
+            --no-restore \
+            --configuration Release
+
+      - name: Start PostgreSQL 17
+        env:
+          POSTGRES_HOST_PORT: "55435"
+        run: |
+          docker compose -p foundgine-security-pg \
+            -f docker-compose.postgres.yml \
+            down -v --remove-orphans || true
+
+          docker compose -p foundgine-security-pg \
+            -f docker-compose.postgres.yml \
+            up -d --wait postgres
+
+      - name: Run authorization penetration tests
+        run: |
+          set -euo pipefail
+
+          export FOUNDGINE_POSTGRES_CONNECTION='Host=localhost;Port=55435;Database=foundgine_e2e;Username=foundgine;Password=foundgine'
+
+          dotnet test \
+            src/csharp/tests/Foundgine.Security.Authority.Tests/Foundgine.Security.Authority.Tests.csproj \
+            --no-build \
+            --configuration Release \
+            --filter 'FullyQualifiedName~TransferFundsPenetrationTests' \
+            --results-directory artifacts/pentest/security-penetration \
+            --logger "trx;LogFileName=security-penetration-1.trx" \
+            --logger 'console;verbosity=normal'
+
+      - name: PostgreSQL diagnostics on failure
+        if: failure()
+        env:
+          POSTGRES_HOST_PORT: "55435"
+        run: |
+          docker compose -p foundgine-security-pg \
+            -f docker-compose.postgres.yml \
+            logs --no-color postgres
+
+      - name: Stop PostgreSQL
+        if: always()
+        env:
+          POSTGRES_HOST_PORT: "55435"
+        run: |
+          docker compose -p foundgine-security-pg \
+            -f docker-compose.postgres.yml \
+            down \
+            --volumes \
+            --remove-orphans
+
+      - name: Upload penetration test evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: security-penetration-results
+          path: artifacts/pentest/security-penetration/**
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Verify penetration tests executed
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Guard against a silent zero-test pass: at least one TRX must exist and tests must have executed.
+          python3 - security-penetration <<'PY'
+          import glob, sys
+          import xml.etree.ElementTree as ET
+
+          job = sys.argv[1]
+          files = glob.glob(f"artifacts/pentest/{job}/*.trx")
+          if not files:
+              print(f"::error::No TRX results were produced for {job}; the penetration tests did not run.")
+              sys.exit(1)
+
+          failed = False
+          for f in sorted(files):
+              counters = None
+              for el in ET.parse(f).getroot().iter():
+                  if el.tag.rsplit("}", 1)[-1] == "Counters":
+                      counters = el
+                      break
+              total = int(counters.get("total", 0)) if counters is not None else 0
+              executed = int(counters.get("executed", 0)) if counters is not None else 0
+              print(f"{f}: {executed} executed of {total}")
+              if executed == 0:
+                  print(f"::error::{f} executed no tests (all skipped or none discovered).")
+                  failed = True
+          sys.exit(1 if failed else 0)
+          PY
+
+  # ============================================================
+  # Adversarial intent penetration tests
+  # ============================================================
+  security-adversarial:
+    needs:
+      - build-pack
+    name: Security Penetration Test — Adversarial Intent
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore src/csharp/Foundgine.sln
+
+      - name: Build
+        run: |
+          dotnet build src/csharp/Foundgine.sln \
+            --no-restore \
+            --configuration Release
+
+      - name: Run hostile model corpus
+        run: |
+          set -euo pipefail
+
+          dotnet test \
+            src/csharp/tests/Foundgine.E2E.Tests/Foundgine.E2E.Tests.csproj \
+            --no-build \
+            --configuration Release \
+            --filter 'FullyQualifiedName~ModelProviderReplayTests.Hostile_model_corpus_is_replayed_through_the_real_engine' \
+            --results-directory artifacts/pentest/security-adversarial \
+            --logger "trx;LogFileName=security-adversarial-1.trx" \
+            --logger 'console;verbosity=normal'
+
+      - name: Run adversarial engine tests
+        run: |
+          set -euo pipefail
+
+          dotnet test \
+            src/csharp/tests/Foundgine.E2E.Tests/Foundgine.E2E.Tests.csproj \
+            --no-build \
+            --configuration Release \
+            --filter 'FullyQualifiedName~BlackBoxAdversarialEngineTests' \
+            --results-directory artifacts/pentest/security-adversarial \
+            --logger "trx;LogFileName=security-adversarial-2.trx" \
+            --logger 'console;verbosity=normal'
+
+      - name: Upload penetration test evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: security-adversarial-results
+          path: artifacts/pentest/security-adversarial/**
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Verify penetration tests executed
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Guard against a silent zero-test pass: at least one TRX must exist and tests must have executed.
+          python3 - security-adversarial <<'PY'
+          import glob, sys
+          import xml.etree.ElementTree as ET
+
+          job = sys.argv[1]
+          files = glob.glob(f"artifacts/pentest/{job}/*.trx")
+          if not files:
+              print(f"::error::No TRX results were produced for {job}; the penetration tests did not run.")
+              sys.exit(1)
+
+          failed = False
+          for f in sorted(files):
+              counters = None
+              for el in ET.parse(f).getroot().iter():
+                  if el.tag.rsplit("}", 1)[-1] == "Counters":
+                      counters = el
+                      break
+              total = int(counters.get("total", 0)) if counters is not None else 0
+              executed = int(counters.get("executed", 0)) if counters is not None else 0
+              print(f"{f}: {executed} executed of {total}")
+              if executed == 0:
+                  print(f"::error::{f} executed no tests (all skipped or none discovered).")
+                  failed = True
+          sys.exit(1 if failed else 0)
+          PY
+
+  # ============================================================
+  # Foundgine semantic boundary penetration tests
+  # ============================================================
+  security-semantic-penetration:
+    needs:
+      - build-pack
+    name: Security Penetration Test — Foundgine Semantic Boundary
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore src/csharp/Foundgine.sln
+
+      - name: Build
+        run: |
+          dotnet build src/csharp/Foundgine.sln \
+            --no-restore \
+            --configuration Release
+
+      - name: Run Foundgine penetration tests
+        run: |
+          set -euo pipefail
+
+          dotnet test \
+            src/csharp/tests/Foundgine.Security.Tests/Foundgine.Security.Tests.csproj \
+            --no-build \
+            --configuration Release \
+            --results-directory artifacts/pentest/security-semantic-penetration \
+            --logger "trx;LogFileName=security-semantic-penetration-1.trx" \
+            --logger "console;verbosity=normal"
+
+      - name: Upload penetration test evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: security-semantic-penetration-results
+          path: artifacts/pentest/security-semantic-penetration/**
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Verify penetration tests executed
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Guard against a silent zero-test pass: at least one TRX must exist and tests must have executed.
+          python3 - security-semantic-penetration <<'PY'
+          import glob, sys
+          import xml.etree.ElementTree as ET
+
+          job = sys.argv[1]
+          files = glob.glob(f"artifacts/pentest/{job}/*.trx")
+          if not files:
+              print(f"::error::No TRX results were produced for {job}; the penetration tests did not run.")
+              sys.exit(1)
+
+          failed = False
+          for f in sorted(files):
+              counters = None
+              for el in ET.parse(f).getroot().iter():
+                  if el.tag.rsplit("}", 1)[-1] == "Counters":
+                      counters = el
+                      break
+              total = int(counters.get("total", 0)) if counters is not None else 0
+              executed = int(counters.get("executed", 0)) if counters is not None else 0
+              print(f"{f}: {executed} executed of {total}")
+              if executed == 0:
+                  print(f"::error::{f} executed no tests (all skipped or none discovered).")
+                  failed = True
+          sys.exit(1 if failed else 0)
+          PY
+
+  # ============================================================
+  # MCP penetration tests
+  # ============================================================
+  security-penetration-mcp:
+    needs:
+      - build-pack
+    name: Security Penetration Test — SupplyChain MCP
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore pentest suite
+        run: |
+          dotnet restore \
+            src/csharp/benchmarks/AgentEndToEnd/Fixtures/SupplyChain.PenTest/Tests/Foundgine.SupplyChain.PenTest.Tests.csproj
+
+      - name: Build pentest suite
+        run: |
+          dotnet build \
+            src/csharp/benchmarks/AgentEndToEnd/Fixtures/SupplyChain.PenTest/Tests/Foundgine.SupplyChain.PenTest.Tests.csproj \
+            --no-restore \
+            --configuration Release
+
+      - name: Start isolated PostgreSQL 17
+        run: |
+          docker compose \
+            -f src/csharp/benchmarks/AgentEndToEnd/Fixtures/SupplyChain.PenTest/docker-compose.yml \
+            up -d --wait postgres
+
+      - name: Seed isolated pentest database
+        run: |
+          docker compose \
+            -f src/csharp/benchmarks/AgentEndToEnd/Fixtures/SupplyChain.PenTest/docker-compose.yml \
+            run --rm seed
+
+      - name: Run MCP penetration tests
+        env:
+          FOUNDGINE_SUPPLYCHAIN_PENTEST: "1"
+          SupplyChainConnectionString: Host=localhost;Port=4431;Database=foundgine_supply_chain_pentest;Username=benchmark;Password=benchmark
+        run: |
+          set -euo pipefail
+
+          dotnet test \
+            src/csharp/benchmarks/AgentEndToEnd/Fixtures/SupplyChain.PenTest/Tests/Foundgine.SupplyChain.PenTest.Tests.csproj \
+            --no-build \
+            --configuration Release \
+            --filter 'FullyQualifiedName~McpPenetrationTests' \
+            --results-directory artifacts/pentest/security-penetration-mcp \
+            --logger "trx;LogFileName=security-penetration-mcp-1.trx" \
+            --logger 'console;verbosity=normal'
+
+      - name: Teardown isolated database
+        if: always()
+        run: |
+          docker compose \
+            -f src/csharp/benchmarks/AgentEndToEnd/Fixtures/SupplyChain.PenTest/docker-compose.yml \
+            down --volumes --remove-orphans
+
+      - name: Upload penetration test evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: security-penetration-mcp-results
+          path: artifacts/pentest/security-penetration-mcp/**
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Verify penetration tests executed
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Guard against a silent zero-test pass: at least one TRX must exist and tests must have executed.
+          python3 - security-penetration-mcp <<'PY'
+          import glob, sys
+          import xml.etree.ElementTree as ET
+
+          job = sys.argv[1]
+          files = glob.glob(f"artifacts/pentest/{job}/*.trx")
+          if not files:
+              print(f"::error::No TRX results were produced for {job}; the penetration tests did not run.")
+              sys.exit(1)
+
+          failed = False
+          for f in sorted(files):
+              counters = None
+              for el in ET.parse(f).getroot().iter():
+                  if el.tag.rsplit("}", 1)[-1] == "Counters":
+                      counters = el
+                      break
+              total = int(counters.get("total", 0)) if counters is not None else 0
+              executed = int(counters.get("executed", 0)) if counters is not None else 0
+              print(f"{f}: {executed} executed of {total}")
+              if executed == 0:
+                  print(f"::error::{f} executed no tests (all skipped or none discovered).")
+                  failed = True
+          sys.exit(1 if failed else 0)
+          PY
+
+  # ============================================================
+  # Penetration gate (aggregates every penetration job)
+  # ============================================================
+  security-penetration-gate:
+    name: security-penetration-gate
+    if: always()
+    needs:
+      - security-penetration-graph
+      - security-penetration
+      - security-adversarial
+      - security-semantic-penetration
+      - security-penetration-mcp
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Require every penetration job to pass
+        shell: bash
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          set -euo pipefail
+          echo "Penetration job results: $RESULTS"
+          for result in $RESULTS; do
+            if [[ "$result" != "success" ]]; then
+              echo "::error::A penetration job finished with result '$result'."
+              exit 1
+            fi
+          done
+          echo "All penetration jobs passed."
+
+  # ============================================================
   # Security gate
   # ============================================================
   security-gate:
@@ -831,6 +1365,7 @@ jobs:
       - redis-integration-tests
       - benchmark-build-hotchocolate
       - benchmark-build-foundgine
+      - security-penetration-gate
       - security-gate
     runs-on: ubuntu-latest
     environment: production

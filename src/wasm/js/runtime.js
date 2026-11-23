@@ -1,7 +1,7 @@
 // Loading the WebAssembly module, plus the small host-side helpers every layer shares:
 // `fetch` injection, per-request token resolution, abortable sleeping.
 
-import wasmInit, * as wasm from "../pkg/foundgine_sdk_wasm.js";
+import wasmInit, * as wasm from "../pkg/foundgine_wasm.js";
 import { FoundgineAbortError, FoundgineError, toError } from "./errors.js";
 
 let ready = null;
@@ -17,7 +17,7 @@ export function init(input) {
       let source = input;
       if (source === undefined && typeof process !== "undefined" && process.versions?.node) {
         const { readFile } = await import(/* @vite-ignore */ "node:fs/promises");
-        source = await readFile(new URL("../pkg/foundgine_sdk_wasm_bg.wasm", import.meta.url));
+        source = await readFile(new URL("../pkg/foundgine_wasm_bg.wasm", import.meta.url));
       }
       await wasmInit(source);
     })();

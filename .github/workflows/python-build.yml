@@ -60,7 +60,7 @@ jobs:
           if-no-files-found: error
 
   publish-python:
-    name: Publish foundgine-sdk to PyPI
+    name: Publish foundgine to PyPI
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs: [python, python-lint]
     runs-on: ubuntu-latest
@@ -87,8 +87,8 @@ jobs:
           # PEP 440 normalises 0.1.0-rc.1 to 0.1.0rc1, so compare normalised forms.
           tag=$(python3 -c "import sys; from packaging.version import Version; print(Version(sys.argv[1]))" "${GITHUB_REF_NAME#py-v}")
           test "$tag" = "$version" || { echo "::error::tag $GITHUB_REF_NAME does not match package version $version"; exit 1; }
-          if curl -fsS "https://pypi.org/pypi/foundgine-sdk/$version/json" >/dev/null 2>&1; then
-            echo "::error::foundgine-sdk $version is already on PyPI"; exit 1
+          if curl -fsS "https://pypi.org/pypi/foundgine/$version/json" >/dev/null 2>&1; then
+            echo "::error::foundgine $version is already on PyPI"; exit 1
           fi
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:

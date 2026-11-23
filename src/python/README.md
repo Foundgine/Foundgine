@@ -1,4 +1,4 @@
-# foundgine-sdk (Python)
+# foundgine (Python)
 
 A thin Python client for Foundgine MCP and Temporal workflow HTTP transports.
 
@@ -15,7 +15,7 @@ pip install -e ".[dev]"
 ruff check . && mypy && pytest
 ```
 
-The project metadata names the distribution `foundgine-sdk`. This repository snapshot documents the editable source install; it does not claim that a PyPI release is available.
+The project metadata names the distribution `foundgine`. This repository snapshot documents the editable source install; it does not claim that a PyPI release is available.
 
 ## MCP client
 
