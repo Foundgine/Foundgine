@@ -10,11 +10,11 @@ The Supply Chain E2E is the **application-level story**. It sits on top of the r
 | Supply Chain sample tests | Starter and advanced sample behavior | `csharp-build.yml` — `supplychain-sample-tests`, `supplychain-semantic-sample-tests` |
 | PostgreSQL integration | E2E and EventStore projects with PostgreSQL 17 available | `csharp-build.yml` — `integration-tests`; note the `PostgreSqlFact` environment-variable gap in [`docs/POSTGRES-E2E.md`](../../../../docs/POSTGRES-E2E.md) |
 | Performance smoke tests | Hot Chocolate and Foundgine benchmark workloads | `csharp-build.yml` — `benchmark-build-hotchocolate`, `benchmark-build-foundgine` |
-| Security checks | Dependency audit, SBOM, ZAP baseline, penetration and adversarial suites | `security.yml`, invoked by `csharp-build.yml` — `security-gate`; the Supply Chain GraphQL/MCP PenTest jobs currently skip their tests because the opt-in environment variable is missing |
+| Security checks | Dependency audit, SBOM, ZAP baseline, penetration and adversarial suites | Penetration and adversarial jobs run directly in `csharp-build.yml`; dependency audit, SBOM and ZAP run in `security.yml`, invoked by `csharp-build.yml` — `security-gate` |
 
 There is no `agent-benchmark-smoke` job in the current workflows. Agent benchmark runs are separate workloads and must not be described as a required NuGet release gate.
 
-The NuGet publication job runs only for version tags. Its `needs` list requires `build-pack`, `unit-tests`, both Supply Chain sample-test jobs, `integration-tests`, both benchmark jobs and `security-gate`. The security gate calls the reusable `security.yml` workflow; its individual jobs are not all jobs in `csharp-build.yml`.
+The NuGet publication job runs only for version tags. Its `needs` list requires `build-pack`, `unit-tests`, both Supply Chain sample-test jobs, `integration-tests`, `redis-integration-tests`, both benchmark jobs, `security-penetration-gate` (aggregating the five `security-penetration*`/`security-adversarial` jobs) and `security-gate`. The security gate calls the reusable `security.yml` workflow (dependency audit and SBOM).
 
 ## Local verification
 

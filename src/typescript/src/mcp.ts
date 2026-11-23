@@ -34,7 +34,7 @@ export class McpSession {
     this.#fetch = options.fetch ?? globalThis.fetch.bind(globalThis);
     this.#token = options.token;
     this.#requestedVersion = options.protocolVersion ?? DEFAULT_PROTOCOL_VERSION;
-    this.#userAgent = options.userAgent ?? "foundgine-sdk/3.4.1";
+    this.#userAgent = options.userAgent ?? "foundgine/3.4.1";
   }
 
   get session(): string | undefined { return this.#session; }

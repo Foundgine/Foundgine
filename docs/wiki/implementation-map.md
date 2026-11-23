@@ -23,7 +23,7 @@ This page maps capabilities to the repository's current module layout. It is an 
 | GraphQL adapter | `src/csharp/Foundgine.Extensions.GraphQL/HotChocolate` (HTTP endpoint: `.../Http`) | `src/java/foundgine-extensions/src/main/java/com/foundgine/extensions/graphql` (GraphQL Java; different API, no Hot Chocolate parity claim) |
 | Samples and tests | `src/csharp/samples`, `tests`, `security` | `src/java/samples`, module tests, `security` |
 | Client SDK for a running server (TypeScript) | N/A (server) | N/A (server); client lives in `src/typescript` (`@foundgine/typescript`) |
-| Client SDK (Python) | N/A (server) | N/A (server); client lives in `src/python` (`foundgine-sdk`) |
+| Client SDK (Python) | N/A (server) | N/A (server); client lives in `src/python` (`foundgine`) |
 | Client SDK (Rust / WebAssembly) | N/A (server) | N/A (server); client lives in `src/wasm` (`@foundgine/wasm`) |
 
 ## Module responsibilities

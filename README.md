@@ -6,10 +6,15 @@
 [![NuGet Version](https://img.shields.io/nuget/v/Foundgine.Core?label=NuGet%20Version)](https://www.nuget.org/packages/Foundgine.Core/)
 [![Unit Tests](https://img.shields.io/github/actions/workflow/status/Foundgine/Foundgine/csharp-build.yml?branch=main&job=unit-tests&label=Unit%20Tests)](https://github.com/Foundgine/Foundgine/actions/workflows/csharp-build.yml)
 [![Integration Tests](https://img.shields.io/github/actions/workflow/status/Foundgine/Foundgine/csharp-build.yml?branch=main&job=integration-tests&label=Integration%20Tests)](https://github.com/Foundgine/Foundgine/actions/workflows/csharp-build.yml)
+[![Penetration Tests](https://img.shields.io/github/actions/workflow/status/Foundgine/Foundgine/csharp-build.yml?branch=main&job=security-penetration-gate&label=Penetration%20Tests)](https://github.com/Foundgine/Foundgine/actions/workflows/csharp-build.yml)
+
 [![Maven Central Version](https://img.shields.io/maven-central/v/io.github.cristianbarragan/foundgine-core?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.cristianbarragan/foundgine-core)
 [![Java Unit Tests](https://img.shields.io/github/actions/workflow/status/Foundgine/Foundgine/java-build.yml?branch=main&job=java-build&label=Java%20Unit%20Tests)](https://github.com/Foundgine/Foundgine/actions/workflows/java-build.yml)
-[![Python Version](https://img.shields.io/pypi/v/foundgine?label=PyPI%20Version)](https://pypi.org/project/foundgine)
-[![TypeScript Version](https://img.shields.io/npm/v/@foundgine/typescript?label=npm)](https://www.npmjs.com/package/@foundgine/typescript)
+[![Java Integration Tests](https://img.shields.io/github/actions/workflow/status/Foundgine/Foundgine/java-build.yml?branch=main&job=java-postgres-e2e&label=Java%20Integration%20Tests)](https://github.com/Foundgine/Foundgine/actions/workflows/java-build.yml)
+[![Java Penetration Tests](https://img.shields.io/github/actions/workflow/status/Foundgine/Foundgine/java-build.yml?branch=main&job=java-security-penetration-gate&label=Java%20Penetration%20Tests)](https://github.com/Foundgine/Foundgine/actions/workflows/java-build.yml)
+
+[![Python Version](https://img.shields.io/pypi/v/foundgine?label=PyPI%20Python)](https://pypi.org/project/foundgine)
+[![TypeScript Version](https://img.shields.io/npm/v/@foundgine/typescript?label=npm%20Typescript)](https://www.npmjs.com/package/@foundgine/typescript)
 [![WASM Version](https://img.shields.io/npm/v/@foundgine/wasm?label=npm%20WASM)](https://www.npmjs.com/package/@foundgine/wasm)
 
 # Foundgine

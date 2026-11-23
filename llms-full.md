@@ -66,7 +66,7 @@ Three thin transport clients for a running Foundgine server are published as pac
 | SDK | Package | Import | Runtime |
 |---|---|---|---|
 | TypeScript | `@foundgine/typescript` (npm) | `import { FoundgineClient } from "@foundgine/typescript"` | Node.js 20+ or any runtime with `fetch` |
-| Python | `foundgine-sdk` (PyPI) | `from foundgine import FoundgineClient` (also `FoundgineSyncClient`) | Python 3.11+, httpx |
+| Python | `foundgine` (PyPI) | `from foundgine import FoundgineClient` (also `FoundgineSyncClient`) | Python 3.11+, httpx |
 | WebAssembly | `@foundgine/wasm` (npm) | `import { FoundgineClient, init } from "@foundgine/wasm"` | Node.js 20+, browsers, Workers, Deno; host supplies `fetch` |
  
 **Protocols:** MCP over Streamable HTTP (default path `/mcp`, default protocol version 2025-06-18) and the Temporal workflow HTTP routes under `/foundgine/workflows` (processes, describe, start, status, decide, cancel, plus waitForCompletion, watch, startAndWatch).

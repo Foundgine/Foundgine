@@ -8,7 +8,7 @@ Foundgine ships three **thin transport clients** for talking to a running Foundg
 
 | | TypeScript | Python | Rust / WebAssembly |
 |---|---|---|---|
-| Distribution name | `@foundgine/typescript` (npm) | `foundgine-sdk` (PyPI name in metadata) | `@foundgine/wasm` (npm); Rust crate `foundgine-sdk-wasm` (`publish = false`) |
+| Distribution name | `@foundgine/typescript` (npm) | `foundgine` (PyPI name in metadata) | `@foundgine/wasm` (npm); Rust crate `foundgine-wasm` (`publish = false`) |
 | Import | `import { FoundgineClient } from "@foundgine/typescript"` | `from foundgine import FoundgineClient` | `import { FoundgineClient, init } from "@foundgine/wasm"` |
 | Source | [`src/typescript/`](../../src/typescript/README.md) | [`src/python/`](../../src/python/README.md) | [`src/wasm/`](../../src/wasm/README.md) |
 | Runtime | Node.js 20+ or any runtime with `fetch` | Python 3.11+, `httpx` | Node.js 20+, browsers, Workers, Deno (host supplies `fetch`) |

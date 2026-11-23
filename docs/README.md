@@ -60,6 +60,6 @@ The [Foundgine feature and capability wiki](wiki/index.md) explains Foundgine by
 - [Fluent semantic reads (`SemanticQuery`)](wiki/semantic-query-builder.md): one read builder with the same members in C# and Java, with snippets for both.
 - [Extensions](wiki/extensions.md): GraphQL, Keycloak and Temporal in one place.
 - [Agent and framework integrations](wiki/agent-framework-integrations.md): Microsoft Agent Framework (.NET), LangChain4j and Spring Boot (Java).
-- [Client SDKs](wiki/client-sdks.md): TypeScript (`@foundgine/typescript`), Python (`foundgine-sdk`) and WebAssembly (`@foundgine/wasm`) transport clients.
+- [Client SDKs](wiki/client-sdks.md): TypeScript (`@foundgine/typescript`), Python (`foundgine`) and WebAssembly (`@foundgine/wasm`) transport clients.
 - [Insights, evidence and auditing](wiki/insights-evidence-auditing.md): receipts, audit, diagnostics and live events.
 - [Glossary](wiki/glossary.md): short, friendly definitions.

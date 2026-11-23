@@ -4,7 +4,7 @@ The repository has a real PostgreSQL 17 integration path.
 
 The normal test suite does not require a database. The E2E project's `PostgreSqlFact` / `PostgreSqlTheory` attributes require `FOUNDGINE_POSTGRES_CONNECTION_STRING`. The separate authority-test project's `PostgresFact` attribute accepts either `FOUNDGINE_POSTGRES_CONNECTION` or `FOUNDGINE_POSTGRES_CONNECTION_STRING`.
 
-**CI gap:** the `csharp-build.yml` integration job starts PostgreSQL 17 and invokes the E2E and EventStore projects, but it does not export `FOUNDGINE_POSTGRES_CONNECTION_STRING`. As a result, E2E tests guarded by `PostgreSqlFact` / `PostgreSqlTheory` are skipped even though the database container is running. The separate `security.yml` workflow sets `FOUNDGINE_POSTGRES_CONNECTION` for `Foundgine.Security.Authority.Tests`, but its current filter runs only `TransferFundsPenetrationTests`, not the entire authority test project. Do not treat the current PostgreSQL job as proof that all PostgreSQL-gated tests ran.
+**CI gap:** the `csharp-build.yml` integration job starts PostgreSQL 17 and invokes the E2E and EventStore projects, but it does not export `FOUNDGINE_POSTGRES_CONNECTION_STRING`. As a result, E2E tests guarded by `PostgreSqlFact` / `PostgreSqlTheory` are skipped even though the database container is running. The `security-penetration` job in `csharp-build.yml` sets `FOUNDGINE_POSTGRES_CONNECTION` for `Foundgine.Security.Authority.Tests`, but its current filter runs only `TransferFundsPenetrationTests`, not the entire authority test project. Do not treat the current PostgreSQL job as proof that all PostgreSQL-gated tests ran.
 
 ## PostgreSQL retrieval in the canonical lifecycle
 

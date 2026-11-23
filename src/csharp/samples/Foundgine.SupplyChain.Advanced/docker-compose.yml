@@ -1,0 +1,9 @@
+# Foundgine.SupplyChain.Advanced semantic MCP/intent API.
+# The host is in-memory and stateless, so it needs no database.
+# Endpoints: /mcp, /intent*, /health, /health/ready.
+services:
+  mcp-api:
+    build:
+      context: ../../../../
+      dockerfile: src/csharp/samples/Foundgine.SupplyChain.Advanced/Dockerfile
+    ports: ["4422:8080"]

@@ -17,7 +17,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "cargo build --release --target wasm32-unknown-unknown && wasm-bindgen target/wasm32-unknown-unknown/release/foundgine_sdk_wasm.wasm --out-dir pkg --target web --typescript",
+    "build": "cargo build --release --target wasm32-unknown-unknown && wasm-bindgen target/wasm32-unknown-unknown/release/foundgine_wasm.wasm --out-dir pkg --target web --typescript",
     "test": "node --test test/*.test.mjs"
   },
   "publishConfig": {

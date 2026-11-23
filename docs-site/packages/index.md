@@ -61,7 +61,7 @@ Three thin transport clients talk to a running Foundgine server over MCP (Stream
 | SDK | Package | Runtime | Source |
 | --- | --- | --- | --- |
 | TypeScript | `@foundgine/typescript` (npm) | Node.js 20+ or any runtime with `fetch` | [`src/typescript`](https://github.com/Foundgine/Foundgine/tree/main/src/typescript) |
-| Python | `foundgine-sdk` (PyPI name) | Python 3.11+, `httpx`; async and sync clients | [`src/python`](https://github.com/Foundgine/Foundgine/tree/main/src/python) |
+| Python | `foundgine` (PyPI name) | Python 3.11+, `httpx`; async and sync clients | [`src/python`](https://github.com/Foundgine/Foundgine/tree/main/src/python) |
 | Rust / WebAssembly | `@foundgine/wasm` (npm) | Node.js 20+, browsers, Workers, Deno; host supplies `fetch` | [`src/wasm`](https://github.com/Foundgine/Foundgine/tree/main/src/wasm) |
 
 All three are development packages, not release-ready SDKs; the repository does not claim a registry release, so verify that a version exists on npm or PyPI before pinning it. See the [client SDK overview](https://github.com/Foundgine/Foundgine/blob/main/docs/wiki/client-sdks.md) for a comparison, a quick start and the verification status.
