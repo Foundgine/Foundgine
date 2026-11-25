@@ -72,3 +72,14 @@ The optional ASP.NET Core gateway facade is included in this package under `Foun
 - [`Foundgine.Providers.AgentFramework`](../Foundgine.Providers.AgentFramework/README.md): Microsoft Agent Framework adapter exposing governed Foundgine tools.
 - [`Foundgine.Providers.PostgresVector`](../Foundgine.Providers.PostgresVector/README.md) and [`Foundgine.Providers.Elasticsearch`](../Foundgine.Providers.Elasticsearch/README.md): lexical-grounding candidate sources.
 
+
+## Open-intent transport adapters
+
+The provider package includes reusable transport adapters for an application-owned `IFoundgineIntentHandler`:
+
+- `Foundgine.Providers.Tools.Http.FoundgineIntentEndpoints` maps the ASP.NET Core `/intent`, `/intent/explain`, and `/intent/capabilities` routes.
+- `Foundgine.Providers.Tools.MCP.FoundgineIntentMcpTools` exposes the `foundgine_intent` MCP tool.
+
+Both adapters pass the host-authenticated `ClaimsPrincipal` to the application handler. They do not parse application identity from intent payloads, implement semantic authorization, or depend on a domain-specific service. GraphQL uses the corresponding resolver in `Foundgine.Extensions.GraphQL`.
+
+For an HTTP-hosted MCP server, call `services.AddFoundgineIntentHttpPrincipal()` to register the default `IFoundgineIntentPrincipalProvider`. A non-HTTP MCP host can register its own principal provider (for example, one backed by an authenticated MCP session) without changing the MCP tool adapter.

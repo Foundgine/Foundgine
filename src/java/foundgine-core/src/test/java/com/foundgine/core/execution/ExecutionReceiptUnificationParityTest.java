@@ -117,6 +117,19 @@ class ExecutionReceiptUnificationParityTest {
         assertEquals(List.of(55, 8123), receipt.affectedNodeIds());
     }
 
+
+    @Test
+    void receiptKeepsExecutionIdSeparateFromHostCorrelationId() {
+        var evidence = new ExecutionEvidence("sql", "plan", List.of(1), 1, 1,
+                null, "intent", "auth", null, null, null, null);
+        Instant now = Instant.now();
+        var receipt = ExecutionReceiptFactory.create("execution-unique", evidence, "result",
+                List.of(1), List.of("read"), now, now, 1, 1, 1, 1, "model",
+                null, null, null, "trace-123");
+        assertEquals("execution-unique", receipt.requestId());
+        assertEquals("trace-123", receipt.correlationId());
+    }
+
     @Test
     void createRejectsEvidenceMissingRequiredFingerprints() {
         var missingIntentFingerprint =

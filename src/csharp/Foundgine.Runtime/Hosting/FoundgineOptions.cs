@@ -112,6 +112,26 @@ public sealed class FoundgineOptions
     /// </summary>
     public Func<IServiceProvider, Foundgine.Core.Execution.Mutation.IMutationBatchExecutionProvider>? MutationProviderFactory { get; set; }
 
+    /// <summary>
+    /// Optional write-ahead execution ledger for mutations. When set, a mutation whose
+    /// <see cref="Foundgine.Core.Execution.ExecutionContextKeys.IdempotencyKey"/> is supplied is recorded before
+    /// dispatch, replayed when already committed and refused when in doubt. Without a ledger the key is ignored.
+    /// When null, an <c>IMutationExecutionLedger</c> registered in the service collection is used.
+    /// </summary>
+    public Foundgine.Runtime.Recovery.IMutationExecutionLedger? MutationLedger { get; set; }
+
+    /// <summary>
+    /// Optional reconciler used to resolve in-doubt executions. When null, a registered
+    /// <c>IMutationReconciler</c> is used, then the mutation provider if it implements the interface.
+    /// </summary>
+    public Foundgine.Core.Execution.Mutation.IMutationReconciler? MutationReconciler { get; set; }
+
+    /// <summary>
+    /// How long a mutation execution may stay <c>Started</c> before recovery may treat it as abandoned. Defaults to
+    /// <see cref="FoundgineMutationEngine.DefaultLease"/>; it must exceed the longest time a provider call may run.
+    /// </summary>
+    public TimeSpan? MutationLeaseDuration { get; set; }
+
     private readonly List<Type> _enabledCapabilityOrder = [];
     private readonly Dictionary<Type, Action<FoundgineCapabilityContext>> _enabledCapabilities = [];
 

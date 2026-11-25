@@ -2,6 +2,8 @@ package com.foundgine.core.semantic.security.execution;
 
 import com.foundgine.core.semantic.security.warrants.SecurityWarrant;
 
+import java.util.List;
+
 import java.util.Objects;
 
 /**
@@ -14,16 +16,27 @@ public record SecurityExecutionContext(
         String subject,
         String audience,
         String tenant,
-        String resourceScope) {
+        String resourceScope,
+        List<SecurityWarrant> delegationChain) {
 
     public SecurityExecutionContext {
         Objects.requireNonNull(warrant, "warrant");
         Objects.requireNonNull(subject, "subject");
         Objects.requireNonNull(audience, "audience");
+        delegationChain = delegationChain == null ? null : List.copyOf(delegationChain);
+    }
+
+    public SecurityExecutionContext(
+            SecurityWarrant warrant, String subject, String audience, String tenant, String resourceScope) {
+        this(warrant, subject, audience, tenant, resourceScope, null);
     }
 
     public SecurityExecutionContext(SecurityWarrant warrant, String subject, String audience) {
-        this(warrant, subject, audience, null, null);
+        this(warrant, subject, audience, null, null, null);
+    }
+
+    public SecurityExecutionContext withDelegationChain(List<SecurityWarrant> chain) {
+        return new SecurityExecutionContext(warrant, subject, audience, tenant, resourceScope, chain);
     }
 
     /**

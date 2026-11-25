@@ -34,7 +34,7 @@ nav:
   - Architecture: ARCHITECTURE.md
   - Metadata → Semantics (layer setup): METADATA-TO-SEMANTICS.md
   - Mapping and connections: MAPPING.md
-  - Domain / persistence mapping: DOMAIN-PERSISTENCE-MAPPING.md
+  - Domain / persistence mapping (work in progress): DOMAIN-PERSISTENCE-MAPPING.md
   - Open Intent API: OPEN-INTENT-API.md
   - Lexical grounding: LEXICAL-GROUNDING.md
   - Grounding decisions: GROUNDING-DECISIONS.md

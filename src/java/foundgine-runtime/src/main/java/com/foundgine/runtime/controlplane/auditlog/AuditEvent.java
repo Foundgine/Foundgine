@@ -2,45 +2,37 @@ package com.foundgine.runtime.controlplane.auditlog;
 
 import java.time.Instant;
 
-/**
- * Port of {@code Foundgine.Runtime.ControlPlane.AuditLog.AuditEvent}, together with the {@code
- * AuditCategory} enum declared in the same C# file.
- *
- * <p>An immutable record of one governance step for one tool call. Events carry a fingerprint
- * rather than raw request/result payloads, the same evidence-not-payload discipline used by {@code
- * com.foundgine.core.execution.ExecutionReceipt}, so the audit log can be retained and shipped
- * without duplicating domain data.
- *
- * <p><b>Porting decision:</b> {@code DateTimeOffset} is ported as {@link Instant}, consistent with
- * other timestamp fields elsewhere in this port (e.g. {@code
- * ApprovalRequest.ApprovalGrant.decidedAt}).
- */
+/** Immutable governance/execution audit event. Payloads are represented by fingerprints only. */
 public record AuditEvent(
-        AuditCategory category,
-        String toolName,
-        String actor,
-        String tenant,
-        String fingerprint,
-        String summary,
-        Instant occurredAt) {
+        AuditCategory category, String toolName, String actor, String tenant,
+        String fingerprint, String summary, Instant occurredAt, String correlationId,
+        long sequence, String previousHash, String eventHash) {
 
     public enum AuditCategory {
-        RISK_SCORED,
-        POLICY_EVALUATED,
-        APPROVAL_REQUESTED,
-        APPROVAL_DECIDED,
-        ROUTED,
-        DENIED,
+        RISK_SCORED, POLICY_EVALUATED, APPROVAL_REQUESTED, APPROVAL_DECIDED,
+        ROUTED, DENIED, READ_SUCCEEDED, READ_FAILED, READ_DENIED, MUTATION_DRY_RUN, MUTATION_SUCCEEDED, MUTATION_FAILED, MUTATION_DENIED
     }
 
-    public static AuditEvent create(
-            AuditCategory category,
-            String toolName,
-            String actor,
-            String tenant,
-            String fingerprint,
-            String summary) {
-        return new AuditEvent(
-                category, toolName, actor, tenant, fingerprint, summary, Instant.now());
+    /** Source-compatible constructor for events created before correlation and chain metadata. */
+    public AuditEvent(AuditCategory category, String toolName, String actor, String tenant,
+            String fingerprint, String summary, Instant occurredAt) {
+        this(category, toolName, actor, tenant, fingerprint, summary, occurredAt, null, 0, null, null);
+    }
+
+    public static AuditEvent create(AuditCategory category, String toolName, String actor,
+            String tenant, String fingerprint, String summary) {
+        return new AuditEvent(category, toolName, actor, tenant, fingerprint, summary,
+                Instant.now(), null, 0, null, null);
+    }
+
+    public static AuditEvent createCorrelated(AuditCategory category, String toolName, String actor,
+            String tenant, String fingerprint, String summary, String correlationId) {
+        return new AuditEvent(category, toolName, actor, tenant, fingerprint, summary,
+                Instant.now(), correlationId, 0, null, null);
+    }
+
+    public AuditEvent withIntegrity(long nextSequence, String previous, String hash) {
+        return new AuditEvent(category, toolName, actor, tenant, fingerprint, summary, occurredAt,
+                correlationId, nextSequence, previous, hash);
     }
 }

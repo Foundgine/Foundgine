@@ -134,7 +134,13 @@ public static class FoundgineServiceCollectionExtensions
                     options.WarrantReplayStore,
                     options.SecurityResourceLimits,
                     options.WarrantRevocationStore,
-                    options.WarrantDelegationTrustResolver);
+                    options.WarrantDelegationTrustResolver,
+                    serviceProvider.GetService<Foundgine.Runtime.ControlPlane.AuditLog.IAuditLog>(),
+                    options.MutationLedger ??
+                        serviceProvider.GetService<Foundgine.Runtime.Recovery.IMutationExecutionLedger>(),
+                    options.MutationReconciler ??
+                        serviceProvider.GetService<Foundgine.Core.Execution.Mutation.IMutationReconciler>(),
+                    options.MutationLeaseDuration);
             });
 
         return services;

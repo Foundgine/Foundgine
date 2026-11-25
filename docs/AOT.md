@@ -50,7 +50,7 @@ The expensive discovery work belongs in AOT. Runtime should bind request-specifi
 
 ## Generated mapping metadata
 
-Domain-to-persistence mapping models can be emitted as plain C# with `MappingSourceEmitter` (no reflection, deterministic output). That emitter is separate from the Roslyn generator on this page; see [Domain / persistence mapping](DOMAIN-PERSISTENCE-MAPPING.md).
+Domain-to-persistence mapping models can be emitted as plain C# with `MappingSourceEmitter` (no reflection, deterministic output). That emitter is separate from the Roslyn generator on this page and is work in progress; see [Domain / persistence mapping](DOMAIN-PERSISTENCE-MAPPING.md).
 
 ---
 

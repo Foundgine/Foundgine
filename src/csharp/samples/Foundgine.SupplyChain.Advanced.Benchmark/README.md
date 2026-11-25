@@ -20,5 +20,8 @@ From this directory:
 docker compose up --build
 ```
 
-The MCP host is exposed on port `4422`; PostgreSQL is exposed on port `4429`.
+The host exposes MCP at `/mcp`, REST at `/api/v1/supply-chain`, and GraphQL at `/graphql`. It is exposed on port `4422`; PostgreSQL is exposed on port `4429`.
 The Advanced sample's `run-supply-chain.ps1` script points to this Compose file.
+
+
+See [`MCP.Foundgine/Api/README.md`](MCP.Foundgine/Api/README.md) for REST/GraphQL credential handling and the shared application-service boundary.

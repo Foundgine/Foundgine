@@ -319,7 +319,7 @@ function specMd(){
   return o;
 }
 const TPL_NET=[
-'- .NET reference: src/csharp/samples/Foundgine.SupplyChain.Advanced (README.md, VERIFY-GATES.md, docs/00-Overview-And-Setup.md to 05-Adversarial-Security-Testing.md). The project lives under Semantic/: Domain, Semantics (model + Configuration), Authorization (+ Claims: ClaimSchema, IdentitySpoofingValidator, CrossFieldClaimValidator), Application/Scenarios, Intent (SupplyChainIntentService, IntentCaller, EvidencingProvider), Api/Mcp (Program.cs, IntentEndpoint.cs, IntentMcpTools.cs), Infrastructure/Data, McpClient, Tests (xUnit), Benchmarks.',
+'- .NET reference: src/csharp/samples/Foundgine.SupplyChain.Advanced (README.md, VERIFY-GATES.md, docs/00-Overview-And-Setup.md to 05-Adversarial-Security-Testing.md). The project lives under Semantic/: Domain, Semantics (model + Configuration), Authorization (+ Claims: ClaimSchema, IdentitySpoofingValidator, CrossFieldClaimValidator), Application/Scenarios, Intent (SupplyChainIntentService, IntentCaller, EvidencingProvider), Api/Mcp (Program.cs; the intent adapters are the reusable ones in Foundgine.Providers and Foundgine.Extensions.GraphQL, bridged by Intent/SupplyChainIntentHandler.cs), Infrastructure/Data, McpClient, Tests (xUnit), Benchmarks.',
 '- net10.0, ProjectReference or package references to Foundgine.Core and Foundgine.Providers; ModelContextProtocol.AspNetCore for MCP; Npgsql for PostgreSQL; actor resolved from the ASP.NET authenticated principal (demo: server-side FOUNDGINE_DEMO_ACTOR or the X-Foundgine-* headers, labelled DEMO ONLY).',
 '- Verify with dotnet restore / build / test as in VERIFY-GATES.md.'
 ];

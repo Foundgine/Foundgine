@@ -66,6 +66,10 @@ builder.Services.AddMcpServer()
     .WithTools<SupplyChainMcpTools>()
     .WithTools<FoundgineMcpTools>();
 
+builder.Services.AddGraphQLServer()
+    .AddQueryType<SupplyChainGraphQLQuery>()
+    .AddMutationType<SupplyChainGraphQLMutation>();
+
 var app = builder.Build();
 app.UseWhen(
     ctx => ctx.Request.Path.StartsWithSegments("/mcp"),
@@ -75,6 +79,8 @@ app.UseWhen(
         await next();
     }));
 app.MapMcp("/mcp");
+app.MapSupplyChainRest();
+app.MapGraphQL("/graphql");
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 app.MapGet("/health/ready", async (NpgsqlDataSource ds, CancellationToken ct) =>
 {

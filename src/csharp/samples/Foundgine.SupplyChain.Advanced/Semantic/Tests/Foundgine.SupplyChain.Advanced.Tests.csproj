@@ -8,13 +8,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
-    <!-- CanonicalIntentEndpointTests hosts the intent endpoint on Kestrel and calls it over HTTP. The endpoint
-         source belongs to the Mcp.Api project (Api/Mcp is excluded from the sample assembly), so it is linked. -->
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <Compile Include="../Api/Mcp/IntentEndpoint.cs" Link="Intent/IntentEndpoint.cs" />
-    <Compile Include="../Api/Mcp/IntentMcpTools.cs" Link="Intent/IntentMcpTools.cs" />
     <!-- Mcp_transport_* posts real JSON-RPC to /mcp, so the tests host the real MCP server. -->
     <PackageReference Include="ModelContextProtocol.AspNetCore" Version="2.3.1" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="16.7.3" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
@@ -23,6 +20,7 @@
     <PackageReference Include="Npgsql" Version="10.0.3" />
     <ProjectReference Include="../Foundgine.SupplyChain.Advanced.csproj" />
     <ProjectReference Include="../../../../Foundgine.Core/Foundgine.Core.csproj" />
+    <ProjectReference Include="../../../../Foundgine.Extensions.GraphQL/Foundgine.Extensions.GraphQL.csproj" />
     <!-- Needed only by CapabilityBoundaryTests, which pins the Step 37
          execution-boundary invariant against a real provider (InMemory)
          instead of the semantic/planning layer the rest of this project

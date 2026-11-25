@@ -1,6 +1,6 @@
 # Foundgine Java Gateway
 
-This package holds the Java 27 gateway and provider layer in `foundgine-providers`: discovery, provider lifecycle, approvals, event journal and replay, audit hooks, and the HTTP/SSE routes.
+This package adds the Java 27 gateway/provider foundation in `foundgine-providers`.
 
 ## Included
 
@@ -11,10 +11,6 @@ This package holds the Java 27 gateway and provider layer in `foundgine-provider
 - Rollback of registration, health and unregistration mutations when lifecycle publication fails.
 - Provider capability negotiation. A single provider must satisfy each complete requirement; capabilities are never combined across providers.
 - JUnit parity tests for discovery, registration, rollback and negotiation.
-- Opaque, encrypted mutation approval handles (`approvals/`): `FoundgineGatewayApprovalService`, an in-memory store for development and `PostgresFoundgineGatewayApprovalStore` as an atomic, durable store.
-- An event journal with replay cursors and a live event hub (`events/`): `IFoundgineGatewayEventStore`, an in-memory default and `PostgresGatewayEventStore` (package `com.foundgine.providers.eventstore`) for a durable, ordered journal.
-- A critical audit hook and sink contract (`audit/`).
-- HTTP/SSE routes (`http/`, `FoundgineGatewayRoutes`) served through a router and the JDK HTTP server: `GET /capabilities`, `/capabilities/{id}`, `/events`, `/semantic`, `/executions/{id}` and `POST /read`, `/mutations/dry-run`, `/mutations/approvals`, `/mutations/approvals/{handle}/execute`, plus `DELETE /mutations/approvals/{handle}`. Gateway routes require authorization by default.
 
 ## Example
 
@@ -56,7 +52,7 @@ FoundgineProviderNegotiator.negotiate(providers, List.of(requirement))
 
 ## Deliberate boundaries
 
-The `IFoundgineGatewayEventPublisher` contract connects the gateway to an application's event pipeline; the in-memory event store and approval store are development/single-instance only, so production deployments should use the PostgreSQL stores or their own durable implementations. The registry is discovery/lifecycle metadata only and must not be treated as an authorization decision or a substitute for tenant-scoped execution checks. The execution journal is operational status, not authoritative audit evidence; keep the critical audit sink as the authoritative record. Authorization policy stays with the host application's trusted security context.
+The gateway does **not** yet add persistence, replay, HTTP endpoints, approvals, execution, or authorization policy. The event publisher is an integration contract; durable event storage and streaming are not yet implemented. The registry is discovery/lifecycle metadata only and must not be treated as an authorization decision or a substitute for tenant-scoped execution checks.
 
 ## Verification
 

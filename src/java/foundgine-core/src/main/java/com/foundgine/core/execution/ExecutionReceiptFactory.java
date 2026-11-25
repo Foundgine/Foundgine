@@ -32,6 +32,17 @@ public final class ExecutionReceiptFactory {
             String approvalId,
             String approvedBy,
             Instant approvedAt) {
+        return create(requestId, evidence, resultFingerprint, affectedNodeIds, effects, startedAt,
+                completedAt, capabilityContractVersion, capabilityVersion, intentVersion, planVersion,
+                semanticModelVersion, approvalId, approvedBy, approvedAt, null);
+    }
+
+    public static ExecutionReceipt create(
+            String requestId, ExecutionEvidence evidence, String resultFingerprint,
+            Iterable<Integer> affectedNodeIds, Iterable<String> effects, Instant startedAt,
+            Instant completedAt, int capabilityContractVersion, int capabilityVersion,
+            int intentVersion, int planVersion, String semanticModelVersion,
+            String approvalId, String approvedBy, Instant approvedAt, String correlationId) {
         if (requestId == null || requestId.isBlank()) {
             throw new IllegalArgumentException("requestId must not be null or blank");
         }
@@ -74,7 +85,8 @@ public final class ExecutionReceiptFactory {
                 approvedAt,
                 evidence.warrantId(),
                 evidence.warrantDigest(),
-                evidence.securityInvariantDigest());
+                evidence.securityInvariantDigest(),
+                correlationId);
     }
 
     public static ExecutionReceipt create(

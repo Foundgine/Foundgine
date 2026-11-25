@@ -103,6 +103,29 @@ public sealed class FoundgineModelBuilder
         configuration.Apply(_context);
         return this;
     }
+
+    /// <summary>
+    /// Configures the semantic side of one model inline, without a configuration class. Same as a
+    /// <see cref="FoundgineModelConfiguration{TModel}"/> with this body. A model that needs nothing beyond its
+    /// type name needs no registration at all once it has an entity map.
+    /// </summary>
+    public FoundgineModelBuilder Semantic<TModel>(Action<FoundgineModelBuilder<TModel>> configure)
+    {
+        ArgumentNullException.ThrowIfNull(configure);
+        configure(new FoundgineModelBuilder<TModel>(_context.AddModel(typeof(TModel))));
+        return this;
+    }
+
+    /// <summary>
+    /// Configures the persistence side of one storage type inline, without a configuration class. Same as a
+    /// <see cref="FoundginePersistenceConfiguration{TEntity}"/> with this body.
+    /// </summary>
+    public FoundgineModelBuilder Persistence<TEntity>(Action<FoundginePersistenceBuilder<TEntity>> configure)
+    {
+        ArgumentNullException.ThrowIfNull(configure);
+        configure(new FoundginePersistenceBuilder<TEntity>(_context.AddPersistence(typeof(TEntity))));
+        return this;
+    }
 }
 
 /// <summary>

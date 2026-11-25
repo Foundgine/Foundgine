@@ -136,6 +136,17 @@ class TenantFirstGateParityTest {
     }
 
     @Test
+    void revokedWarrantIsRejectedBeforeReadProviderDispatch() throws Exception {
+        var f = new Fixture();
+        var request = f.knownEntityRequest("alice", "tenant-a");
+        f.revocations.revoke(request.security().warrant(), Instant.now());
+
+        var failure = assertThrows(RuntimeException.class, () -> f.engine.dryRun(request));
+        assertTrue(failure.getMessage().contains("revoked"), failure.getMessage());
+        assertEquals(0, f.provider.count.get());
+    }
+
+    @Test
     void wrongTenantCallerOnKnownEntityIsDeniedBeforeAnyExecution() throws Exception {
         var f = new Fixture();
         var request = f.knownEntityRequest("alice", "tenant-b");
@@ -150,6 +161,7 @@ class TenantFirstGateParityTest {
         final KeyPair otherKey = newKey();
         final FoundgineEngine engine;
         final CountingProvider provider = new CountingProvider();
+        final MemorySecurityWarrantRevocationStore revocations = new MemorySecurityWarrantRevocationStore();
 
         Fixture() throws Exception {
             var model =
@@ -171,6 +183,7 @@ class TenantFirstGateParityTest {
                             .authorizationPolicy(new AllowAllSemanticAuthorizationPolicy())
                             .warrantKeyResolver(resolver)
                             .warrantReplayStore(new MemorySecurityWarrantReplayStore())
+                            .warrantRevocationStore(revocations)
                             .expectedWarrantIssuer("issuer");
             engine = new FoundgineEngine(options, new TestCompiler(), provider);
         }

@@ -43,6 +43,16 @@ related provider-neutral plan types) rather than runtime internals.
 - Task routing.
 - Control-plane facilities for authority recovery and AI-agent tool-call governance, including registry, risk/policy checks, approvals and audit-related contracts.
 
+## Application-owned open-intent contract
+
+`IFoundgineIntentHandler` is the application boundary used by the REST, GraphQL and MCP integrations. It accepts a `FoundgineIntentRequest` and the authenticated `ClaimsPrincipal` supplied by the host, and returns a `FoundgineIntentResult`. The intent payload has no identity or authority fields. Applications implement this interface to connect their domain-specific policies and execution service; protocol adapters do not implement semantic authorization or business logic.
+
+The result carries a transport-neutral `FoundgineIntentOutcome` (`Succeeded`, `Unauthenticated`, `Forbidden`, `InvalidIntent`, `Timeout` or `Failed`) with an optional application error code and caller-safe message. It has no HTTP status; each adapter translates the outcome into its own protocol.
+
+`IFoundgineIntentPrincipalProvider` is the host-owned identity source for adapters that need ambient request or session identity (GraphQL and MCP). ASP.NET Core hosts can call `AddFoundgineIntentHttpPrincipal()` from `Foundgine.Providers.Tools.Http`; non-HTTP hosts can supply a provider backed by their authenticated session. Missing or unauthenticated principals must fail closed.
+
+The contract types are in the `Foundgine.Runtime` namespace. `ReadIntent` and its compiler remain in `Foundgine.Core`.
+
 ## What it does not provide
 
 `Foundgine.Runtime` is not a storage provider and does not host GraphQL or MCP. It also does not supply an LLM client. Concrete integrations are supplied by `Foundgine.Providers` and `Foundgine.Extensions`.

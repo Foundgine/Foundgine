@@ -9,6 +9,13 @@ public enum AuditCategory
     ApprovalDecided,
     Routed,
     Denied,
+    ReadSucceeded,
+    ReadFailed,
+    ReadDenied,
+    MutationDryRun,
+    MutationSucceeded,
+    MutationFailed,
+    MutationDenied,
 }
 
 /// <summary>
@@ -25,7 +32,8 @@ public sealed record AuditEvent(
     string? Tenant,
     string Fingerprint,
     string Summary,
-    DateTimeOffset OccurredAt)
+    DateTimeOffset OccurredAt,
+    string? CorrelationId = null)
 {
     public static AuditEvent Create(
         AuditCategory category,
@@ -35,4 +43,15 @@ public sealed record AuditEvent(
         string fingerprint,
         string summary) =>
         new(category, toolName, actor, tenant, fingerprint, summary, DateTimeOffset.UtcNow);
+
+    /// <summary>An event that carries the correlation id of the request it belongs to.</summary>
+    public static AuditEvent CreateCorrelated(
+        AuditCategory category,
+        string toolName,
+        string actor,
+        string? tenant,
+        string fingerprint,
+        string summary,
+        string? correlationId) =>
+        new(category, toolName, actor, tenant, fingerprint, summary, DateTimeOffset.UtcNow, correlationId);
 }

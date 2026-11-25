@@ -5,6 +5,7 @@ import com.foundgine.core.abstractions.EntityId;
 import com.foundgine.core.abstractions.FieldId;
 import com.foundgine.core.execution.CancellationToken;
 import com.foundgine.core.execution.ExecutionContext;
+import com.foundgine.core.execution.ExecutionContextKeys;
 import com.foundgine.core.execution.ExecutionEvidence;
 import com.foundgine.core.execution.ExecutionReceipt;
 import com.foundgine.core.execution.ExecutionResult;
@@ -23,6 +24,9 @@ import com.foundgine.providers.storage.inmemory.InMemoryCompiler;
 import com.foundgine.providers.storage.inmemory.InMemoryExecutionProvider;
 import com.foundgine.runtime.FoundgineServiceCollectionExtensions;
 import com.foundgine.runtime.FoundgineServiceRegistry;
+import com.foundgine.runtime.FoundgineOptions;
+import com.foundgine.runtime.controlplane.auditlog.IAuditLog;
+import com.foundgine.runtime.controlplane.auditlog.InMemoryAuditLog;
 import com.foundgine.runtime.IFoundgine;
 import com.foundgine.samples.supplychain.advanced.authorization.SupplyChainAuthorization;
 import com.foundgine.samples.supplychain.advanced.data.SupplyChainData;
@@ -35,6 +39,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -80,11 +85,17 @@ public final class SupplyChainIntentService {
     private final InMemoryCompiler compiler;
     private final EvidencingProvider provider;
     private final Set<String> knownTenants;
+    private final IAuditLog auditLog;
     // One engine per (tenant, role). The key space is bounded: tenants are validated against the
     // data and roles are an enum.
     private final ConcurrentMap<IntentCaller, IFoundgine> engines = new ConcurrentHashMap<>();
 
     public SupplyChainIntentService(SupplyChainData data) {
+        this(data, new InMemoryAuditLog());
+    }
+
+    public SupplyChainIntentService(SupplyChainData data, IAuditLog auditLog) {
+        this.auditLog = Objects.requireNonNull(auditLog, "auditLog");
         var dataSet = SupplyChainRows.load(data);
         this.compiler = new InMemoryCompiler(SupplyChainSemanticModel.Metadata, dataSet);
         this.provider =
@@ -107,13 +118,35 @@ public final class SupplyChainIntentService {
 
     public CompletionStage<Map<String, Object>> execute(IntentCaller caller, String intentJson) {
         try {
-            ReadIntent intent = parse(intentJson);
+            return execute(caller, parse(intentJson), CancellationToken.NONE);
+        } catch (Throwable t) {
+            return CompletableFuture.failedFuture(t);
+        }
+    }
+
+    /** Executes an already parsed protocol-neutral intent. */
+    public CompletionStage<Map<String, Object>> execute(
+            IntentCaller caller, ReadIntent intent, CancellationToken cancellationToken) {
+        return execute(caller, intent, cancellationToken, null);
+    }
+
+    /** Executes with a host-propagated correlation identifier carried into the execution receipt. */
+    public CompletionStage<Map<String, Object>> execute(
+            IntentCaller caller, ReadIntent intent, CancellationToken cancellationToken, String correlationId) {
+        try {
+            Objects.requireNonNull(caller, "caller");
+            Objects.requireNonNull(intent, "intent");
+            Objects.requireNonNull(cancellationToken, "cancellationToken").throwIfCancellationRequested();
+            var contextValues = new LinkedHashMap<String, Object>();
+            contextValues.put(TENANT_CONTEXT_KEY, caller.tenantId());
+            if (correlationId != null && !correlationId.isBlank() && correlationId.length() <= 128)
+                contextValues.put(ExecutionContextKeys.CORRELATION_ID, correlationId);
             var context =
                     new ExecutionContext(
-                            Map.of(TENANT_CONTEXT_KEY, caller.tenantId()),
+                            Map.copyOf(contextValues),
                             Instant.now().plus(EXECUTION_DEADLINE));
             return engine(caller)
-                    .executeAsync(intent, context, CancellationToken.NONE)
+                    .executeAsync(intent, context, cancellationToken)
                     .thenApply(result -> executionResponse(caller, result));
         } catch (Throwable t) {
             return CompletableFuture.failedFuture(t);
@@ -172,6 +205,7 @@ public final class SupplyChainIntentService {
         if (receipt == null) return null;
         var map = new LinkedHashMap<String, Object>();
         map.put("requestId", receipt.requestId());
+        map.put("correlationId", receipt.correlationId());
         map.put("status", receipt.status());
         map.put("provider", receipt.provider());
         map.put("intentFingerprint", receipt.intentFingerprint());
@@ -191,7 +225,13 @@ public final class SupplyChainIntentService {
      * removed, and the authorized plan.
      */
     public Map<String, Object> explain(IntentCaller caller, String intentJson) {
-        ReadIntent intent = parse(intentJson);
+        return explain(caller, parse(intentJson));
+    }
+
+    /** Explains an already parsed intent without executing provider work. */
+    public Map<String, Object> explain(IntentCaller caller, ReadIntent intent) {
+        Objects.requireNonNull(caller, "caller");
+        Objects.requireNonNull(intent, "intent");
         var request = new ReadIntentCompiler(MODEL).compile(intent);
         SemanticGraph graph = new SemanticRequestResolver(CONTRACT).resolve(request);
         var dryRun = engine(caller).dryRun(request);
@@ -376,6 +416,11 @@ public final class SupplyChainIntentService {
 
     // ------------------------------------------------------------------ helpers
 
+    /** Parses the canonical JSON intent once at the transport boundary. */
+    public ReadIntent parseIntent(String json) {
+        return parse(json);
+    }
+
     private ReadIntent parse(String json) {
         try {
             return adapter.parse(json);
@@ -389,12 +434,12 @@ public final class SupplyChainIntentService {
                 caller,
                 c -> {
                     var services = new FoundgineServiceRegistry();
+                    var options = new FoundgineOptions()
+                            .model(MODEL)
+                            .authorizationPolicy(SupplyChainAuthorization.create(c.tenantId(), c.role()))
+                            .auditLog(auditLog);
                     FoundgineServiceCollectionExtensions.addFoundgine(
-                            services,
-                            MODEL,
-                            SupplyChainAuthorization.create(c.tenantId(), c.role()),
-                            compiler,
-                            provider);
+                            services, options, compiler, provider);
                     return services.getRequiredService(IFoundgine.class);
                 });
     }

@@ -51,3 +51,25 @@ app.MapFoundgineGraphQL(o =>
 ```
 
 A missing or invalid token returns HTTP 401; an authenticated caller who is not permitted gets a GraphQL error. Claims used for authorization must come from the validated token, never from a GraphQL argument. Requires `using Foundgine.Extensions.GraphQL.Http;`.
+
+## Open intent resolver
+
+`FoundgineIntentGraphQLResolver` is a reusable Hot Chocolate query type. Register it with `AddGraphQLServer().AddQueryType<FoundgineIntentGraphQLResolver>()`. It exposes the `foundgineIntent(intent: Any, mode: String)` field and delegates to the application's `IFoundgineIntentHandler`.
+
+The resolver obtains the authenticated `ClaimsPrincipal` through `IFoundgineIntentPrincipalProvider`; it never accepts caller, tenant, role, warrant, or authorization predicates as GraphQL arguments. For an ASP.NET Core host, register `AddFoundgineIntentHttpPrincipal()`. Non-HTTP hosts can supply their own principal provider.
+
+```graphql
+query Intent($intent: Any!) {
+  foundgineIntent(intent: $intent, mode: "execute")
+}
+```
+
+The application handler performs semantic resolution and authorization. GraphQL translates the result into the GraphQL response and does not implement a second planner or policy.
+
+ASP.NET Core registration:
+
+```csharp
+services.AddFoundgineIntentHttpPrincipal();
+services.AddGraphQLServer().AddQueryType<FoundgineIntentGraphQLResolver>();
+app.MapGraphQL("/graphql");
+```

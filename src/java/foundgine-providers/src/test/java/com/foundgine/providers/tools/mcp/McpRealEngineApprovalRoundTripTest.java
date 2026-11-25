@@ -65,6 +65,8 @@ class McpRealEngineApprovalRoundTripTest {
     private static final class Fixture {
         final AtomicInteger batches = new AtomicInteger();
         final FoundgineMutationEngine engine;
+        final MemorySecurityWarrantRevocationStore revocations = new MemorySecurityWarrantRevocationStore();
+        final SecurityWarrant warrant;
         final FoundgineMcpMutationTools tools;
         final KeyPair approvalTokenKey;
         final FoundgineMcpApprovalToken.Signer approvalSigner;
@@ -93,7 +95,8 @@ class McpRealEngineApprovalRoundTripTest {
             gen.initialize(2048);
             KeyPair key = gen.generateKeyPair();
             ISecurityWarrantKeyResolver resolver = keyId -> (RSAPublicKey) key.getPublic();
-            engine = new FoundgineMutationEngine(schema, policy, provider, model, resolver, "issuer", new MemorySecurityWarrantReplayStore(), null);
+            engine = new FoundgineMutationEngine(schema, policy, provider, model, resolver, "issuer", new MemorySecurityWarrantReplayStore(), null,
+                    revocations, null);
 
             // Grant exactly what the engine's own contract says create on Customer needs.
             var grants = SemanticCapabilityContractDiscovery.describe(model, policy).capabilities().stream()
@@ -102,7 +105,7 @@ class McpRealEngineApprovalRoundTripTest {
                     .toList();
             assertFalse(grants.isEmpty(), "contract must expose create on Customer");
             var now = Instant.now();
-            var warrant = SecurityWarrantSigner.sign(
+            warrant = SecurityWarrantSigner.sign(
                     new SecurityWarrant("w-1", "issuer", "alice", "api", grants,
                             new SecurityWarrantConstraints(List.of("tenant-a"), null, null, null, null, null),
                             now.minusSeconds(60), now.plusSeconds(600), "nonce-1", "key-1", null, new byte[0], null,
@@ -184,6 +187,26 @@ class McpRealEngineApprovalRoundTripTest {
                 () -> noSecurity.executeApprovedAsync(token).toCompletableFuture().get());
         assertInstanceOf(SecurityException.class, failure.getCause());
         assertEquals(0, f.batches.get());
+    }
+
+    @Test
+    void revokedWarrantIsRejectedBeforeTheMutationProvider() throws Exception {
+        var f = new Fixture();
+        f.revocations.revoke(f.warrant, Instant.now());
+        var failure = assertThrows(RuntimeException.class,
+                () -> f.tools.dryRun(mutation("Ada")));
+        assertTrue(failure.getMessage().contains("revoked"), failure.getMessage());
+        assertEquals(0, f.batches.get());
+    }
+
+    @Test
+    void delegatedContextCarriesAnImmutableVerifiedChain() throws Exception {
+        var f = new Fixture();
+        var ctx = new SecurityExecutionContext(f.warrant, "alice", "api", "tenant-a", "tenant-a")
+                .withDelegationChain(List.of(f.warrant));
+        assertEquals(1, ctx.delegationChain().size());
+        assertThrows(UnsupportedOperationException.class,
+                () -> ctx.delegationChain().add(f.warrant));
     }
 
     @Test

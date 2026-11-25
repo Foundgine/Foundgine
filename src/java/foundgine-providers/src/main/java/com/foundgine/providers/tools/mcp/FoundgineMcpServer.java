@@ -120,6 +120,13 @@ public final class FoundgineMcpServer {
                             + "the approval JSON returned by foundgine_mutation_approve.",
                     schema("approvalJson", "The approval JSON returned by foundgine_mutation_approve."), false,
                     (args, ct) -> t.executeApprovedAsync(text(args, "approvalJson"), ct)));
+            if (t.reconcileAvailable())
+                addTool(new Tool(FoundgineMcpToolNames.MUTATION_RECONCILE,
+                        "Find out what became of an approval you already presented to foundgine_mutation_execute_approved when the "
+                                + "response was lost or reported an unknown outcome. Pass the same approval JSON. It never executes "
+                                + "anything. Never retry an execution whose outcome is unknown; reconcile it first.",
+                        schema("approvalJson", "The approval JSON that was passed to foundgine_mutation_execute_approved."), false,
+                        (args, ct) -> CompletableFuture.completedFuture(t.reconcile(text(args, "approvalJson")))));
             return this;
         }
 

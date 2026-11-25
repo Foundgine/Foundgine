@@ -1,4 +1,5 @@
 using System.Security;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 using Foundgine.SupplyChain.Advanced.Authorization;
 
@@ -12,7 +13,7 @@ namespace Foundgine.SupplyChain.Advanced.Intent;
 /// identity-shaped inside an intent body is rejected by the intent adapter as an unknown property.
 /// </para>
 /// <para>
-/// DEMO ONLY: <see cref="Resolve"/> reads the identity from two plain HTTP headers so the sample can
+/// DEMO ONLY: the sample middleware maps two plain HTTP headers into claims so the sample can
 /// show the same intent returning different results per role. A real host derives tenant and role
 /// from an authenticated principal (OIDC token, mTLS, signed warrant) and never from a header the
 /// client can set. The defaults are the least privileged role and the first fixture tenant, and every
@@ -23,6 +24,7 @@ public sealed record IntentCaller(string TenantId, SupplyChainRole Role)
 {
     public const string TenantHeader = "X-Foundgine-Tenant";
     public const string RoleHeader = "X-Foundgine-Role";
+    public const string TenantClaim = "foundgine:tenant";
     public const string DefaultTenant = "tenant-a";
     public const SupplyChainRole DefaultRole = SupplyChainRole.Customer;
 
@@ -69,6 +71,19 @@ public sealed record IntentCaller(string TenantId, SupplyChainRole Role)
         }
 
         return new IntentCaller(tenant, role);
+    }
+
+    /// <summary>Resolves identity from the host-authenticated principal, never from intent arguments.</summary>
+    public static IntentCaller Resolve(ClaimsPrincipal principal, IReadOnlySet<string> knownTenants)
+    {
+        ArgumentNullException.ThrowIfNull(principal);
+        if (principal.Identity?.IsAuthenticated != true)
+            throw new SecurityException("An authenticated caller is required.");
+
+        return Resolve(
+            principal.FindFirst(TenantClaim)?.Value,
+            principal.FindFirst(ClaimTypes.Role)?.Value ?? principal.FindFirst("role")?.Value,
+            knownTenants);
     }
 
     private static string Normalize(string value) =>

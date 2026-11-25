@@ -5,6 +5,8 @@
     <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="../../../conformance/mutation-ledger-journal.jsonl" Link="Conformance/mutation-ledger-journal.jsonl" LogicalName="Foundgine.Security.Tests.mutation-ledger-journal.jsonl" />
+    <EmbeddedResource Include="../../../conformance/mutation-ledger-scenarios.json" Link="Conformance/mutation-ledger-scenarios.json" LogicalName="Foundgine.Security.Tests.mutation-ledger-scenarios.json" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="4.0.1" />
@@ -14,5 +16,13 @@
     <ProjectReference
       Include="../../benchmarks/AgentEndToEnd/Fixtures/HighAssurance.Postgres/Foundgine.HighAssurance.Postgres.csproj"
     />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- FileMutationExecutionLedgerProcessTests spawns this executable; it is built first but not referenced as an assembly. -->
+    <ProjectReference Include="../Foundgine.Security.Tests.LedgerChild/Foundgine.Security.Tests.LedgerChild.csproj" ReferenceOutputAssembly="false" />
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>LedgerChildDll</_Parameter1>
+      <_Parameter2>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', '..', 'Foundgine.Security.Tests.LedgerChild', 'bin', '$(Configuration)', '$(TargetFramework)', 'Foundgine.Security.Tests.LedgerChild.dll'))</_Parameter2>
+    </AssemblyAttribute>
   </ItemGroup>
 </Project>

@@ -43,9 +43,11 @@ public sealed class SupplierModelConfiguration : FoundgineModelConfiguration<Sup
         model.ToEntity("Supplier");
         model.HasAlias("Vendor", 95);
         model.HasAlias("Seller", 90);
+        model.HasMinimumWeight(80);
         model.HasDimension(x => x.Country).As("country");
         model.HasDimension(x => x.TenantId).As("tenant");
         model.Property(x => x.Country).HasAlias("State", 85);
+        model.Property(x => x.Name).HasAlias("TradingName", 80);
         model.HasRelationship(x => x.Certifications).To<SupplierCertification>().Named("certifications");
         model.HasRelationship(x => x.Incidents).To<ComplianceIncident>().Named("incidents");
         model.HasRelationship(x => x.PurchaseOrders).To<PurchaseOrder>().Named("purchaseOrders");
@@ -58,14 +60,6 @@ public sealed class SupplierSiteModelConfiguration : FoundgineModelConfiguration
     {
         model.ToEntity("SupplierSite");
         model.HasDimension(x => x.Country).As("country");
-    }
-}
-
-public sealed class SupplierCertificationModelConfiguration : FoundgineModelConfiguration<SupplierCertification>
-{
-    public override void Configure(FoundgineModelBuilder<SupplierCertification> model)
-    {
-        model.ToEntity("SupplierCertification");
     }
 }
 
@@ -116,14 +110,6 @@ public sealed class PurchaseOrderLineModelConfiguration : FoundgineModelConfigur
     }
 }
 
-public sealed class ShipmentModelConfiguration : FoundgineModelConfiguration<Shipment>
-{
-    public override void Configure(FoundgineModelBuilder<Shipment> model)
-    {
-        model.ToEntity("Shipment");
-    }
-}
-
 public sealed class InventoryLotModelConfiguration : FoundgineModelConfiguration<InventoryLot>
 {
     public override void Configure(FoundgineModelBuilder<InventoryLot> model)
@@ -139,14 +125,6 @@ public sealed class CustomerOrderModelConfiguration : FoundgineModelConfiguratio
     {
         model.ToEntity("CustomerOrder");
         model.HasRelationship(x => x.Lines).To<CustomerOrderLine>().Named("lines");
-    }
-}
-
-public sealed class CustomerOrderLineModelConfiguration : FoundgineModelConfiguration<CustomerOrderLine>
-{
-    public override void Configure(FoundgineModelBuilder<CustomerOrderLine> model)
-    {
-        model.ToEntity("CustomerOrderLine");
     }
 }
 

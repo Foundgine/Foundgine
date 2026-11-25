@@ -44,6 +44,8 @@ internal sealed class FoundgineModelCompiler
 
     private void Run()
     {
+        AddImplicitConfiguration();
+
         foreach (var group in _context.Models.Keys.GroupBy(t => t.Name, StringComparer.Ordinal)
                      .Where(g => g.Count() > 1))
         {
@@ -76,27 +78,25 @@ internal sealed class FoundgineModelCompiler
 
     // ---- maps -------------------------------------------------------------------------
 
-    private List<EntityMapDefinition> ValidMaps()
+    /// <summary>
+    /// An entity map is enough to define an entity: a model with no configuration gets its type name as the
+    /// semantic entity name, and a storage type with no persistence configuration gets its type name as the table.
+    /// Both can still be configured explicitly.
+    /// </summary>
+    private void AddImplicitConfiguration()
     {
-        var valid = new List<EntityMapDefinition>();
         foreach (var map in _context.Maps)
         {
             if (!_context.Models.ContainsKey(map.ModelType))
-            {
-                _errors.Add(
-                    $"Entity map {map.ModelType.Name} -> {map.EntityType.Name}: {map.ModelType.Name} has no FoundgineModelConfiguration.");
-                continue;
-            }
-
+                _context.AddModel(map.ModelType);
             if (!_context.Persistence.ContainsKey(map.EntityType))
-            {
-                _errors.Add(
-                    $"Entity map {map.ModelType.Name} -> {map.EntityType.Name}: {map.EntityType.Name} has no FoundginePersistenceConfiguration.");
-                continue;
-            }
-
-            valid.Add(map);
+                _context.AddPersistence(map.EntityType);
         }
+    }
+
+    private List<EntityMapDefinition> ValidMaps()
+    {
+        var valid = new List<EntityMapDefinition>(_context.Maps);
 
         foreach (var group in valid
                      .GroupBy(m => EntityNameOf(_context.Models[m.ModelType]), StringComparer.Ordinal)
@@ -342,6 +342,24 @@ internal sealed class FoundgineModelCompiler
         // connection refers to. The persistence definition itself is never mutated.
         var columns = new List<ColumnDefinition>(persistence.Columns);
 
+        // Key convention: with no HasKey, a mapped storage member named Id is the primary key. Its column goes
+        // first, where HasKey(x => x.Id) called right after ToTable would have put it.
+        MemberRef? conventionKey = null;
+        if (persistence.Key is null)
+        {
+            foreach (var (_, entityMember) in map.Properties)
+            {
+                if (entityMember.Name == "Id")
+                {
+                    conventionKey = entityMember;
+                    break;
+                }
+            }
+
+            if (conventionKey is { } idMember && !columns.Exists(c => c.Member == idMember.Name))
+                columns.Insert(0, new ColumnDefinition(idMember));
+        }
+
         void EnsureColumn(MemberRef member)
         {
             if (!columns.Exists(c => c.Member == member.Name))
@@ -367,6 +385,7 @@ internal sealed class FoundgineModelCompiler
         {
             var columnId = ColumnId.Create(storageName, column.EffectiveColumnName);
             compiled.Columns[column.Member] = columnId;
+            compiled.ColumnTypes[column.Member] = column.Type;
             columnMetadata.Add(new ColumnMetadata(columnId, column.EffectiveColumnName)
             {
                 MaxLength = column.MaxLength,
@@ -398,9 +417,9 @@ internal sealed class FoundgineModelCompiler
             _errors.Add($"{label}: aliases on '{member}' refer to a member that is not mapped.");
 
         ColumnReference? primaryKey = null;
-        if (persistence.Key is not { } key)
+        if ((persistence.Key ?? conventionKey) is not { } key)
         {
-            _errors.Add($"{map.EntityType.Name}: no key declared; call HasKey(x => x.Id).");
+            _errors.Add($"{map.EntityType.Name}: no key declared; call HasKey(x => x.Id) or map a member named Id.");
         }
         else
         {
@@ -507,10 +526,16 @@ internal sealed class FoundgineModelCompiler
                 continue;
             }
 
+            if (matches.Count == 0 && InferConnection(relationship, relationships) is { } inferred)
+            {
+                connections.Add(inferred);
+                matches.Add((inferred, Match(inferred, relationship)));
+            }
+
             if (matches.Count == 0)
             {
                 _errors.Add(
-                    $"Relationship {label}: no connection configured. Add connections.HasRelationship<{relationship.SourceModel.Name}, {relationship.TargetModel.Name}>().Using<...>().HasForeignKey(...).References(...).");
+                    $"Relationship {label}: no connection configured and no foreign key found by convention. Add connections.HasRelationship<{relationship.SourceModel.Name}, {relationship.TargetModel.Name}>().Using<...>().HasForeignKey(...).References(...).");
                 continue;
             }
 
@@ -553,6 +578,68 @@ internal sealed class FoundgineModelCompiler
 
         foreach (var connection in connections.Where(c => !used.Contains(c)))
             _errors.Add($"Connection {ConnectionName(connection)} does not match any semantic relationship.");
+    }
+
+    /// <summary>
+    /// Foreign key convention for a relationship with no explicit connection. The principal key is the mapped member
+    /// <c>Id</c>. A single-valued navigation N from S to T keeps its key on S, named N + "Id" or T + "Id"; a collection
+    /// navigation from S to T keeps its key on T, named after T's single-valued navigation back to S (N' + "Id") or
+    /// S + "Id". The first candidate that is a mapped member of the principal key's type wins. Nothing is inferred
+    /// when the two models are related more than once in either direction, or to themselves; those need an explicit
+    /// connection naming the navigation.
+    /// </summary>
+    private ConnectionDefinition? InferConnection(ResolvedRelationship relationship, List<ResolvedRelationship> all)
+    {
+        var sourceModel = relationship.SourceModel;
+        var targetModel = relationship.TargetModel;
+        if (sourceModel == targetModel)
+            return null;
+        if (all.Count(r => r.SourceModel == sourceModel && r.TargetModel == targetModel) != 1 ||
+            all.Count(r => r.SourceModel == targetModel && r.TargetModel == sourceModel) > 1)
+            return null;
+        if (!_byModel.TryGetValue(sourceModel, out var source) || !_byModel.TryGetValue(targetModel, out var target))
+            return null;
+
+        var names = new List<string>();
+        CompiledEntity foreignKeyOwner;
+        CompiledEntity principalOwner;
+        if (relationship.IsCollection)
+        {
+            foreach (var back in all.Where(r => r.SourceModel == targetModel && r.TargetModel == sourceModel && !r.IsCollection))
+                names.Add(back.Member + "Id");
+            names.Add(sourceModel.Name + "Id");
+            foreignKeyOwner = target;
+            principalOwner = source;
+        }
+        else
+        {
+            names.Add(relationship.Member + "Id");
+            names.Add(targetModel.Name + "Id");
+            foreignKeyOwner = source;
+            principalOwner = target;
+        }
+
+        if (!principalOwner.ColumnTypes.TryGetValue("Id", out var principalType))
+            return null;
+
+        foreach (var name in names)
+        {
+            if (foreignKeyOwner.ColumnTypes.TryGetValue(name, out var foreignKeyType) &&
+                (Nullable.GetUnderlyingType(foreignKeyType) ?? foreignKeyType) ==
+                (Nullable.GetUnderlyingType(principalType) ?? principalType))
+            {
+                return new ConnectionDefinition(sourceModel, targetModel, null)
+                {
+                    SourceEntity = source.EntityType,
+                    TargetEntity = target.EntityType,
+                    ForeignKeyOnTarget = relationship.IsCollection,
+                    ForeignKey = new MemberRef(name, foreignKeyType),
+                    References = new MemberRef("Id", principalType)
+                };
+            }
+        }
+
+        return null;
     }
 
     private static ColumnReference KeyRef(CompiledEntity entity, MemberRef member) =>
@@ -603,5 +690,8 @@ internal sealed class FoundgineModelCompiler
 
         /// <summary>Storage member name to physical column id.</summary>
         public Dictionary<string, ColumnId> Columns { get; } = new(StringComparer.Ordinal);
+
+        /// <summary>Storage member name to CLR type, for the same members as <see cref="Columns"/>.</summary>
+        public Dictionary<string, Type> ColumnTypes { get; } = new(StringComparer.Ordinal);
     }
 }

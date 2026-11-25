@@ -1,9 +1,9 @@
-# Domain / persistence mapping (.NET)
+# Domain / persistence mapping (.NET, work in progress)
 
 `Foundgine.Core.Mapping` keeps **domain types** and **persistence structures** (tables, columns) independent. Neither refers to the other; a mapping model is the only link. Tenant and ownership rules are declared once on the domain type and resolved to concrete table and column filters through the mapping.
 
-!!! note "Status"
-    The metadata, fluent builders, scope resolver, bridge, `UseMappings` integration and `MappingSourceEmitter` are implemented in `Foundgine.Core/Mapping`, and the harness in `samples/Foundgine.Mapping.Benchmark` contains the scenario checks for all of them. Nothing here is wired into the EF Core provider or `Foundgine.Orm`, and there is no database execution. The generated catalog `Generated/ScenarioMappings.g.cs` is not committed; `regen-generated.sh` creates it (see [Verifying equivalence](#verifying-equivalence)). This page is separate from [Mapping and connections](MAPPING.md), which documents relationship connections.
+!!! warning "Status: work in progress"
+    The metadata, builders, scope resolver and bridge have been compiled and run by a console harness. The **source emitter and the generated-vs-runtime checks have not yet been built or run**. Nothing here is wired into the EF Core provider or `Foundgine.Orm`, and there is no database execution. This page is separate from [Mapping and connections](MAPPING.md), which documents relationship connections.
 
 ## Concepts
 
@@ -92,7 +92,7 @@ The harness `samples/Foundgine.Mapping.Benchmark` has an `emit <path>` mode and 
 src/csharp/samples/Foundgine.Mapping.Benchmark/regen-generated.sh
 ```
 
-The script first writes a minimal bootstrap `Generated/ScenarioMappings.g.cs` if the file is missing (the harness references `ScenarioMappings.All` directly, so it cannot compile without one), then builds, regenerates the file from the fluent-built scenario models, rebuilds with it compiled in and runs the checks. The generated file is not committed, so the "up to date" check passes only after you run the script and commit its output.
+The script builds, regenerates `Generated/ScenarioMappings.g.cs`, rebuilds with it compiled in and runs the checks. **Until you run it, the committed generated file is a stub and the new checks fail by design.**
 
 ### Relation to the Roslyn AOT generator
 
@@ -102,5 +102,9 @@ This emitter covers the **mapping model** only. The Roslyn `FoundgineMetadataGen
 
 - Not wired into the EF Core provider or `Foundgine.Orm`.
 - No execution against a database; correctness is shown at the metadata and scope-resolution level only.
-- No comparison against Hot Chocolate + EF Core is verified: the EF comparator was written by the same author and has not been compiled against the EF Core packages. Do not quote its ratios externally.
-- The generated catalog is not committed to the repository.
+- No comparison against Hot Chocolate + EF Core is verified: the EF comparator was written by the same author and never built. Do not quote its ratios externally (see `MEASUREMENTS.md`).
+- The emitter and generated-vs-runtime checks have not yet been built or run (above).
+
+---
+
+Next: [AOT](AOT.md)

@@ -31,8 +31,13 @@ public sealed record ExecutionReceipt(
     DateTimeOffset? ApprovedAt = null,
     string? WarrantId = null,
     string? WarrantDigest = null,
-    string? SecurityInvariantDigest = null)
+    string? SecurityInvariantDigest = null,
+    string? CorrelationId = null)
 {
+    /// <summary>Copy with a new status, result fingerprint and completion time (used when an execution is reconciled).</summary>
+    public ExecutionReceipt WithOutcome(string newStatus, string newResultFingerprint, DateTimeOffset newCompletedAt)
+        => this with { Status = newStatus, ResultFingerprint = newResultFingerprint, CompletedAt = newCompletedAt };
+
     public long ElapsedMilliseconds => Math.Max(0, (long)(CompletedAt - StartedAt).TotalMilliseconds);
 }
 

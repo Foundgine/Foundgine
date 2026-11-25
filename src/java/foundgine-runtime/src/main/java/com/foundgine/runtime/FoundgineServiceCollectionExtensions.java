@@ -6,6 +6,7 @@ import com.foundgine.core.semantic.SemanticModel;
 import com.foundgine.core.semantic.authorization.AllowAllSemanticAuthorizationPolicy;
 import com.foundgine.core.semantic.authorization.ISemanticAuthorizationPolicy;
 import com.foundgine.core.semantic.security.SecurityInvariantContractValidator;
+import com.foundgine.runtime.controlplane.auditlog.IAuditLog;
 
 import java.util.Objects;
 
@@ -50,6 +51,7 @@ public final class FoundgineServiceCollectionExtensions {
                         .describe(model, authorizationPolicy));
 
         services.addSingletonInstance(FoundgineOptions.class, options);
+        services.addSingletonInstance(IAuditLog.class, options.auditLog());
         services.addSingletonInstance(SemanticContractSnapshot.class, contract);
         services.addSingleton(
                 FoundgineEngine.class,
@@ -71,7 +73,13 @@ public final class FoundgineServiceCollectionExtensions {
                                     options.warrantKeyResolver(),
                                     options.expectedWarrantIssuer(),
                                     options.warrantReplayStore(),
-                                    options.securityResourceLimits()));
+                                    options.securityResourceLimits(),
+                                    options.warrantRevocationStore(),
+                                    options.warrantDelegationTrustResolver(),
+                                    options.auditLog(),
+                                    options.mutationLedger(),
+                                    options.mutationReconciler(),
+                                    options.mutationLease()));
         }
         return services;
     }
@@ -102,6 +110,7 @@ public final class FoundgineServiceCollectionExtensions {
 
         SemanticContractSnapshot contract = options.model().freeze().createSnapshot();
         services.addSingletonInstance(FoundgineOptions.class, options);
+        services.addSingletonInstance(IAuditLog.class, options.auditLog());
         services.addSingletonInstance(SemanticContractSnapshot.class, contract);
         services.addSingleton(
                 FoundgineEngine.class,
@@ -122,7 +131,13 @@ public final class FoundgineServiceCollectionExtensions {
                                     options.warrantKeyResolver(),
                                     options.expectedWarrantIssuer(),
                                     options.warrantReplayStore(),
-                                    options.securityResourceLimits()));
+                                    options.securityResourceLimits(),
+                                    options.warrantRevocationStore(),
+                                    options.warrantDelegationTrustResolver(),
+                                    options.auditLog(),
+                                    options.mutationLedger(),
+                                    options.mutationReconciler(),
+                                    options.mutationLease()));
         }
         options.applyCapabilities(services);
         return services;

@@ -1,4 +1,9 @@
 using System.Net;
+using System.Security.Claims;
+using Foundgine.Runtime;
+using Foundgine.Providers.Tools.Http;
+using Foundgine.Providers.Tools.MCP;
+using Foundgine.Extensions.GraphQL.HotChocolate;
 using System.Security;
 using System.Text;
 using System.Text.Json;
@@ -219,40 +224,158 @@ public sealed class CanonicalIntentEndpointTests
     }
 
     [Fact]
-    public async Task Mcp_tool_uses_the_same_boundary_and_reports_classified_failures()
+    public async Task Http_adapter_owns_the_mapping_from_outcome_to_status()
     {
-        using var intent = JsonDocument.Parse(
+        var handler = new FixedOutcomeHandler();
+        var builder = WebApplication.CreateBuilder();
+        builder.WebHost.UseUrls("http://127.0.0.1:0");
+        builder.Logging.ClearProviders();
+        builder.Services.AddSingleton<IFoundgineIntentHandler>(handler);
+        var app = builder.Build();
+        app.UseMiddleware<SupplyChainIntentDemoIdentityMiddleware>();
+        app.MapFoundgineIntentEndpoints();
+        await app.StartAsync();
+        try
+        {
+            var baseUrl = app.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!
+                .Addresses.First();
+            using var client = new HttpClient { BaseAddress = new Uri(baseUrl) };
+
+            foreach (var (outcome, status) in new[]
+                     {
+                         (FoundgineIntentOutcome.Succeeded, HttpStatusCode.OK),
+                         (FoundgineIntentOutcome.Unauthenticated, HttpStatusCode.Unauthorized),
+                         (FoundgineIntentOutcome.Forbidden, HttpStatusCode.Forbidden),
+                         (FoundgineIntentOutcome.InvalidIntent, HttpStatusCode.BadRequest),
+                         (FoundgineIntentOutcome.Timeout, HttpStatusCode.GatewayTimeout),
+                         (FoundgineIntentOutcome.Failed, HttpStatusCode.InternalServerError)
+                     })
+            {
+                handler.Outcome = outcome;
+                using var response = await client.GetAsync("/intent/capabilities");
+                Assert.Equal(status, response.StatusCode);
+            }
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                _ = FoundgineIntentResult.Failure(FoundgineIntentOutcome.Succeeded, "code", "message");
+            });
+        }
+        finally
+        {
+            await app.StopAsync();
+        }
+    }
+
+    private sealed class FixedOutcomeHandler : IFoundgineIntentHandler
+    {
+        public FoundgineIntentOutcome Outcome { get; set; }
+
+        public Task<FoundgineIntentResult> HandleAsync(
+            FoundgineIntentRequest request, ClaimsPrincipal caller, CancellationToken cancellationToken = default) =>
+            Task.FromResult(Outcome == FoundgineIntentOutcome.Succeeded
+                ? FoundgineIntentResult.Success(new { ok = true })
+                : FoundgineIntentResult.Failure(Outcome, "code", "message"));
+    }
+
+    [Fact]
+    public async Task Shared_handler_is_transport_neutral_and_reports_classified_failures()
+    {
+        var handler = new SupplyChainIntentHandler(Service);
+        var principal = Principal("tenant-a", "analyst");
+        var request = new FoundgineIntentRequest(
+            FoundgineIntentOperation.Execute,
             """{"rootEntity":"Vendor","selections":[{"field":"Name"}]}""");
 
-        var text = await IntentEndpoint.CallToolAsync(
-            Service, Caller("tenant-a", "analyst"), intent.RootElement, null);
-        using var payload = JsonDocument.Parse(text);
-        Assert.Equal(2, payload.RootElement.GetProperty("rowCount").GetInt32());
+        var executed = await handler.HandleAsync(request, principal);
+        Assert.True(executed.Succeeded);
+        Assert.Equal(2, ((Dictionary<string, object?>)executed.Data!)["rowCount"]);
 
-        var explain = await IntentEndpoint.CallToolAsync(
-            Service, Caller("tenant-a", "analyst"), intent.RootElement, "explain");
-        Assert.Contains("prunedFields", explain);
-        var capabilities = await IntentEndpoint.CallToolAsync(
-            Service, Caller("tenant-a", "analyst"), null, "capabilities");
-        Assert.Contains("intentShape", capabilities);
+        var explained = await handler.HandleAsync(request with { Operation = FoundgineIntentOperation.Explain }, principal);
+        Assert.True(explained.Succeeded);
+        Assert.Contains("prunedFields", JsonSerializer.Serialize(explained.Data));
 
-        // An already-serialized intent string is accepted too.
-        using var asString = JsonDocument.Parse(JsonSerializer.Serialize(SupplierNames));
-        Assert.Contains("rowCount", await IntentEndpoint.CallToolAsync(
-            Service, Caller("tenant-a", "analyst"), asString.RootElement, "execute"));
+        var capabilities = await handler.HandleAsync(
+            new FoundgineIntentRequest(FoundgineIntentOperation.Capabilities), principal);
+        Assert.True(capabilities.Succeeded);
+        Assert.Contains("intentShape", JsonSerializer.Serialize(capabilities.Data));
 
-        using var denied = JsonDocument.Parse(SupplierNames);
-        var error = await Record.ExceptionAsync(() => IntentEndpoint.CallToolAsync(
-            Service, Caller("tenant-a", "customer"), denied.RootElement, null));
-        Assert.NotNull(error);
-        Assert.StartsWith("forbidden:", IntentEndpoint.ToolFailureMessage(error!));
+        var denied = await handler.HandleAsync(request, Principal("tenant-a", "customer"));
+        Assert.False(denied.Succeeded);
+        Assert.Equal(FoundgineIntentOutcome.Forbidden, denied.Outcome);
+        Assert.Equal("forbidden", denied.ErrorCode);
 
-        var missing = await Record.ExceptionAsync(() => IntentEndpoint.CallToolAsync(
-            Service, Caller("tenant-a", "analyst"), null, "execute"));
-        Assert.StartsWith("invalid_intent:", IntentEndpoint.ToolFailureMessage(missing!));
-        var badMode = await Record.ExceptionAsync(() => IntentEndpoint.CallToolAsync(
-            Service, Caller("tenant-a", "analyst"), intent.RootElement, "drop"));
-        Assert.StartsWith("invalid_intent:", IntentEndpoint.ToolFailureMessage(badMode!));
+        var missing = await handler.HandleAsync(
+            new FoundgineIntentRequest(FoundgineIntentOperation.Execute), principal);
+        Assert.Equal(FoundgineIntentOutcome.InvalidIntent, missing.Outcome);
+        Assert.Equal("invalid_intent", missing.ErrorCode);
+    }
+
+    [Fact]
+    public async Task Graphql_resolver_uses_the_same_application_handler_and_authenticated_principal()
+    {
+        var handler = new SupplyChainIntentHandler(Service);
+        var result = await FoundgineIntentGraphQLResolver.ExecuteAsync(
+            handler, Principal("tenant-a", "analyst"), SuppliersWithRisk);
+
+        Assert.True(result.Succeeded);
+        Assert.Equal(2, ((Dictionary<string, object?>)result.Data!)["rowCount"]);
+
+        var denied = await FoundgineIntentGraphQLResolver.ExecuteAsync(
+            handler, Principal("tenant-a", "customer"), SuppliersWithRisk);
+        Assert.False(denied.Succeeded);
+        Assert.Equal("forbidden", denied.ErrorCode);
+    }
+
+    [Fact]
+    public async Task Graphql_http_field_uses_the_same_open_intent_handler()
+    {
+        var builder = WebApplication.CreateBuilder();
+        builder.WebHost.UseUrls("http://127.0.0.1:0");
+        builder.Logging.ClearProviders();
+        builder.Services.AddFoundgineIntentHttpPrincipal();
+        builder.Services.AddSingleton<IFoundgineIntentHandler>(new SupplyChainIntentHandler(Service));
+        builder.Services.AddGraphQLServer().AddQueryType<FoundgineIntentGraphQLResolver>();
+        var app = builder.Build();
+        app.UseMiddleware<SupplyChainIntentDemoIdentityMiddleware>();
+        app.MapGraphQL("/graphql");
+        await app.StartAsync();
+        try
+        {
+            var baseUrl = app.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>()!
+                .Addresses.First();
+            using var client = new HttpClient { BaseAddress = new Uri(baseUrl) };
+            using var intentDocument = JsonDocument.Parse(SuppliersWithRisk);
+            var body = JsonSerializer.Serialize(new
+            {
+                query = "query Intent($intent: Any!) { foundgineIntent(intent: $intent, mode: \"execute\") }",
+                variables = new { intent = intentDocument.RootElement }
+            });
+            using var request = new HttpRequestMessage(HttpMethod.Post, "/graphql")
+            {
+                Content = new StringContent(body, Encoding.UTF8, "application/json")
+            };
+            request.Headers.Add(IntentCaller.RoleHeader, "analyst");
+            using var response = await client.SendAsync(request);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            using var payload = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+            Assert.Equal(2, payload.RootElement.GetProperty("data").GetProperty("foundgineIntent")
+                .GetProperty("rowCount").GetInt32());
+
+            using var deniedRequest = new HttpRequestMessage(HttpMethod.Post, "/graphql")
+            {
+                Content = new StringContent(body, Encoding.UTF8, "application/json")
+            };
+            deniedRequest.Headers.Add(IntentCaller.RoleHeader, "customer");
+            using var denied = await client.SendAsync(deniedRequest);
+            using var deniedPayload = JsonDocument.Parse(await denied.Content.ReadAsStringAsync());
+            Assert.Equal("forbidden", deniedPayload.RootElement.GetProperty("errors")[0]
+                .GetProperty("extensions").GetProperty("code").GetString());
+        }
+        finally
+        {
+            await app.StopAsync();
+        }
     }
 
     [Fact]
@@ -261,8 +384,10 @@ public sealed class CanonicalIntentEndpointTests
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseUrls("http://127.0.0.1:0");
         builder.Logging.ClearProviders();
+        builder.Services.AddSingleton<IFoundgineIntentHandler>(new SupplyChainIntentHandler(Service));
         var app = builder.Build();
-        app.MapIntentEndpoints(Service);
+        app.UseMiddleware<SupplyChainIntentDemoIdentityMiddleware>();
+        app.MapFoundgineIntentEndpoints();
         await app.StartAsync();
         try
         {
@@ -306,6 +431,9 @@ public sealed class CanonicalIntentEndpointTests
             Assert.Equal(HttpStatusCode.RequestEntityTooLarge, oversized.Status);
             var unknown = await Post(client, "/intent/nope", "analyst", SupplierNames);
             Assert.Equal(HttpStatusCode.NotFound, unknown.Status);
+            Assert.Equal("not_found", unknown.Json.GetProperty("error").GetProperty("type").GetString());
+            using var wrongVerb = await client.GetAsync("/intent/explain");
+            Assert.Equal(HttpStatusCode.MethodNotAllowed, wrongVerb.StatusCode);
 
             // Explain and capabilities.
             var explain = await Post(client, "/intent/explain", "warehouse_operator", SuppliersWithRisk);
@@ -330,12 +458,13 @@ public sealed class CanonicalIntentEndpointTests
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseUrls("http://127.0.0.1:0");
         builder.Logging.ClearProviders();
-        builder.Services.AddHttpContextAccessor();
-        builder.Services.AddSingleton(Service);
+        builder.Services.AddFoundgineIntentHttpPrincipal();
+        builder.Services.AddSingleton<IFoundgineIntentHandler>(new SupplyChainIntentHandler(Service));
         builder.Services.AddMcpServer()
             .WithHttpTransport(o => o.Stateless = true)
-            .WithTools<IntentMcpTools>();
+            .WithTools<FoundgineIntentMcpTools>();
         var app = builder.Build();
+        app.UseMiddleware<SupplyChainIntentDemoIdentityMiddleware>();
         app.MapMcp("/mcp");
         await app.StartAsync();
         try
@@ -368,6 +497,11 @@ public sealed class CanonicalIntentEndpointTests
             await app.StopAsync();
         }
     }
+
+    private static ClaimsPrincipal Principal(string tenant, string role) => new(
+        new ClaimsIdentity(
+            [new Claim(IntentCaller.TenantClaim, tenant), new Claim(ClaimTypes.Role, role)],
+            "TestAuthentication"));
 
     /// <summary>The MCP SDK omits <c>isError</c> from a successful result, so absence means false.</summary>
     private static bool IsError(JsonElement result) =>
