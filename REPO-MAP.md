@@ -56,7 +56,7 @@ Foundgine is a configurable semantic and execution boundary for application capa
 | [`.github/`](.github/) | 11 | 105.3 KB |  |
 | [`.well-known/`](.well-known/) | 1 | 3.5 KB | Discovery metadata (mcp.json) |
 | [`assets/`](assets/) | 12 | 38.9 KB | Diagrams (SVG) used by README.md and llms-full.md |
-| [`docs/`](docs/) | 180 | 870.4 KB | Shared technical reference: architecture, authorization, security, runtime, mapping, grounding, guides |
+| [`docs/`](docs/) | 180 | 870.7 KB | Shared technical reference: architecture, authorization, security, runtime, mapping, grounding, guides |
 | [`docs-site/`](docs-site/) | 262 | 159 MB | Static public website published with GitHub Pages (HTML, Markdown mirrors, assets) |
 | [`src/`](src/) | 2882 | 12.1 MB |  |
 | [`tools/`](tools/) | 118 | 400.3 KB | Repository tooling: link auditor, foundgine-perf benchmark harness, this index generator |

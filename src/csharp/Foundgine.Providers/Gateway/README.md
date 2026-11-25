@@ -89,7 +89,7 @@ The returned `MutationPlanApproval` is an in-process runtime object containing t
 
 Execution lifecycle events carry only a safe operation category and correlation ID, not request values or results. Start-event publication is fail-closed (including critical hook failures). Completion/failure notifications are best-effort so a post-commit notification failure cannot misreport a committed mutation as failed. These notifications are not a substitute for an authoritative execution audit record containing the runtime's authorization decision, plan fingerprint, and execution evidence.
 
-The bridge is an in-process API currently; it does not yet expose mutation or read execution over HTTP. This avoids publishing a premature wire contract for polymorphic mutation graphs and execution results before their complete AOT serialization contract and opaque approval lifecycle are defined.
+The bridge itself is an in-process API. Read and mutation execution are exposed over HTTP by `MapFoundgineGateway()` (see [HTTP semantic read endpoint](#http-semantic-read-endpoint), [HTTP mutation endpoints](#http-mutation-endpoints) and [Execution status and replayable events](#execution-status-and-replayable-events)); the wire contract is bounded and never serializes internal runtime objects.
 
 ## HTTP semantic read endpoint
 
@@ -121,7 +121,7 @@ var execution = await approvals.ExecuteAsync(receipt.Handle, httpContext.Request
 // Null means unknown, expired, revoked, already consumed, or not owned by this caller.
 ```
 
-The approval service is available as an in-process API currently. Public HTTP mutation endpoints, durable execution-status lookup and public evidence projection are not exposed yet: the repository does not currently provide a generic durable execution-status store, and the semantic mutation graph still needs a deliberately bounded AOT wire contract. Do not serialize `MutationPlanApproval`, `MutationExecutionResult`, or arbitrary provider result objects directly. The next step is to define those transport contracts and status/evidence persistence without weakening the runtime authorization boundary.
+The approval service is an in-process API, and `MapFoundgineGateway()` exposes it over authenticated HTTP (see [HTTP mutation endpoints](#http-mutation-endpoints)) together with a minimized execution-status projection (see [Execution status and replayable events](#execution-status-and-replayable-events)). Do not serialize `MutationPlanApproval`, `MutationExecutionResult`, or arbitrary provider result objects directly; the HTTP contract returns only the opaque handle, expiry and plan fingerprint.
 
 ### Approval handle tests
 
@@ -137,7 +137,7 @@ The approval service is available as an in-process API currently. Public HTTP mu
 - `POST /foundgine/mutations/approvals/{handle}/execute`
 - `DELETE /foundgine/mutations/approvals/{handle}`
 
-The wire contract maps a bounded subset (Create/Update/Delete/Upsert and field/AND/OR filters) into the canonical `SemanticMutationOperationGraph`. It does not accept caller-provided security, effects, provider plans or approval objects. Relationship filters and generated-value dependencies remain available through the in-process API, not this initial HTTP subset. All mutation endpoints require authorization and rely on the host's trusted security context provider. The in-memory approval store is development-only; production deployments need a distributed, protected store with atomic consumption.
+The wire contract maps a bounded subset (Create/Update/Delete/Upsert and field/AND/OR filters) into the canonical `SemanticMutationOperationGraph`. It does not accept caller-provided security, effects, provider plans or approval objects. Relationship filters and generated-value dependencies remain available through the in-process API, not this initial HTTP subset. All mutation endpoints require authorization and rely on the host's trusted security context provider. The in-memory approval store is development/single-instance only; production deployments should use the PostgreSQL approval store (`AddFoundgineGatewayPostgresApprovalStore<TCodec>()`) or another distributed, protected store with atomic consumption.
 
 
 ## Execution status and replayable events
@@ -149,7 +149,7 @@ The gateway now exposes:
 
 Successful read and approved-mutation executions return `X-Foundgine-Execution-Id`. The ID is a random 128-bit identifier. Status lookup additionally checks a digest of the trusted tenant/subject context; the digest is stored in the internal event journal and removed from public SSE payloads. Unknown and non-owned execution IDs both return 404. Public status exposes only operation category, start/completion timestamps, state, and a bounded outcome code; it does not expose request data, result rows, warrants, SQL, or plan internals.
 
-`IFoundgineGatewayEventStore` is the persistence boundary. The default `InMemoryFoundgineGatewayEventStore` retains up to 10,000 events in this process, assigns monotonic sequence values, and supports replay/correlation lookup. It is intentionally **not durable across restarts and not shared between replicas**. Production applications must implement this interface using a durable ordered log or database/outbox and register it with `AddFoundgineGatewayEventStore<TStore>()`. A production implementation must make append atomic, preserve sequence ordering across instances/restarts, report the current high-water mark, bound reads, and make correlation lookup owner-safe through the gateway's internal ownership attribute.
+`IFoundgineGatewayEventStore` is the persistence boundary. The default `InMemoryFoundgineGatewayEventStore` retains up to 10,000 events in this process, assigns monotonic sequence values, and supports replay/correlation lookup. It is intentionally **not durable across restarts and not shared between replicas**. For production, `PostgresGatewayEventStore` (namespace `Foundgine.Providers.EventStore`, registered with `AddFoundgineGatewayPostgresEventStore()`) is a durable adapter: the whole journal is one stream, so its sequence is gap-free and monotonic across instances, appends are serialized by the store, and appends are idempotent by the event's stable `EventId`. You can also supply your own store with `AddFoundgineGatewayEventStore<TStore>()`. A custom implementation must make append atomic, preserve sequence ordering across instances/restarts, report the current high-water mark, bound reads, and make correlation lookup owner-safe through the gateway's internal ownership attribute.
 
 Example registration:
 
@@ -158,7 +158,7 @@ builder.Services.AddFoundgineGatewayEventStore<SqlFoundgineGatewayEventStore>();
 builder.Services.AddFoundgineGateway();
 ```
 
-`SqlFoundgineGatewayEventStore` above is an application-defined adapter, not a type shipped by Foundgine. No broker, database schema, or vendor SDK is imposed by the provider package. The sample host keeps the process-local default so it runs without infrastructure; replace it before production deployment.
+`SqlFoundgineGatewayEventStore` above is an application-defined example, not a shipped type; use `PostgresGatewayEventStore` unless you need a different backend. The `Gateway.MinimalApi` sample registers the Postgres event store and transactional outbox when PostgreSQL is configured, and otherwise keeps the process-local default so it runs without infrastructure.
 
 SSE replay closes the registration/replay race by registering the live subscriber before reading retained events and de-duplicating by sequence. Live subscriber channels remain bounded and may drop messages under backpressure; clients should reconnect with `Last-Event-ID`. Replay is capped at 10,000 records per connection. A cursor greater than the store's current high-water mark is reset to the current journal generation (important after a process-local store restart). This is at-least-once-style replay within the configured store's retention, not a promise of end-to-end exactly-once delivery. If a durable store has retention gaps, hosts should expose operational monitoring and clients should perform a fresh status/snapshot read.
 
