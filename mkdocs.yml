@@ -44,6 +44,7 @@ nav:
   - Runtime: RUNTIME.md
   - AOT: AOT.md
   - AI agent integration: AI-AGENT.md
+  - AI and search access to this repository: AI-ACCESS.md
   - Authorization: AUTHORIZATION.md
   - GraphQL HTTP endpoint (.NET): GRAPHQL-HTTP.md
   - PostgreSQL E2E: POSTGRES-E2E.md

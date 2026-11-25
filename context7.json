@@ -1,0 +1,24 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Foundgine",
+  "description": "Configurable semantic and execution boundary for application capabilities in .NET 10 and Java 27: fluent semantic configuration, persistence mapping, authorization and provider execution, with optional GraphQL, MCP and agent integrations.",
+  "folders": [],
+  "excludeFolders": [
+    "node_modules",
+    "target",
+    "bin",
+    "obj",
+    ".git",
+    "artifacts",
+    "agent-benchmark/run2"
+  ],
+  "excludeFiles": [],
+  "rules": [
+    "Foundgine is conventional application infrastructure first; AI, MCP, GraphQL and agent frameworks are optional consumers, not requirements.",
+    "Configure capabilities with the fluent API (FoundgineModel) in C# or Java; the host application owns trusted identity, tenant context and policy.",
+    "Capability discovery, retrieval results, model output and caller input are never authorization; authorization is applied at the execution boundary.",
+    "Foundgine complements EF Core, JPA, GraphQL stacks and databases rather than replacing them; check provider-specific capability notes before assuming parity between .NET and Java.",
+    "Build .NET with 'dotnet build src/csharp/Foundgine.sln' and Java with 'mvn -U clean verify -Dgpg.skip=true' from src/java (JDK 27, Maven 3.9+).",
+    "The TypeScript, Python and WebAssembly packages are thin clients for a running Foundgine server over MCP Streamable HTTP, not ports of the semantic runtime."
+  ]
+}

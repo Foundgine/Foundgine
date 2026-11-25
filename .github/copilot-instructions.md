@@ -1,0 +1,1 @@
+Follow the repository instructions in [AGENTS.md](../AGENTS.md) (project identity, layout, build and test commands, architectural rules). Use [REPO-MAP.md](../REPO-MAP.md) and [llms.txt](../llms.txt) to locate files before searching.

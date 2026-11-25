@@ -30,6 +30,7 @@ This is a suggested reading path. Start at [Getting started](GETTING-STARTED.md)
 19. [Source coverage](SOURCE-COVERAGE.md) — where implementation and test evidence live.
 20. [Agent and framework integrations](wiki/agent-framework-integrations.md) — Microsoft Agent Framework, LangChain4j and Spring Boot.
 21. [Client SDKs](wiki/client-sdks.md) — the TypeScript, Python and WebAssembly clients for a running server.
+22. [AI and search access](AI-ACCESS.md) — reading, cloning and indexing this repository with AI tools and search engines.
 
 Package-specific architecture and usage guidance lives beside each implementation under `src/csharp/`, `src/java/`, `src/typescript/` (README), `src/python/` (README) and `src/wasm/` (README); [`src/README.md`](../src/README.md) maps them all. Sample tutorials live alongside their sample projects.
 ## Side-by-side comparisons

@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "foundgine-gitmcp": {
+      "url": "https://gitmcp.io/Foundgine/Foundgine"
+    },
+    "foundgine-deepwiki": {
+      "url": "https://mcp.deepwiki.com/mcp"
+    },
+    "context7": {
+      "url": "https://mcp.context7.com/mcp"
+    }
+  }
+}

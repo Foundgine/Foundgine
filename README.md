@@ -120,6 +120,10 @@ See [testing](https://github.com/Foundgine/Foundgine/blob/main/docs/TESTING.md),
 - [`llms-full.md`](https://github.com/Foundgine/Foundgine/blob/main/llms-full.md): extended technical context
 - [`CONTRIBUTING.md`](https://github.com/Foundgine/Foundgine/blob/main/CONTRIBUTING.md): contributor guidance for this repository
 - [`docs/AI-AGENT.md`](https://github.com/Foundgine/Foundgine/blob/main/docs/AI-AGENT.md): runtime AI integration and security boundary
+- [`AGENTS.md`](https://github.com/Foundgine/Foundgine/blob/main/AGENTS.md): build, test and architecture rules for AI coding agents
+- [`REPO-MAP.md`](https://github.com/Foundgine/Foundgine/blob/main/REPO-MAP.md) and [`repo-index.json`](https://github.com/Foundgine/Foundgine/blob/main/repo-index.json): directory map and complete file list
+- [`docs/AI-ACCESS.md`](https://github.com/Foundgine/Foundgine/blob/main/docs/AI-ACCESS.md): clone, zip, raw files, GitMCP, DeepWiki, Context7 and crawler policy
+- Hosted indexes: [GitMCP](https://gitmcp.io/Foundgine/Foundgine) · [DeepWiki](https://deepwiki.com/Foundgine/Foundgine) · [Context7](https://context7.com/foundgine/foundgine)
 ## License
  
 Apache License 2.0.

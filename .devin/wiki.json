@@ -1,0 +1,28 @@
+{
+  "repo_notes": [
+    {
+      "content": "Foundgine is a configurable semantic and execution boundary for application capabilities. It separates application meaning, persistence mapping, authorization and execution from the interfaces and agents that consume them. It is conventional application infrastructure first; AI, MCP, GraphQL and agent frameworks are optional consumers. It complements ORMs and databases and does not replace them. License: Apache-2.0.",
+      "author": "Foundgine maintainers"
+    },
+    {
+      "content": "Two parallel implementations share one architecture and vocabulary. .NET 10 lives in src/csharp (Foundgine.Core, Foundgine.Runtime, Foundgine.Providers plus ORM/EF Core, Redis, pgvector, Elasticsearch and Agent Framework adapters, Foundgine.Extensions for GraphQL, Temporal and Keycloak). Java 27 lives in src/java as a Maven reactor (foundgine-core, foundgine-runtime, foundgine-providers, foundgine-extensions, foundgine-migrations, foundgine-aot-generator). Document both languages and call out where they differ; do not assume feature parity.",
+      "author": "Foundgine maintainers"
+    },
+    {
+      "content": "Request lifecycle: Consumer -> Semantic Configuration -> Intent resolution -> Grounding and ambiguity resolution -> Authorization -> Plan and Execution IR -> Runtime and provider execution -> Results and evidence. Retrieval is candidate discovery, never authorization. The host application owns trusted identity, tenant context, domain invariants, policy and secrets. Primary references: docs/ARCHITECTURE.md, docs/AUTHORIZATION.md, docs/SECURITY.md, docs/OPEN-INTENT-API.md, docs/LEXICAL-GROUNDING.md, docs/GROUNDING-DECISIONS.md and the feature wiki at docs/wiki/index.md.",
+      "author": "Foundgine maintainers"
+    },
+    {
+      "content": "Samples matter for documentation: starter Supply Chain apps (src/csharp/samples/Foundgine.SupplyChain, src/java/samples/foundgine-supply-chain), advanced semantic and security samples (src/csharp/samples/Foundgine.SupplyChain.Advanced, src/java/samples/foundgine-supply-chain-advanced), and stack comparisons (src/csharp/samples/Foundgine.Comparison versus Hot Chocolate and EF Core; src/java/samples/foundgine-comparison versus Spring). Benchmarks live under src/csharp/benchmarks, src/java/benchmarks and tools/foundgine-perf; security and penetration tests under src/csharp/security and src/java/security.",
+      "author": "Foundgine maintainers"
+    },
+    {
+      "content": "Client SDKs in src/typescript (@foundgine/typescript), src/python (foundgine) and src/wasm (@foundgine/wasm) are thin transport clients for a running Foundgine server using MCP over Streamable HTTP (default path /mcp) and the Temporal workflow routes under /foundgine/workflows. They are not ports of the semantic runtime. Shared cross-language fixtures are in src/conformance and standards/semantic-execution.",
+      "author": "Foundgine maintainers"
+    },
+    {
+      "content": "The website source is docs-site (static HTML plus Markdown mirrors, published with GitHub Pages). Repository discovery files: llms.txt, llms-full.md, AGENTS.md, REPO-MAP.md (directory map) and repo-index.json (every file with size). Large raw benchmark JSON files exist under docs-site/assets/agent-benchmark; treat them as data, not documentation.",
+      "author": "Foundgine maintainers"
+    }
+  ]
+}

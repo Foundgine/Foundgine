@@ -94,3 +94,13 @@ Three thin transport clients for a running Foundgine server are published as pac
 3.4.1 · .NET 10 and Java 27
  
 The fluent configuration API (introduced in 2.3.0) is part of the current model API (`FoundgineModel`) in both .NET and Java. It compiles to the same metadata registry as attributes/annotations and the AOT generator.
+
+## Repository access for AI tools and crawlers
+
+The repository is public, Apache-2.0 licensed and unrestricted for crawlers (`robots.txt`). No restructuring or build is needed to read any part of it.
+
+- **Get everything:** `git clone https://github.com/Foundgine/Foundgine.git`, the [zip](https://github.com/Foundgine/Foundgine/archive/refs/heads/main.zip), or any single file at `https://raw.githubusercontent.com/Foundgine/Foundgine/main/<path>`.
+- **Find anything:** `REPO-MAP.md` (directory map with descriptions and file counts) and `repo-index.json` (every file with its size; files of 1 MB or more carry `"large": true`). Regenerate both with `python tools/generate-repo-index.py`.
+- **Agent rules:** `AGENTS.md` (build and test commands, architectural rules). `CLAUDE.md` and `.github/copilot-instructions.md` point to it.
+- **Hosted indexes:** GitMCP `https://gitmcp.io/Foundgine/Foundgine`; DeepWiki `https://deepwiki.com/Foundgine/Foundgine` (MCP: `https://mcp.deepwiki.com/mcp`); Context7 `https://context7.com/foundgine/foundgine` (configured by `context7.json`). Steering notes for DeepWiki are in `.devin/wiki.json`. Ready-made client configs: `.mcp.json`, `.cursor/mcp.json`.
+- **Details:** `docs/AI-ACCESS.md`.

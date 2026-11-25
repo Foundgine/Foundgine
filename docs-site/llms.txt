@@ -50,24 +50,47 @@ Do not describe discovery, retrieval, model output or caller input as authority.
 
 ## Start here
 
-- Root README: `README.md`
-- Website: https://foundgine.github.io/Foundgine/docs-site/
-- Getting started: `docs/GETTING-STARTED.md`
-- Architecture: `docs/ARCHITECTURE.md`
-- Feature wiki: `docs/wiki/index.md`
-- Providers: `docs/wiki/providers.md`
-- ORM integrations: `docs/wiki/orm-providers.md`
-- Extensions: `docs/wiki/extensions.md`
-- AI/MCP: `docs/wiki/agents-mcp.md`
-- Client SDKs: `docs/wiki/client-sdks.md`
-- Full technical context: `llms-full.md`
-- Contributor guidance: `CONTRIBUTING.md`
+- [Root README](https://raw.githubusercontent.com/Foundgine/Foundgine/main/README.md): product overview and architecture at a glance
+- [Website](https://foundgine.github.io/Foundgine/docs-site/): public documentation site
+- [Getting started](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/GETTING-STARTED.md)
+- [Architecture](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/ARCHITECTURE.md)
+- [Feature wiki](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/wiki/index.md)
+- [Providers](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/wiki/providers.md)
+- [ORM integrations](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/wiki/orm-providers.md)
+- [Extensions](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/wiki/extensions.md)
+- [AI and MCP](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/wiki/agents-mcp.md)
+- [Client SDKs](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/wiki/client-sdks.md)
+- [Full technical context](https://raw.githubusercontent.com/Foundgine/Foundgine/main/llms-full.md)
+- [Repository map](https://raw.githubusercontent.com/Foundgine/Foundgine/main/REPO-MAP.md): every directory with file counts and descriptions
+- [Agent instructions](https://raw.githubusercontent.com/Foundgine/Foundgine/main/AGENTS.md): build/test commands and architectural rules for coding agents
+- [Contributor guidance](https://raw.githubusercontent.com/Foundgine/Foundgine/main/CONTRIBUTING.md)
 
 ## Comparison and adoption
 
-- Conventional .NET stack comparison: `src/csharp/samples/Foundgine.Comparison/README.md`
-- Conventional Java stack comparison: `src/java/samples/foundgine-comparison/README.md`
-- Rationale: `docs/WHY-FOUNDGINE.md` and `docs/wiki/why-foundgine.md`
+- [Conventional .NET stack comparison (Hot Chocolate and EF Core)](https://raw.githubusercontent.com/Foundgine/Foundgine/main/src/csharp/samples/Foundgine.Comparison/README.md)
+- [Conventional Java stack comparison (Spring)](https://raw.githubusercontent.com/Foundgine/Foundgine/main/src/java/samples/foundgine-comparison/README.md)
+- [Rationale](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/WHY-FOUNDGINE.md)
+- [Rationale (wiki)](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/wiki/why-foundgine.md)
+
+## Access the whole repository
+
+Every file is public and unrestricted. No restructuring or build step is needed to read it.
+
+- Clone: `git clone https://github.com/Foundgine/Foundgine.git`
+- Zip: https://github.com/Foundgine/Foundgine/archive/refs/heads/main.zip
+- Tarball: https://github.com/Foundgine/Foundgine/archive/refs/heads/main.tar.gz
+- Any file, raw: `https://raw.githubusercontent.com/Foundgine/Foundgine/main/<path>`
+- Complete file list (GitHub API): https://api.github.com/repos/Foundgine/Foundgine/git/trees/main?recursive=1
+- [repo-index.json](https://raw.githubusercontent.com/Foundgine/Foundgine/main/repo-index.json): every file with its size; files of 1 MB or more are flagged large
+- [REPO-MAP.md](https://raw.githubusercontent.com/Foundgine/Foundgine/main/REPO-MAP.md): directory map
+- [AI access guide](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/AI-ACCESS.md): MCP servers, indexes and crawler policy
+
+## AI-ready servers and indexes
+
+- GitMCP (MCP server, no setup): https://gitmcp.io/Foundgine/Foundgine. It serves `llms.txt` first, then the README, and can search repository code. The documentation site is also available at https://foundgine.gitmcp.io/Foundgine
+- DeepWiki (generated wiki and Q&A): https://deepwiki.com/Foundgine/Foundgine. MCP endpoint: https://mcp.deepwiki.com/mcp (tools read_wiki_structure, read_wiki_contents, ask_question; repository `Foundgine/Foundgine`).
+- Context7 (library docs for coding agents): https://context7.com/foundgine/foundgine. Indexing rules are in `context7.json`.
+- Ready-made MCP client configs: `.mcp.json` and `.cursor/mcp.json`. Crawler policy: `robots.txt`; sitemap: https://foundgine.github.io/Foundgine/docs-site/sitemap.xml
 
 ## Claims and limitations
 
