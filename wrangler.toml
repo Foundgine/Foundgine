@@ -5,7 +5,11 @@ compatibility_date = "2026-11-23"
 ENVIRONMENT = "production"
 
 [assets]
-directory = "./docs-site"
+directory = "./docs-site/assets"
+
+[[routes]]
+pattern = "foundgine.io"
+custom_domain = true
 
 [previews.vars]
 ENVIRONMENT = "preview"
