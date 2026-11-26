@@ -11,6 +11,7 @@ using System.Text.Json;
 using Foundgine.SupplyChain.Advanced.Authorization;
 using Foundgine.SupplyChain.Advanced.Data;
 using Foundgine.SupplyChain.Advanced.Intent;
+using Foundgine.SupplyChain.Advanced.Mutation;
 using Foundgine.SupplyChain.Advanced.Semantics;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -26,11 +27,17 @@ builder.Services.AddSingleton(SupplyChainSemanticModel.Build());
 builder.Services.AddFoundgineIntentHttpPrincipal();
 builder.Services.AddSingleton(new SupplyChainIntentService(SupplyChainData.Seed()));
 builder.Services.AddSingleton<IFoundgineIntentHandler, SupplyChainIntentHandler>();
-builder.Services.AddGraphQLServer().AddQueryType<FoundgineIntentGraphQLResolver>();
+// Mutation lifecycle state is application-owned and shared by MCP and GraphQL.
+// Replace the in-memory sample dispatcher with a durable implementation in production.
+builder.Services.AddSingleton<SupplyChainMutationDispatcher>();
+builder.Services.AddGraphQLServer()
+    .AddQueryType<FoundgineIntentGraphQLResolver>()
+    .AddMutationType<FoundgineMutationGraphQLResolver>();
 builder.Services.AddMcpServer()
     .WithHttpTransport(o => o.Stateless = true)
     .WithTools<SupplyChainMcpTools>()
-    .WithTools<FoundgineIntentMcpTools>();
+    .WithTools<FoundgineIntentMcpTools>()
+    .WithTools<FoundgineMutationMcpTools>();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

@@ -19,10 +19,10 @@
   </ItemGroup>
   <ItemGroup>
     <!-- FileMutationExecutionLedgerProcessTests spawns this executable; it is built first but not referenced as an assembly. -->
-    <ProjectReference Include="../Foundgine.Security.Tests.LedgerChild/Foundgine.Security.Tests.LedgerChild.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="../Foundgine.Security.LedgerChild.Tests/Foundgine.Security.LedgerChild.Tests.csproj" ReferenceOutputAssembly="false" />
     <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
       <_Parameter1>LedgerChildDll</_Parameter1>
-      <_Parameter2>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', '..', 'Foundgine.Security.Tests.LedgerChild', 'bin', '$(Configuration)', '$(TargetFramework)', 'Foundgine.Security.Tests.LedgerChild.dll'))</_Parameter2>
+      <_Parameter2>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', '..', 'Foundgine.Security.LedgerChild.Tests', 'bin', '$(Configuration)', '$(TargetFramework)', 'Foundgine.Security.LedgerChild.Tests.dll'))</_Parameter2>
     </AssemblyAttribute>
   </ItemGroup>
 </Project>

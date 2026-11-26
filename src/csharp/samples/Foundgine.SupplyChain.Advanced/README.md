@@ -8,6 +8,8 @@ A reproducible end-to-end supply-chain reference application exercising the Foun
 > testing, each tied to the exact test files that prove it — see
 > [`docs/00-Overview-And-Setup.md`](./docs/00-Overview-And-Setup.md).
 
+[Cross-language scope and C#-only demonstrations](./CROSS-LANGUAGE-SCOPE.md) records which optional agent, benchmark, and database examples intentionally remain C#-only.
+
 ## Configuration options, from simple to advanced
 
 The full fluent-configuration ladder is documented in [`Semantic/CONFIGURATION-COOKBOOK.md`](./Semantic/CONFIGURATION-COOKBOOK.md): convention-only registration, inline builders, reusable configuration classes, separate model/storage mapping, semantic and physical relationships, model-to-entity connections, conversions, and authorization predicates. It also inventories the REST, GraphQL and MCP transport setup and calls out cross-language API gaps rather than implying parity where it does not exist.

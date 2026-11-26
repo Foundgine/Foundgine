@@ -19,6 +19,12 @@ The site is a guided product story rather than a dump of repository internals:
 
 The main concept pages include an in-page table of contents and previous/home/next navigation. Benchmark and run-result pages use a separate evidence layout. Deeper implementation detail belongs in the linked repository Markdown files, including the Java 27 build guide at `src/java/BUILDING.md` and the shared technical reference under `docs/`.
 
+11. **Complete technical overview** — the supplied long-form v3.4.1 HTML reference, linked from the landing page and included in both sitemaps and LLM indexes.
+
+## Discovery and indexing
+
+The repository root exposes `robots.txt`, `sitemap.xml`, `llms.txt`, `llms-full.md` and `repo-index.json`. The root robots file advertises both the repository sitemap and the website sitemap. The website directory has its own `robots.txt`, `sitemap.xml`, `llms.txt` and `llms-full.md`. The full technical overview is published at `foundgine-overview.html` and linked from the website home page. Keep these indexes synchronized whenever public HTML pages are added or removed.
+
 ## Content rules
 
 - Use the canonical position: Foundgine is a configurable semantic and execution boundary for application capabilities, separating application meaning, persistence mapping, authorization and execution from consumers. Fluent configuration is the primary developer experience; AI/MCP are optional.

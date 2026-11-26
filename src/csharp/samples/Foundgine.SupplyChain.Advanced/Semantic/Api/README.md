@@ -21,3 +21,13 @@ The sample's `SupplyChainIntentDemoIdentityMiddleware` is enabled only in Develo
 ## MCP authorization lab
 
 The separate Supply Chain MCP lab tools (`read_entity`, `write_entity`, `policy_probe`) remain sample-specific because they demonstrate the Supply Chain authorization policy and claim-validation behavior. They are not part of the generic `foundgine_intent` transport adapter.
+
+
+## Order mutations
+
+The same host also exposes a typed Supply Chain mutation boundary:
+
+- MCP: `foundgine_mutation` (`POST /mcp`)
+- GraphQL: `foundgineMutation(mutation:, correlationId:)` (`POST /graphql`)
+
+Both adapters delegate to `SupplyChainMutationDispatcher`. The host registers that dispatcher once so approval handles, idempotency state, and audit records are shared across transports. The dispatcher accepts `place_order` and `cancel_order` with `dry_run`, `approve`, `execute`, and `execute_approved` lifecycle modes. Caller identity and tenant are derived from the authenticated principal, never from mutation JSON. See [`../../CROSS-LANGUAGE-SCOPE.md`](../../CROSS-LANGUAGE-SCOPE.md) for lifecycle guarantees and the in-memory sample-store limitation.

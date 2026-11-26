@@ -7,6 +7,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{3AA6B7D9-0AEE-5734-9999-29620D583E4B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B6BAC99F-AFD8-5128-80D4-ED81DE28CC9B}"
+	ProjectSection(SolutionItems) = preProject
+		tests\Foundgine.Security.Tests.LedgerChild\obj\Debug\net10.0\.NETCoreApp,Version = v10.0.AssemblyAttributes.cs = tests\Foundgine.Security.Tests.LedgerChild\obj\Debug\net10.0\.NETCoreApp,Version=v10.0.AssemblyAttributes.cs
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AgentEndToEnd", "AgentEndToEnd", "{0632B953-266D-5603-925B-586D3556DAE4}"
 EndProject
@@ -301,6 +304,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundgine.Providers.Package", "Foundgine.Providers.Package\Foundgine.Providers.Package.csproj", "{6B1F0E52-4C7D-4A1B-9E35-2A8D0C5F7A11}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundgine.Extensions.Package", "Foundgine.Extensions.Package\Foundgine.Extensions.Package.csproj", "{9D3A7C64-1E28-4F0B-8B52-7C4E1A6D3F22}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Foundgine.Security.LedgerChild.Tests", "Foundgine.Security.LedgerChild.Tests", "{F4FC2405-EAAA-4559-AB21-2746933F5DEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Foundgine.Security.LedgerChild.Tests", "tests\Foundgine.Security.LedgerChild.Tests\Foundgine.Security.LedgerChild.Tests.csproj", "{8BA6A6AC-BED7-4551-98AC-58BC07F8AD0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -608,6 +615,10 @@ Global
 		{9D3A7C64-1E28-4F0B-8B52-7C4E1A6D3F22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D3A7C64-1E28-4F0B-8B52-7C4E1A6D3F22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D3A7C64-1E28-4F0B-8B52-7C4E1A6D3F22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BA6A6AC-BED7-4551-98AC-58BC07F8AD0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BA6A6AC-BED7-4551-98AC-58BC07F8AD0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BA6A6AC-BED7-4551-98AC-58BC07F8AD0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BA6A6AC-BED7-4551-98AC-58BC07F8AD0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0632B953-266D-5603-925B-586D3556DAE4} = {AA23A18E-EAB6-5A02-8809-526627983EC7}
@@ -753,6 +764,8 @@ Global
 		{7627C37B-A01A-5585-898B-17D7248AEFDA} = {23A944E0-9A9E-5BF2-A4A4-C0BF1A7DC833}
 		{6B1F0E52-4C7D-4A1B-9E35-2A8D0C5F7A11} = {133A04CC-5D91-5D72-84B7-76D59253671E}
 		{9D3A7C64-1E28-4F0B-8B52-7C4E1A6D3F22} = {23A944E0-9A9E-5BF2-A4A4-C0BF1A7DC833}
+		{F4FC2405-EAAA-4559-AB21-2746933F5DEF} = {B6BAC99F-AFD8-5128-80D4-ED81DE28CC9B}
+		{8BA6A6AC-BED7-4551-98AC-58BC07F8AD0F} = {F4FC2405-EAAA-4559-AB21-2746933F5DEF}
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

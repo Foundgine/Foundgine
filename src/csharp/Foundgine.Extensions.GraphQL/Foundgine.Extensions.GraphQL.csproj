@@ -21,6 +21,7 @@
     <ProjectReference Include="../Foundgine.Core/Foundgine.Core.csproj" />
     <ProjectReference Include="../Foundgine.Runtime/Foundgine.Runtime.csproj" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" PrivateAssets="all" />
+    <PackageReference Include="HotChocolate.Abstractions" Version="16.7.3" />
     <PackageReference Include="HotChocolate.Language" Version="16.7.3" />
     <PackageReference Include="HotChocolate.AspNetCore" Version="16.7.3" />
   </ItemGroup>

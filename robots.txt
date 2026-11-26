@@ -107,4 +107,5 @@ User-agent: Baiduspider
 User-agent: PetalBot
 Allow: /
 
+Sitemap: https://foundgine.github.io/Foundgine/sitemap.xml
 Sitemap: https://foundgine.github.io/Foundgine/docs-site/sitemap.xml
