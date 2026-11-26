@@ -5,6 +5,10 @@
   var panel = document.getElementById("process-panel");
   var cache = {};
 
+  if (!panel || !tabs.length) {
+    return;
+  }
+
   function escapeHtml(value) {
     return String(value)
       .replace(/&/g, "&amp;")

@@ -1,0 +1,10 @@
+name = "foundgine"
+
+[vars]
+ENVIRONMENT = "production"
+
+[assets]
+directory = "./docs-site"
+
+[previews.vars]
+ENVIRONMENT = "preview"
