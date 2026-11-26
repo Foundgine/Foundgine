@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Child process for FileMutationExecutionLedgerProcessTests: drives the file ledger from a separate OS process. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../Foundgine.Core/Foundgine.Core.csproj" />
+    <ProjectReference Include="../../Foundgine.Runtime/Foundgine.Runtime.csproj" />
+  </ItemGroup>
+</Project>

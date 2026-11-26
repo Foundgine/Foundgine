@@ -1,36 +1,33 @@
 # API layer
 
-The semantic execution showcase is a console executable at `Semantic/Program.cs`. The HTTP/MCP host is in `Semantic/Api/Mcp/`.
+The HTTP/GraphQL/MCP host is in `Semantic/Api/Mcp/`. It exposes the same Supply Chain application intent handler through three transport adapters:
 
-# SupplyChain MCP authorization lab
+- REST: `POST /intent`, `POST /intent/explain`, `GET /intent/capabilities`
+- GraphQL: `POST /graphql`, field `foundgineIntent(intent:, mode:)`
+- MCP: `POST /mcp`, tool `foundgine_intent`
 
-This API is intentionally small and stateless. It is not a production authentication implementation; its fixed demo identities exist so the semantic authorization behavior can be exercised deterministically.
+The reusable protocol implementations live outside the sample:
 
-## Demo identities
+| Adapter | Package/source | Application-specific code kept in the sample |
+| --- | --- | --- |
+| ASP.NET Core REST | `Foundgine.Providers.Tools.Http.FoundgineIntentEndpoints` | `SupplyChainIntentHandler`, caller mapping and semantic policies |
+| GraphQL | `Foundgine.Extensions.GraphQL.HotChocolate.FoundgineIntentGraphQLResolver` | `SupplyChainIntentHandler`, caller mapping and semantic policies |
+| MCP | `Foundgine.Providers.Tools.MCP.FoundgineIntentMcpTools` | `SupplyChainIntentHandler`, caller mapping and semantic policies |
 
-| Actor        | Tenant     | Role               |
-| ------------ | ---------- | ------------------ |
-| `alice`      | `tenant-a` | Customer           |
-| `analyst-a`  | `tenant-a` | Analyst            |
-| `operator-a` | `tenant-a` | WarehouseOperator  |
-| `manager-a`  | `tenant-a` | SupplyChainManager |
-| `analyst-b`  | `tenant-b` | Analyst            |
+All three adapters depend on `IFoundgineIntentHandler`. They do not know the Supply Chain domain, the caller's tenant/role model, or how semantic authorization is implemented. GraphQL and MCP obtain their principal through the host-owned IFoundgineIntentPrincipalProvider; non-HTTP hosts can supply a different implementation. REST passes HttpContext.User directly. The handler receives the host-authenticated `ClaimsPrincipal`; identity is never accepted as part of the intent.
 
-The server derives tenant and role from the actor/token pair. The MCP caller cannot simply send `role=SupplyChainManager` and have the server trust it. Wrong-token and unknown-actor probes therefore exercise the authentication boundary separately from semantic authorization.
+The sample's `SupplyChainIntentDemoIdentityMiddleware` is enabled only in Development and translates the `X-Foundgine-Tenant` and `X-Foundgine-Role` demonstration headers into claims. Production hosts must use their normal authentication middleware instead.
 
-`read_entity`, `write_entity`, and `policy_probe` additionally accept an optional `claims`
-dictionary of caller-asserted context. Claims are validated by `ClientClaimsValidator` before
-they ever reach the authorization policy: identity-shaped claims (`role`, `tenant`, `actor`, ...)
-are rejected outright and fail the whole call, while recognized narrowing/evidence claims
-(`scope`, `warehouse`, `reason`, `change_ticket`, ...) can only restrict what the authenticated
-role already allows. See
-[`docs/01-Claims-And-Authorization.md`](../../docs/01-Claims-And-Authorization.md#why-claims-need-their-own-validation-pipeline)
-for the full rules.
+## MCP authorization lab
 
-The endpoint is `/mcp` and the health endpoint is `/health`.
+The separate Supply Chain MCP lab tools (`read_entity`, `write_entity`, `policy_probe`) remain sample-specific because they demonstrate the Supply Chain authorization policy and claim-validation behavior. They are not part of the generic `foundgine_intent` transport adapter.
 
-## Semantic contract used by the API
 
-The API registers the composed `SupplyChainSemanticModel`. That model discovers the full Supply Chain structure from generated metadata, applies the two-entity `ManualSupplyChainSemanticModel` overlay, and then exposes the resulting contract to the semantic/MCP flow.
+## Order mutations
 
-The `Mcp` host also serves the canonical intent endpoint (`/intent`, `/intent/explain`, `/intent/capabilities`) and the `foundgine_intent` tool. See "Canonical intent endpoint" in the sample README.
+The same host also exposes a typed Supply Chain mutation boundary:
+
+- MCP: `foundgine_mutation` (`POST /mcp`)
+- GraphQL: `foundgineMutation(mutation:, correlationId:)` (`POST /graphql`)
+
+Both adapters delegate to `SupplyChainMutationDispatcher`. The host registers that dispatcher once so approval handles, idempotency state, and audit records are shared across transports. The dispatcher accepts `place_order` and `cancel_order` with `dry_run`, `approve`, `execute`, and `execute_approved` lifecycle modes. Caller identity and tenant are derived from the authenticated principal, never from mutation JSON. See [`../../CROSS-LANGUAGE-SCOPE.md`](../../CROSS-LANGUAGE-SCOPE.md) for lifecycle guarantees and the in-memory sample-store limitation.

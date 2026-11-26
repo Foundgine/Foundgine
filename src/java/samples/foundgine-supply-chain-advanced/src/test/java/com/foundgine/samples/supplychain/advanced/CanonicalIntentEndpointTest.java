@@ -211,20 +211,46 @@ class CanonicalIntentEndpointTest {
     }
 
     @Test
-    void httpAndMcpUseTheSameBoundaryAndTheCallerComesFromHeadersOnly() throws Exception {
+    @SuppressWarnings("unchecked")
+    void runtimeIntentHandlerExecutesTheTypedRequestForTheTrustedCaller() {
+        var handler = new com.foundgine.samples.supplychain.advanced.intent.SupplyChainRuntimeIntentHandler(SERVICE);
+        var request = com.foundgine.runtime.FoundgineIntentRequest.execute(SERVICE.parseIntent(SUPPLIERS_WITH_RISK));
+        var result = handler.handleAsync(request, caller("tenant-a", "analyst"))
+                .toCompletableFuture().join();
+
+        assertTrue(result.succeeded());
+        var data = (Map<String, Object>) result.data();
+        assertEquals(2, data.get("rowCount"));
+        assertTrue(((List<Map<String, Object>>) data.get("rows")).getFirst().containsKey("Supplier.RiskScore"));
+
+        var unauthenticated = handler.handleAsync(
+                com.foundgine.runtime.FoundgineIntentRequest.capabilities(), null)
+                .toCompletableFuture().join();
+        assertEquals(com.foundgine.runtime.FoundgineIntentOutcome.UNAUTHENTICATED, unauthenticated.outcome());
+    }
+
+    @Test
+    void httpGraphQlAndMcpUseTheSameBoundaryAndCallerComesFromHeadersOnly() throws Exception {
         var auth = new Authorization.Context("tenant-a", Set.of(1, 2), Authorization.Role.SUPPLY_CHAIN_MANAGER, false);
-        var server = new AdvancedMcpServer(new AdvancedMcpFacade(SupplyChainData.seed(), auth), "localhost", 0);
+        var facade = new AdvancedMcpFacade(SupplyChainData.seed(), auth);
+        var server = new AdvancedMcpServer(facade, "localhost", 0);
         server.start();
         try {
             var base = "http://localhost:" + server.port();
             var client = HttpClient.newHttpClient();
 
             // HTTP: analyst sees RiskScore, and the response echoes the effective caller.
-            var ok = post(client, base + "/intent", "analyst", SUPPLIERS_WITH_RISK);
+            var correlatedRequest = HttpRequest.newBuilder(URI.create(base + "/intent"))
+                    .header(IntentCaller.ROLE_HEADER, "analyst")
+                    .header("X-Correlation-ID", "http-trace-001")
+                    .POST(HttpRequest.BodyPublishers.ofString(SUPPLIERS_WITH_RISK)).build();
+            var ok = client.send(correlatedRequest, HttpResponse.BodyHandlers.ofString());
             assertEquals(200, ok.statusCode());
             var body = JSON.readTree(ok.body());
             assertEquals("ANALYST", body.at("/caller/role").asText());
             assertTrue(body.at("/rows/0").has("Supplier.RiskScore"));
+            assertEquals("http-trace-001", body.at("/receipt/correlationId").asText());
+            assertFalse(body.at("/receipt/requestId").asText().equals("http-trace-001"));
 
             // HTTP: no role header means the least privileged role, which may not read suppliers.
             var denied = post(client, base + "/intent", null, SUPPLIER_NAMES);
@@ -244,13 +270,18 @@ class CanonicalIntentEndpointTest {
             assertEquals(413, oversized.statusCode());
 
             // MCP: the same service, through the foundgine_intent tool, same header-based caller.
-            var mcp = post(client, base + "/mcp", "analyst",
-                    "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"foundgine_intent\","
-                            + "\"arguments\":{\"intent\":{\"rootEntity\":\"Vendor\",\"selections\":[{\"field\":\"Name\"}]}}}}");
+            String mcpReadBody = "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"foundgine_intent\","
+                    + "\"arguments\":{\"intent\":{\"rootEntity\":\"Vendor\",\"selections\":[{\"field\":\"Name\"}]}}}}";
+            var mcpReadRequest = HttpRequest.newBuilder(URI.create(base + "/mcp"))
+                    .header(IntentCaller.ROLE_HEADER, "analyst")
+                    .header("X-Correlation-ID", "mcp-trace-002")
+                    .POST(HttpRequest.BodyPublishers.ofString(mcpReadBody)).build();
+            var mcp = client.send(mcpReadRequest, HttpResponse.BodyHandlers.ofString());
             var tool = JSON.readTree(mcp.body());
             assertFalse(tool.at("/result/isError").asBoolean());
             JsonNode payload = JSON.readTree(tool.at("/result/content/0/text").asText());
             assertEquals(2, payload.get("rowCount").asInt());
+            assertEquals("mcp-trace-002", payload.at("/receipt/correlationId").asText());
 
             var mcpDenied = post(client, base + "/mcp", null,
                     "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/call\",\"params\":{\"name\":\"foundgine_intent\","
@@ -258,6 +289,112 @@ class CanonicalIntentEndpointTest {
             var toolDenied = JSON.readTree(mcpDenied.body());
             assertTrue(toolDenied.at("/result/isError").asBoolean());
             assertTrue(toolDenied.at("/result/content/0/text").asText().startsWith("forbidden:"));
+
+            // HTTP mutation: the authenticated caller, not the JSON body, selects tenant/role policy.
+            String mutationJson = "{\"tool\":\"place_order\",\"customerId\":1,\"productId\":4,\"quantity\":1,\"idempotencyKey\":\"http-intent-place-1\"}";
+            var httpMutation = post(client, base + "/intent/mutation", "supply_chain_manager", mutationJson);
+            assertEquals(200, httpMutation.statusCode(), httpMutation.body());
+            assertTrue(JSON.readTree(httpMutation.body()).has("planFingerprint"));
+
+            // The full propose -> dry-run -> approve -> execute-approved lifecycle uses the same handler.
+            String approvalMutation = "{\"tool\":\"place_order\",\"mode\":\"dry_run\",\"customerId\":1,\"productId\":4,\"quantity\":1,\"idempotencyKey\":\"http-approval-place-1\"}";
+            var dryRun = post(client, base + "/intent/mutation", "supply_chain_manager", approvalMutation);
+            assertEquals(200, dryRun.statusCode(), dryRun.body());
+            assertTrue(JSON.readTree(dryRun.body()).has("planFingerprint"));
+            assertFalse(JSON.readTree(dryRun.body()).has("resultFingerprint"));
+
+            String spoofedMutation = "{\"tool\":\"place_order\",\"mode\":\"approve\",\"customerId\":1,\"productId\":4,\"quantity\":1,\"idempotencyKey\":\"http-approval-place-1\",\"approvedBy\":\"forged-admin\",\"tenantId\":\"tenant-b\",\"role\":\"CUSTOMER\"}";
+            var spoofedMutationResponse = post(client, base + "/intent/mutation", "supply_chain_manager", spoofedMutation);
+            assertEquals(400, spoofedMutationResponse.statusCode());
+
+            String approveMutation = "{\"tool\":\"place_order\",\"mode\":\"approve\",\"customerId\":1,\"productId\":4,\"quantity\":1,\"idempotencyKey\":\"http-approval-place-1\"}";
+            var approved = post(client, base + "/intent/mutation", "supply_chain_manager", approveMutation);
+            assertEquals(200, approved.statusCode(), approved.body());
+            String approvalId = JSON.readTree(approved.body()).path("approvalId").asText();
+            assertFalse(approvalId.isBlank());
+            assertEquals("tenant-a:SUPPLY_CHAIN_MANAGER", JSON.readTree(approved.body()).path("approvedBy").asText());
+
+            String executeApproved = "{\"mode\":\"execute_approved\",\"approvalId\":" + JSON.writeValueAsString(approvalId) + "}";
+            var wrongTenantApproval = HttpRequest.newBuilder(URI.create(base + "/intent/mutation"))
+                    .header(IntentCaller.TENANT_HEADER, "tenant-b")
+                    .header(IntentCaller.ROLE_HEADER, "supply_chain_manager")
+                    .header("X-Correlation-ID", "approval-wrong-tenant-010")
+                    .POST(HttpRequest.BodyPublishers.ofString(executeApproved)).build();
+            var wrongTenantResult = client.send(wrongTenantApproval, HttpResponse.BodyHandlers.ofString());
+            assertEquals(403, wrongTenantResult.statusCode());
+
+            var executedApprovalRequest = HttpRequest.newBuilder(URI.create(base + "/intent/mutation"))
+                    .header(IntentCaller.ROLE_HEADER, "supply_chain_manager")
+                    .header("X-Correlation-ID", "mutation-trace-009")
+                    .POST(HttpRequest.BodyPublishers.ofString(executeApproved)).build();
+            var executedApproval = client.send(executedApprovalRequest, HttpResponse.BodyHandlers.ofString());
+            assertEquals(200, executedApproval.statusCode(), executedApproval.body());
+            var executedJson = JSON.readTree(executedApproval.body());
+            assertTrue(executedJson.has("resultFingerprint"));
+            assertTrue(executedJson.hasNonNull("receipt"));
+            assertEquals(approvalId, executedJson.path("receipt").path("approvalId").asText());
+            assertEquals("tenant-a:SUPPLY_CHAIN_MANAGER", executedJson.path("receipt").path("approvedBy").asText());
+            assertEquals("mutation-trace-009", executedJson.path("receipt").path("correlationId").asText());
+            assertFalse(executedJson.path("receipt").path("authorizationFingerprint").asText().isBlank());
+            assertFalse(executedJson.path("receipt").path("provider").asText().isBlank());
+            var approvalReplayRequest = HttpRequest.newBuilder(URI.create(base + "/intent/mutation"))
+                    .header(IntentCaller.ROLE_HEADER, "supply_chain_manager")
+                    .header("X-Correlation-ID", "approval-replay-011")
+                    .POST(HttpRequest.BodyPublishers.ofString(executeApproved)).build();
+            var approvalReplay = client.send(approvalReplayRequest, HttpResponse.BodyHandlers.ofString());
+            assertEquals(400, approvalReplay.statusCode());
+            var denialEvents = facade.auditLog().query().stream()
+                    .filter(event -> event.category() == com.foundgine.runtime.controlplane.auditlog.AuditEvent.AuditCategory.MUTATION_DENIED)
+                    .toList();
+            assertTrue(denialEvents.stream().anyMatch(event -> "approval-wrong-tenant-010".equals(event.correlationId())));
+            assertTrue(denialEvents.stream().anyMatch(event -> "approval-replay-011".equals(event.correlationId())));
+            assertTrue(com.foundgine.runtime.controlplane.auditlog.HashChainedAuditLog.verify(facade.auditLog().query()));
+
+            // MCP mutation delegates through the same runtime mutation handler.
+            String mcpMutationBody = "{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{\"name\":\"foundgine_mutation\","
+                    + "\"arguments\":{\"mutationJson\":" + JSON.writeValueAsString(mutationJson) + "}}}";
+            var mcpMutationRequest = HttpRequest.newBuilder(URI.create(base + "/mcp"))
+                    .header(IntentCaller.ROLE_HEADER, "supply_chain_manager")
+                    .header("X-Correlation-ID", "mcp-mutation-trace-003")
+                    .POST(HttpRequest.BodyPublishers.ofString(mcpMutationBody)).build();
+            var mcpMutation = client.send(mcpMutationRequest, HttpResponse.BodyHandlers.ofString());
+            var mcpMutationPayload = JSON.readTree(mcpMutation.body());
+            assertFalse(mcpMutationPayload.at("/result/isError").asBoolean());
+            JsonNode mcpMutationData = JSON.readTree(mcpMutationPayload.at("/result/content/0/text").asText());
+            assertEquals("mcp-mutation-trace-003", mcpMutationData.at("/receipt/correlationId").asText());
+
+            // GraphQL: the resolver delegates to the exact same runtime intent handler.
+            String graphqlBody = "{\"query\":\"query($intent: String!) { foundgineIntent(mode: \\\"execute\\\", intentJson: $intent) { outcome data errorCode } }\","
+                    + "\"variables\":{\"intent\":" + JSON.writeValueAsString(SUPPLIERS_WITH_RISK) + "}}";
+            var graphqlRequest = HttpRequest.newBuilder(URI.create(base + "/graphql"))
+                    .header(IntentCaller.ROLE_HEADER, "analyst")
+                    .header("X-Correlation-ID", "graphql-trace-004")
+                    .POST(HttpRequest.BodyPublishers.ofString(graphqlBody)).build();
+            var graphqlResponse = client.send(graphqlRequest, HttpResponse.BodyHandlers.ofString());
+            assertEquals(200, graphqlResponse.statusCode());
+            var graphqlPayload = JSON.readTree(graphqlResponse.body()).at("/data/foundgineIntent");
+            assertEquals("SUCCEEDED", graphqlPayload.path("outcome").asText());
+            var graphqlData = JSON.readTree(graphqlPayload.path("data").asText());
+            assertEquals(2, graphqlData.path("rowCount").asInt());
+            assertEquals("graphql-trace-004", graphqlData.at("/receipt/correlationId").asText());
+            assertTrue(graphqlData.at("/rows/0").has("Supplier.RiskScore"));
+
+            String graphqlMutationBody = "{\"query\":\"mutation($mutation: String!) { foundgineMutation(mutationJson: $mutation) { outcome data errorCode } }\","
+                    + "\"variables\":{\"mutation\":" + JSON.writeValueAsString(
+                            "{\"tool\":\"place_order\",\"customerId\":1,\"productId\":4,\"quantity\":1,\"idempotencyKey\":\"graphql-intent-place-1\"}") + "}}";
+            var graphqlMutationRequest = HttpRequest.newBuilder(URI.create(base + "/graphql"))
+                    .header(IntentCaller.ROLE_HEADER, "supply_chain_manager")
+                    .POST(HttpRequest.BodyPublishers.ofString(graphqlMutationBody)).build();
+            var graphqlMutationResponse = client.send(graphqlMutationRequest, HttpResponse.BodyHandlers.ofString());
+            assertEquals("SUCCEEDED", JSON.readTree(graphqlMutationResponse.body())
+                    .at("/data/foundgineMutation/outcome").asText(), graphqlMutationResponse.body());
+
+            var graphqlDeniedRequest = HttpRequest.newBuilder(URI.create(base + "/graphql"))
+                    .header(IntentCaller.ROLE_HEADER, "customer")
+                    .POST(HttpRequest.BodyPublishers.ofString(graphqlBody)).build();
+            var graphqlDenied = client.send(graphqlDeniedRequest, HttpResponse.BodyHandlers.ofString());
+            assertEquals("FORBIDDEN", JSON.readTree(graphqlDenied.body())
+                    .at("/data/foundgineIntent/outcome").asText());
         } finally {
             server.stop();
         }

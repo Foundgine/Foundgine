@@ -3,6 +3,9 @@ package com.foundgine.runtime;
 import com.foundgine.core.execution.CancellationToken;
 import com.foundgine.core.execution.ExecutionContext;
 
+import com.foundgine.runtime.recovery.MutationRecovery;
+
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -14,6 +17,11 @@ import java.util.concurrent.CompletionStage;
 public interface IFoundgineMutations {
 
     MutationDryRunResult dryRun(SemanticMutationRequest request);
+
+    /** Correlated dry-run overload; implementations may use the identifier for audit tracing only. */
+    default MutationDryRunResult dryRun(SemanticMutationRequest request, String correlationId) {
+        return dryRun(request);
+    }
 
     CompletionStage<MutationExecutionResult> executeAsync(
             SemanticMutationRequest request,
@@ -31,6 +39,11 @@ public interface IFoundgineMutations {
 
     MutationPlanApproval approve(SemanticMutationRequest request, String approvedBy);
 
+    /** Correlated approval overload; the caller identity must still come from the trusted principal. */
+    default MutationPlanApproval approve(SemanticMutationRequest request, String approvedBy, String correlationId) {
+        return approve(request, approvedBy);
+    }
+
     CompletionStage<MutationExecutionResult> executeApprovedAsync(
             MutationPlanApproval approval,
             ExecutionContext context,
@@ -44,5 +57,10 @@ public interface IFoundgineMutations {
     default CompletionStage<MutationExecutionResult> executeApprovedAsync(
             MutationPlanApproval approval) {
         return executeApprovedAsync(approval, null, CancellationToken.NONE);
+    }
+
+    /** Reconciliation and recovery operations; empty unless the implementation keeps an execution ledger. */
+    default Optional<MutationRecovery> recovery() {
+        return Optional.empty();
     }
 }

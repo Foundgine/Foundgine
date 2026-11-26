@@ -50,6 +50,16 @@ public static class OpenIntentDemoSecurity
         return Task.CompletedTask;
     }
 
+    /// <summary>Returns the actor only when both demo credentials validate. Never trust X-Foundgine-Actor alone.</summary>
+    public static string? TryGetAuthenticatedActor(HttpContext context)
+    {
+        if (!context.Request.Headers.TryGetValue(ActorHeader, out var actorValues) ||
+            !context.Request.Headers.TryGetValue(TokenHeader, out var tokenValues))
+            return null;
+        var actor = actorValues.ToString();
+        return Authenticate(actor, tokenValues.ToString()) ? actor : null;
+    }
+
     public static SecurityExecutionContext? GetSecurityExecutionContext(HttpContext context) =>
         context.Items.TryGetValue(typeof(SecurityExecutionContext), out var value)
             ? value as SecurityExecutionContext

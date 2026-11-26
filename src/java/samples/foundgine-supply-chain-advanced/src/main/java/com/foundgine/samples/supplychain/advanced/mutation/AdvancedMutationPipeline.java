@@ -11,6 +11,8 @@ import com.foundgine.core.semantic.SemanticModelBuilder;
 import com.foundgine.core.semantic.mutation.*;
 import com.foundgine.core.semantic.security.SecurityInvariantIds;
 import com.foundgine.runtime.*;
+import com.foundgine.runtime.controlplane.auditlog.IAuditLog;
+import com.foundgine.runtime.controlplane.auditlog.InMemoryAuditLog;
 import com.foundgine.samples.supplychain.advanced.authorization.Authorization;
 import com.foundgine.samples.supplychain.advanced.authorization.SupplyChainAuthorization;
 import com.foundgine.samples.supplychain.advanced.data.SupplyChainData;
@@ -23,7 +25,7 @@ import java.util.concurrent.CompletionStage;
  * execution IR -> provider -> domain mutation. The provider is deliberately an application adapter;
  * the runtime remains provider-neutral.
  */
-public final class AdvancedMutationPipeline {
+public final class AdvancedMutationPipeline implements IFoundgineMutations {
     public static final EntityId PLACE_ORDER = EntityId.create("PlaceOrderCommand");
     public static final EntityId CANCEL_ORDER = EntityId.create("CancelOrderCommand");
 
@@ -39,6 +41,18 @@ public final class AdvancedMutationPipeline {
             SupplyChainData data,
             Authorization.Context auth,
             IMutationBatchExecutionProvider provider) {
+        this(data, auth, provider, new InMemoryAuditLog());
+    }
+
+    public AdvancedMutationPipeline(SupplyChainData data, Authorization.Context auth, IAuditLog auditLog) {
+        this(data, auth, new DomainMutationProvider(data, auth), auditLog);
+    }
+
+    public AdvancedMutationPipeline(
+            SupplyChainData data,
+            Authorization.Context auth,
+            IMutationBatchExecutionProvider provider,
+            IAuditLog auditLog) {
         this.data = Objects.requireNonNull(data);
         this.auth = Objects.requireNonNull(auth);
         var model = mutationModel();
@@ -57,51 +71,80 @@ public final class AdvancedMutationPipeline {
                         null,
                         null,
                         null,
-                        null);
+                        null,
+                        null,
+                        null,
+                        Objects.requireNonNull(auditLog, "auditLog"));
+    }
+
+    public SemanticMutationRequest createPlaceOrderRequest(
+            String actor, int customerId, int productId, int quantity, String idempotencyKey) {
+        var op = new SemanticMutationOperation(
+                PLACE_ORDER,
+                SemanticMutationKind.CREATE,
+                List.of(
+                        value(PLACE_ORDER, "Actor", actor),
+                        value(PLACE_ORDER, "CustomerId", customerId),
+                        value(PLACE_ORDER, "ProductId", productId),
+                        value(PLACE_ORDER, "Quantity", quantity),
+                        value(PLACE_ORDER, "IdempotencyKey", idempotencyKey)),
+                null, List.of(), List.of(field(PLACE_ORDER, "OrderId")), List.of(), List.of());
+        return new SemanticMutationRequest(new SemanticMutationOperationGraph(List.of(op)));
+    }
+
+    public SemanticMutationRequest createCancelOrderRequest(
+            String actor, int orderId, String idempotencyKey) {
+        var op = new SemanticMutationOperation(
+                CANCEL_ORDER,
+                SemanticMutationKind.CREATE,
+                List.of(
+                        value(CANCEL_ORDER, "Actor", actor),
+                        value(CANCEL_ORDER, "OrderId", orderId),
+                        value(CANCEL_ORDER, "IdempotencyKey", idempotencyKey)),
+                null, List.of(), List.of(field(CANCEL_ORDER, "OrderId")), List.of(), List.of());
+        return new SemanticMutationRequest(new SemanticMutationOperationGraph(List.of(op)));
     }
 
     public CompletionStage<MutationExecutionResult> placeOrder(
             String actor, int customerId, int productId, int quantity, String idempotencyKey) {
-        var op =
-                new SemanticMutationOperation(
-                        PLACE_ORDER,
-                        SemanticMutationKind.CREATE,
-                        List.of(
-                                value(PLACE_ORDER, "Actor", actor),
-                                value(PLACE_ORDER, "CustomerId", customerId),
-                                value(PLACE_ORDER, "ProductId", productId),
-                                value(PLACE_ORDER, "Quantity", quantity),
-                                value(PLACE_ORDER, "IdempotencyKey", idempotencyKey)),
-                        null,
-                        List.of(),
-                        List.of(field(PLACE_ORDER, "OrderId")),
-                        List.of(),
-                        List.of());
-        return engine.executeAsync(
-                new SemanticMutationRequest(new SemanticMutationOperationGraph(List.of(op))),
-                ExecutionContext.EMPTY,
-                CancellationToken.NONE);
+        return executeAsync(createPlaceOrderRequest(actor, customerId, productId, quantity, idempotencyKey));
     }
 
     public CompletionStage<MutationExecutionResult> cancelOrder(
             String actor, int orderId, String idempotencyKey) {
-        var op =
-                new SemanticMutationOperation(
-                        CANCEL_ORDER,
-                        SemanticMutationKind.CREATE,
-                        List.of(
-                                value(CANCEL_ORDER, "Actor", actor),
-                                value(CANCEL_ORDER, "OrderId", orderId),
-                                value(CANCEL_ORDER, "IdempotencyKey", idempotencyKey)),
-                        null,
-                        List.of(),
-                        List.of(field(CANCEL_ORDER, "OrderId")),
-                        List.of(),
-                        List.of());
-        return engine.executeAsync(
-                new SemanticMutationRequest(new SemanticMutationOperationGraph(List.of(op))),
-                ExecutionContext.EMPTY,
-                CancellationToken.NONE);
+        return executeAsync(createCancelOrderRequest(actor, orderId, idempotencyKey));
+    }
+
+    @Override
+    public MutationDryRunResult dryRun(SemanticMutationRequest request) {
+        return engine.dryRun(request);
+    }
+
+    @Override
+    public MutationDryRunResult dryRun(SemanticMutationRequest request, String correlationId) {
+        return engine.dryRun(request, correlationId);
+    }
+
+    @Override
+    public CompletionStage<MutationExecutionResult> executeAsync(
+            SemanticMutationRequest request, ExecutionContext context, CancellationToken cancellationToken) {
+        return engine.executeAsync(request, context, cancellationToken);
+    }
+
+    @Override
+    public MutationPlanApproval approve(SemanticMutationRequest request, String approvedBy) {
+        return engine.approve(request, approvedBy);
+    }
+
+    @Override
+    public MutationPlanApproval approve(SemanticMutationRequest request, String approvedBy, String correlationId) {
+        return engine.approve(request, approvedBy, correlationId);
+    }
+
+    @Override
+    public CompletionStage<MutationExecutionResult> executeApprovedAsync(
+            MutationPlanApproval approval, ExecutionContext context, CancellationToken cancellationToken) {
+        return engine.executeApprovedAsync(approval, context, cancellationToken);
     }
 
     private static SemanticMutationField value(EntityId entity, String name, Object value) {

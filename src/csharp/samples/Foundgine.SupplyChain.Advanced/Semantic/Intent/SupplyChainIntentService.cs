@@ -74,7 +74,10 @@ public sealed class SupplyChainIntentService
         KnownTenants = tenants;
     }
 
-    /// <summary>Tenants present in the data; anything else is refused by <see cref="IntentCaller.Resolve"/>.</summary>
+    /// <summary>Tenants present in the data; anything else is refused by <see>
+    ///         <cref>IntentCaller.Resolve</cref>
+    ///     </see>
+    ///     .</summary>
     public IReadOnlySet<string> KnownTenants { get; }
 
     // ------------------------------------------------------------------ execute

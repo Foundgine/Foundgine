@@ -1,4 +1,4 @@
-# Foundgine 3.4.1 — Website full technical context
+# Foundgine 3.4.2 — Website full technical context
 
 Foundgine is a configurable semantic and execution boundary for application capabilities. It separates application meaning, persistence mapping, authorization and execution from the interfaces and agents that consume them.
 
@@ -86,7 +86,7 @@ Three thin **transport clients** for a running Foundgine server live in this rep
 - **Protocols:** MCP over Streamable HTTP (default path `/mcp`, default protocol version `2025-06-18`) and the Temporal workflow HTTP routes under `/foundgine/workflows` (`processes`, `describe`, `start`, `status`, `decide`, `cancel`, plus `waitForCompletion`, `watch`, `startAndWatch`).
 - **Main calls:** `listCapabilities()` / `list_capabilities()`, `execute(toolName, args)`, `notifications()`, `close()`, and the `workflows` client.
 - **Server MCP tools they call:** `foundgine_capabilities`, `foundgine_query` (open intent), `foundgine_query_semantic` (structured JSON intent), `foundgine_mutation_dry_run`, `foundgine_mutation_approve`, `foundgine_mutation_execute_approved`. Query tools take one `intentJson` string (`rootEntity`, `selections`, optional `filter`/`order`/`limit`/`offset`/`after`). Discovery via `foundgine_capabilities` is advisory and is not authorization.
-- **Status:** all three are marked development packages, not release-ready SDKs, at version 3.4.1. Do not claim a registry release; not yet verified against a real server in CI or in every browser runtime.
+- **Status:** all three are marked development packages, not release-ready SDKs, at version 3.4.2. Do not claim a registry release; not yet verified against a real server in CI or in every browser runtime.
 - **Docs:** `src/README.md` (layout), `src/typescript/README.md`, `src/python/README.md`, `src/wasm/README.md`, and `docs/wiki/client-sdks.md` (comparison, quick start, verification status).
 - **Do not describe the SDKs as:** a semantic runtime, a Foundgine server, an authorization layer, or an ORM/database client.
 
@@ -133,7 +133,7 @@ The source reactor also contains `foundgine-migrations` and `foundgine-aot-gener
 
 ## Current release
 
-**3.4.1 · .NET 10 and Java 27**
+**3.4.2 · .NET 10 and Java 27**
 
 The fluent configuration API was introduced in 2.3.0 and remains part of the current model API (`FoundgineModel`, with semantic, persistence, entity-map, connection and model-connection configuration classes) in both .NET and Java. It compiles to the same metadata registry as attributes/annotations and the AOT generator; see `docs/MAPPING.md`.
 
@@ -171,3 +171,32 @@ The repository website is published under the GitHub Pages project path. Current
 - `https://foundgine.github.io/Foundgine/docs-site/agent-benchmark/supply-chain/` — benchmark report
 - `https://foundgine.github.io/Foundgine/docs-site/packages/` — package map
 - `https://foundgine.github.io/Foundgine/docs-site/performance/` — performance material
+
+## Public website reference
+
+The [complete technical overview](https://foundgine.github.io/Foundgine/docs-site/foundgine-overview.html) is the long-form HTML companion to this context file. It provides a navigable reference for the architecture and implementation topics below. Use the repository documentation and source tree as the authority for exact implementation status and version-specific details.
+
+### Website navigation
+
+- [Website home](https://foundgine.github.io/Foundgine/docs-site/)
+- [What is Foundgine?](https://foundgine.github.io/Foundgine/docs-site/what-is-foundgine.html)
+- [Getting started](https://foundgine.github.io/Foundgine/docs-site/getting-started/)
+- [Architecture](https://foundgine.github.io/Foundgine/docs-site/architecture/)
+- [How it works](https://foundgine.github.io/Foundgine/docs-site/how-it-works/)
+- [Walkthrough](https://foundgine.github.io/Foundgine/docs-site/walkthrough/)
+- [Security](https://foundgine.github.io/Foundgine/docs-site/security/)
+- [AI agents](https://foundgine.github.io/Foundgine/docs-site/ai-agents/)
+- [Packages](https://foundgine.github.io/Foundgine/docs-site/packages/)
+- [Samples](https://foundgine.github.io/Foundgine/docs-site/samples/)
+- [Performance evidence](https://foundgine.github.io/Foundgine/docs-site/performance/)
+- [Complete technical overview](https://foundgine.github.io/Foundgine/docs-site/foundgine-overview.html)
+
+### Repository entry points
+
+- [Root README](https://raw.githubusercontent.com/Foundgine/Foundgine/main/README.md)
+- [Getting started](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/GETTING-STARTED.md)
+- [Architecture](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/ARCHITECTURE.md)
+- [Security](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/SECURITY.md)
+- [Testing](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/TESTING.md)
+- [Feature wiki](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/wiki/index.md)
+- [Repository map](https://raw.githubusercontent.com/Foundgine/Foundgine/main/REPO-MAP.md)

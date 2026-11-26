@@ -47,6 +47,15 @@ Execution verifies the signature before parsing the signed mutation JSON, binds 
 and delegates authorization and exact plan-fingerprint revalidation to the mutation engine. Unsigned legacy JSON
 approval records are rejected. Expiry and replay are enforced by `FoundgineMcpApprovalTokenPolicy`; hosts own the replay store and private-key custody.
 
+## Reconciling a lost execution
+
+With an execution ledger configured (`FoundgineOptions.MutationLedger`), `foundgine_mutation_execute_approved` records
+each execution under the approval id. If the response is lost or the outcome is unknown, pass the same approval token to
+`foundgine_mutation_reconcile`. It does not consume the token or execute the mutation, and it only searches the caller's
+own tenant and subject. The `status` field is `committed`, `aborted`, `in_progress`, `unresolved` or `not_found`, and
+`nextStep` says what the agent should do. `not_found` does not prove that nothing was applied. Without a ledger the tool
+reports that reconciliation is not configured.
+
 ## Approval-token key rotation
 
 `FoundgineMcpApprovalKeyRing` is both the signer and the key resolver. It signs with one active key and keeps older

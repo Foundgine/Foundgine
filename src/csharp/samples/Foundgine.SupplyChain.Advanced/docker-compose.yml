@@ -1,6 +1,9 @@
 # Foundgine.SupplyChain.Advanced semantic MCP/intent API.
 # The host is in-memory and stateless, so it needs no database.
-# Endpoints: /mcp, /intent*, /health, /health/ready.
+# Endpoints: /mcp, /intent*, /graphql, /health, /health/ready.
+# The container runs as Production, where the demo X-Foundgine-* header bridge is off, so /intent*,
+# /graphql and the foundgine_intent tool reject callers until real authentication is configured.
+# For a local demo only, set ASPNETCORE_ENVIRONMENT=Development (this also enables verbose diagnostics).
 services:
   mcp-api:
     build:

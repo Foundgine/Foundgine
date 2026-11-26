@@ -59,8 +59,17 @@ import com.foundgine.core.semantic.security.execution.SecurityResourceLimitValid
 import com.foundgine.core.semantic.security.execution.SecurityResourceLimits;
 import com.foundgine.core.semantic.security.warrants.ISecurityWarrantKeyResolver;
 import com.foundgine.core.semantic.security.warrants.ISecurityWarrantReplayStore;
+import com.foundgine.core.semantic.security.warrants.ISecurityWarrantRevocationStore;
+import com.foundgine.core.semantic.security.warrants.ISecurityWarrantDelegationTrustResolver;
+import com.foundgine.core.semantic.security.warrants.SecurityWarrant;
+import com.foundgine.core.semantic.security.warrants.SecurityWarrantExecutionTrust;
 import com.foundgine.core.semantic.security.warrants.SecurityWarrantReplayGuard;
+import com.foundgine.core.semantic.security.warrants.SecurityWarrantRevocationGuard;
+import com.foundgine.core.semantic.security.warrants.SecurityWarrantRevocationSnapshot;
 import com.foundgine.core.semantic.security.warrants.SecurityWarrantVerifier;
+import com.foundgine.runtime.controlplane.auditlog.AuditEvent;
+import com.foundgine.runtime.controlplane.auditlog.IAuditLog;
+import com.foundgine.runtime.controlplane.auditlog.InMemoryAuditLog;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -119,8 +128,11 @@ public final class FoundgineEngine implements IFoundgine {
     private final ISecurityWarrantKeyResolver warrantKeyResolver;
     private final String expectedWarrantIssuer;
     private final ISecurityWarrantReplayStore warrantReplayStore;
+    private final ISecurityWarrantRevocationStore warrantRevocationStore;
+    private final ISecurityWarrantDelegationTrustResolver warrantDelegationTrustResolver;
     private final SecurityResourceLimits securityResourceLimits;
     private final IExecutionAuthorizationRevalidator executionAuthorizationRevalidator;
+    private final IAuditLog auditLog;
     private final BiFunction<
                     SemanticAuthorizationEvidence,
                     CancellationToken,
@@ -155,6 +167,8 @@ public final class FoundgineEngine implements IFoundgine {
         this.warrantKeyResolver = options.warrantKeyResolver();
         this.expectedWarrantIssuer = options.expectedWarrantIssuer();
         this.warrantReplayStore = options.warrantReplayStore();
+        this.warrantRevocationStore = options.warrantRevocationStore();
+        this.warrantDelegationTrustResolver = options.warrantDelegationTrustResolver();
         this.securityResourceLimits =
                 options.securityResourceLimits() != null
                         ? options.securityResourceLimits()
@@ -165,6 +179,7 @@ public final class FoundgineEngine implements IFoundgine {
                         : new SemanticExecutionAuthorizationRevalidator();
         this.executionAuthorizationAuthorityResolver =
                 options.executionAuthorizationAuthorityResolver();
+        this.auditLog = options.auditLog() != null ? options.auditLog() : new InMemoryAuditLog();
         this.securityResourceLimits.validate();
     }
 
@@ -213,9 +228,12 @@ public final class FoundgineEngine implements IFoundgine {
         this.warrantKeyResolver = null;
         this.expectedWarrantIssuer = null;
         this.warrantReplayStore = null;
+        this.warrantRevocationStore = null;
+        this.warrantDelegationTrustResolver = null;
         this.securityResourceLimits = new SecurityResourceLimits();
         this.executionAuthorizationRevalidator = new SemanticExecutionAuthorizationRevalidator();
         this.executionAuthorizationAuthorityResolver = null;
+        this.auditLog = new InMemoryAuditLog();
     }
 
     FoundgineEngine(
@@ -268,12 +286,9 @@ public final class FoundgineEngine implements IFoundgine {
             throw new IllegalStateException(
                     "Warrant-backed capability discovery requires a warrant key resolver.");
 
-        SecurityWarrantVerifier.verify(
-                security.warrant(),
-                warrantKeyResolver,
-                Instant.now(),
-                expectedWarrantIssuer,
-                security.audience());
+        Instant now = Instant.now();
+        verifyWarrantTrust(security, now);
+        validateWarrantRevocation(security, now);
     }
 
     @Override
@@ -322,6 +337,7 @@ public final class FoundgineEngine implements IFoundgine {
     public CompletionStage<ExecutionResult> executeApprovedAsync(
             PlanApproval approval, ExecutionContext context, CancellationToken cancellationToken) {
         Objects.requireNonNull(approval, "approval");
+        try {
         SecurityResourceLimitValidator.validate(approval.request(), securityResourceLimits);
 
         if (!versions.semanticModelVersion().equals(approval.semanticModelVersion())
@@ -372,14 +388,24 @@ public final class FoundgineEngine implements IFoundgine {
                 cancellationToken,
                 approval,
                 authorization.evidence());
+        } catch (RuntimeException failure) {
+            recordReadDenied(approval.request().security(), context, failure);
+            throw failure;
+        }
     }
 
     @Override
     public CompletionStage<ExecutionResult> executeAsync(
             ReadIntent intent, ExecutionContext context, CancellationToken cancellationToken) {
         Objects.requireNonNull(intent, "intent");
-        authenticateBeforeDiscovery(intent.security());
-        SemanticRequest request = new ReadIntentCompiler(model).compile(intent);
+        SemanticRequest request;
+        try {
+            authenticateBeforeDiscovery(intent.security());
+            request = new ReadIntentCompiler(model).compile(intent);
+        } catch (RuntimeException failure) {
+            recordReadDenied(intent.security(), context, failure);
+            throw failure;
+        }
         return executeAsync(request, context, cancellationToken);
     }
 
@@ -389,39 +415,55 @@ public final class FoundgineEngine implements IFoundgine {
             ExecutionContext context,
             CancellationToken cancellationToken) {
         Objects.requireNonNull(request, "request");
-        SecurityResourceLimitValidator.validate(request, securityResourceLimits);
+        try {
+            SecurityResourceLimitValidator.validate(request, securityResourceLimits);
+            authenticateBeforeDiscovery(request);
+            var graph = new SemanticRequestResolver(contract).resolve(request);
+            SemanticOperation semanticOperation = SemanticOperationCompiler.compile(graph);
+            validateWarrant(request, semanticOperation, true);
+            SemanticAuthorizationResult authorization =
+                    new SemanticAuthorizer(authorizationPolicy)
+                            .authorizeWithEvidence(contract, semanticOperation);
+            authorization.ensureMatches(contract);
+            SemanticPlan plan = buildSecuredPlan(authorization);
+            ExecutionIR executionIr = ExecutionIRCompiler.compile(plan);
+            String cacheKey = buildProviderPlanCacheKey(plan, request.security());
+            ProviderPlan providerPlan =
+                    ProviderPlanCacheExtensions.getOrAdd(
+                            planCache,
+                            cacheKey,
+                            () ->
+                                    SecurityInvariantProofGate.attachAndValidate(
+                                            compiler.compile(executionIr), executionIr, compiler));
 
-        authenticateBeforeDiscovery(request);
-        var graph = new SemanticRequestResolver(contract).resolve(request);
-        SemanticOperation semanticOperation = SemanticOperationCompiler.compile(graph);
-        validateWarrant(request, semanticOperation, true);
-        SemanticAuthorizationResult authorization =
-                new SemanticAuthorizer(authorizationPolicy)
-                        .authorizeWithEvidence(contract, semanticOperation);
-        authorization.ensureMatches(contract);
-        SemanticPlan plan = buildSecuredPlan(authorization);
-        ExecutionIR executionIr = ExecutionIRCompiler.compile(plan);
-        String cacheKey = buildProviderPlanCacheKey(plan, request.security());
-        ProviderPlan providerPlan =
-                ProviderPlanCacheExtensions.getOrAdd(
-                        planCache,
-                        cacheKey,
-                        () ->
-                                SecurityInvariantProofGate.attachAndValidate(
-                                        compiler.compile(executionIr), executionIr, compiler));
+            ExecutionContext executionContext =
+                    attachPaginationContext(plan, context != null ? context : ExecutionContext.EMPTY);
 
-        ExecutionContext executionContext =
-                attachPaginationContext(plan, context != null ? context : ExecutionContext.EMPTY);
+            return executeAndEnrichEvidenceAsync(
+                    request,
+                    plan,
+                    providerPlan,
+                    executionContext,
+                    executionIr,
+                    cancellationToken,
+                    null,
+                    authorization.evidence());
+        } catch (RuntimeException failure) {
+            recordReadDenied(request.security(), context, failure);
+            throw failure;
+        }
+    }
 
-        return executeAndEnrichEvidenceAsync(
-                request,
-                plan,
-                providerPlan,
-                executionContext,
-                executionIr,
-                cancellationToken,
-                null,
-                authorization.evidence());
+    private void recordReadDenied(SecurityExecutionContext security, ExecutionContext context,
+            RuntimeException failure) {
+        String correlationId = correlationId(context);
+        auditLog.record(AuditEvent.createCorrelated(
+                AuditEvent.AuditCategory.READ_DENIED, "semantic_read",
+                security == null ? null : security.subject(),
+                security == null ? null : security.tenant(),
+                ExecutionEvidenceFactory.hash(failure.getClass().getName()),
+                "Read execution denied before provider dispatch: " + failure.getClass().getSimpleName(),
+                correlationId));
     }
 
     private String buildProviderPlanCacheKey(SemanticPlan plan, SecurityExecutionContext security) {
@@ -461,6 +503,33 @@ public final class FoundgineEngine implements IFoundgine {
                     "The warrant does not authorize the requested subject or tenant scope.");
     }
 
+    private void verifyWarrantTrust(SecurityExecutionContext security, Instant now) {
+        SecurityWarrant warrant = security.warrant();
+        boolean delegated = warrant.parentId() != null
+                || warrant.parentDigest() != null
+                || !warrant.delegationPath().isEmpty();
+        if (delegated || security.delegationChain() != null) {
+            if (expectedWarrantIssuer == null || expectedWarrantIssuer.isBlank())
+                throw new IllegalStateException(
+                        "Delegated warrant execution requires an explicitly configured root issuer.");
+            SecurityWarrantExecutionTrust.verify(
+                    warrant, warrantKeyResolver, expectedWarrantIssuer, security.audience(), now,
+                    security.delegationChain(), warrantDelegationTrustResolver, security.tenant());
+            return;
+        }
+        SecurityWarrantVerifier.verify(
+                warrant, warrantKeyResolver, now, expectedWarrantIssuer, security.audience());
+    }
+
+    private SecurityWarrantRevocationSnapshot validateWarrantRevocation(
+            SecurityExecutionContext security, Instant now) {
+        if (warrantRevocationStore == null)
+            throw new IllegalStateException(
+                    "Warrant-backed discovery and execution require a warrant revocation store; refusing to run without current revocation state.");
+        return SecurityWarrantRevocationGuard.validate(
+                security.warrant(), warrantRevocationStore, now);
+    }
+
     private void validateWarrant(
             SemanticRequest request, SemanticOperation operation, boolean consumeReplay) {
         SecurityExecutionContext security = request.security();
@@ -470,12 +539,9 @@ public final class FoundgineEngine implements IFoundgine {
             throw new IllegalStateException(
                     "A security warrant was supplied, but no warrant key resolver is configured.");
 
-        SecurityWarrantVerifier.verify(
-                security.warrant(),
-                warrantKeyResolver,
-                Instant.now(),
-                expectedWarrantIssuer,
-                security.audience());
+        Instant now = Instant.now();
+        verifyWarrantTrust(security, now);
+        validateWarrantRevocation(security, now);
 
         List<SemanticCapability> capabilities = new ArrayList<>();
         for (var node : traverseDepthFirst(operation.root())) {
@@ -642,13 +708,44 @@ public final class FoundgineEngine implements IFoundgine {
 
         context.ensureWithinDeadline();
         Instant startedAt = Instant.now();
+        SecurityWarrantRevocationSnapshot revocationSnapshot = null;
+        if (request.security() != null) {
+            // Revalidate the complete signature/delegation boundary immediately before dispatch.
+            verifyWarrantTrust(request.security(), startedAt);
+            revocationSnapshot = validateWarrantRevocation(request.security(), startedAt);
+        }
+        final SecurityWarrantRevocationSnapshot dispatchRevocationSnapshot = revocationSnapshot;
         var deadlineCts = context.createDeadlineCancellationSource(cancellationToken);
         return provider.executeAsync(providerPlan, context, deadlineCts.token())
+                .whenComplete((ignored, error) -> {
+                    if (error != null) {
+                        String correlationId = correlationId(context);
+                        auditLog.record(AuditEvent.createCorrelated(
+                                AuditEvent.AuditCategory.READ_FAILED, "semantic_read",
+                                request.security() == null ? null : request.security().subject(),
+                                request.security() == null ? null : request.security().tenant(),
+                                ExecutionEvidenceFactory.hash(error.getClass().getName()),
+                                "Read provider execution failed", correlationId));
+                    }
+                })
                 .thenApply(
                         result -> {
                             context.ensureWithinDeadline();
+                            if (dispatchRevocationSnapshot != null) {
+                                SecurityWarrantRevocationSnapshot finalSnapshot =
+                                        validateWarrantRevocation(request.security(), Instant.now());
+                                dispatchRevocationSnapshot.assertUnchanged(finalSnapshot);
+                            }
                             Instant completedAt = Instant.now();
-                            if (result.evidence() == null) return result;
+                            if (result.evidence() == null) {
+                                auditLog.record(AuditEvent.createCorrelated(
+                                        AuditEvent.AuditCategory.READ_SUCCEEDED, "semantic_read",
+                                        request.security() == null ? null : request.security().subject(),
+                                        request.security() == null ? null : request.security().tenant(),
+                                        ExecutionEvidenceFactory.hash("completed-without-provider-evidence"),
+                                        "Read provider completed without receipt evidence", correlationId(context)));
+                                return result;
+                            }
 
                             String intentFingerprint;
                             try {
@@ -691,6 +788,7 @@ public final class FoundgineEngine implements IFoundgine {
                                     enumerateNodes(plan.root()).stream()
                                             .map(SemanticPlanNode::id)
                                             .toList();
+                            String correlationId = correlationId(context);
                             ExecutionReceipt receipt =
                                     ExecutionReceiptFactory.create(
                                             UUID.randomUUID().toString().replace("-", ""),
@@ -707,8 +805,15 @@ public final class FoundgineEngine implements IFoundgine {
                                             versions.semanticModelVersion(),
                                             approval != null ? approval.approvalId() : null,
                                             approval != null ? approval.approvedBy() : null,
-                                            approval != null ? approval.approvedAt() : null);
+                                            approval != null ? approval.approvedAt() : null,
+                                            correlationId);
 
+                            auditLog.record(AuditEvent.createCorrelated(
+                                    AuditEvent.AuditCategory.READ_SUCCEEDED, "semantic_read",
+                                    request.security() == null ? null : request.security().subject(),
+                                    request.security() == null ? null : request.security().tenant(),
+                                    receipt.resultFingerprint(), "Read execution completed; receipt=" + receipt.requestId(),
+                                    correlationId));
                             return new ExecutionResult(
                                     result.rows(), result.pageInfo(), evidence, receipt);
                         });
@@ -719,6 +824,12 @@ public final class FoundgineEngine implements IFoundgine {
         result.add(node);
         for (var child : node.children()) result.addAll(enumerateNodes(child));
         return result;
+    }
+
+    private static String correlationId(ExecutionContext context) {
+        Object value = context == null ? null : context.effectiveValues().get(ExecutionContextKeys.CORRELATION_ID);
+        if (value instanceof String text && text.matches("[A-Za-z0-9._:-]{1,128}")) return text;
+        return UUID.randomUUID().toString().replace("-", "");
     }
 
     private static ExecutionContext attachPaginationContext(

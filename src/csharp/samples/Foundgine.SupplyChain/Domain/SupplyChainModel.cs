@@ -22,10 +22,6 @@ public sealed class SupplyChainModel : FoundgineModel
         model.Configure<CatalogProductModel>();
         model.Configure<InventoryPositionModel>();
         model.Configure<ShipmentModel>();
-        model.Configure<Plain<Supplier>>();
-        model.Configure<Plain<Category>>();
-        model.Configure<Plain<Warehouse>>();
-        model.Configure<Plain<Carrier>>();
 
         // Persistence: table, key, columns
         model.Configure<CustomerTable>();

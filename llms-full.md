@@ -1,4 +1,4 @@
-# Foundgine 3.4.1 — Technical context
+# Foundgine 3.4.2 — Technical context
  
 Foundgine is a configurable semantic and execution boundary for application capabilities. It separates application meaning, persistence mapping, authorization and execution from the interfaces and agents that consume them.
  
@@ -91,7 +91,7 @@ Three thin transport clients for a running Foundgine server are published as pac
 - **foundgine-extensions** — GraphQL, Keycloak and Temporal extensions.
 ## Current release
  
-3.4.1 · .NET 10 and Java 27
+3.4.2 · .NET 10 and Java 27
  
 The fluent configuration API (introduced in 2.3.0) is part of the current model API (`FoundgineModel`) in both .NET and Java. It compiles to the same metadata registry as attributes/annotations and the AOT generator.
 
@@ -104,3 +104,32 @@ The repository is public, Apache-2.0 licensed and unrestricted for crawlers (`ro
 - **Agent rules:** `AGENTS.md` (build and test commands, architectural rules). `CLAUDE.md` and `.github/copilot-instructions.md` point to it.
 - **Hosted indexes:** GitMCP `https://gitmcp.io/Foundgine/Foundgine`; DeepWiki `https://deepwiki.com/Foundgine/Foundgine` (MCP: `https://mcp.deepwiki.com/mcp`); Context7 `https://context7.com/foundgine/foundgine` (configured by `context7.json`). Steering notes for DeepWiki are in `.devin/wiki.json`. Ready-made client configs: `.mcp.json`, `.cursor/mcp.json`.
 - **Details:** `docs/AI-ACCESS.md`.
+
+## Public website reference
+
+The [complete technical overview](https://foundgine.github.io/Foundgine/docs-site/foundgine-overview.html) is the long-form HTML companion to this context file. It provides a navigable reference for the architecture and implementation topics below. Use the repository documentation and source tree as the authority for exact implementation status and version-specific details.
+
+### Website navigation
+
+- [Website home](https://foundgine.github.io/Foundgine/docs-site/)
+- [What is Foundgine?](https://foundgine.github.io/Foundgine/docs-site/what-is-foundgine.html)
+- [Getting started](https://foundgine.github.io/Foundgine/docs-site/getting-started/)
+- [Architecture](https://foundgine.github.io/Foundgine/docs-site/architecture/)
+- [How it works](https://foundgine.github.io/Foundgine/docs-site/how-it-works/)
+- [Walkthrough](https://foundgine.github.io/Foundgine/docs-site/walkthrough/)
+- [Security](https://foundgine.github.io/Foundgine/docs-site/security/)
+- [AI agents](https://foundgine.github.io/Foundgine/docs-site/ai-agents/)
+- [Packages](https://foundgine.github.io/Foundgine/docs-site/packages/)
+- [Samples](https://foundgine.github.io/Foundgine/docs-site/samples/)
+- [Performance evidence](https://foundgine.github.io/Foundgine/docs-site/performance/)
+- [Complete technical overview](https://foundgine.github.io/Foundgine/docs-site/foundgine-overview.html)
+
+### Repository entry points
+
+- [Root README](https://raw.githubusercontent.com/Foundgine/Foundgine/main/README.md)
+- [Getting started](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/GETTING-STARTED.md)
+- [Architecture](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/ARCHITECTURE.md)
+- [Security](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/SECURITY.md)
+- [Testing](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/TESTING.md)
+- [Feature wiki](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/wiki/index.md)
+- [Repository map](https://raw.githubusercontent.com/Foundgine/Foundgine/main/REPO-MAP.md)

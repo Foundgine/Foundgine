@@ -4,15 +4,8 @@ using Foundgine.SupplyChain.Domain.Models;
 namespace Foundgine.SupplyChain.Domain;
 
 // Semantic configuration: relationships only. Entity names default to the type names
-// (Customer, SalesOrder, ...). Tables and columns are in PersistenceConfigurations.cs.
-
-/// <summary>An entity with no relationships of its own.</summary>
-internal sealed class Plain<T> : FoundgineModelConfiguration<T>
-{
-    public override void Configure(FoundgineModelBuilder<T> model)
-    {
-    }
-}
+// (Customer, SalesOrder, ...). Entities with no relationships of their own (Supplier, Category, Warehouse,
+// Carrier) need no configuration: the entity map defines them. Tables and columns are in PersistenceConfigurations.cs.
 
 internal sealed class CustomerModel : FoundgineModelConfiguration<Customer>
 {

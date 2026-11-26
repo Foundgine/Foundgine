@@ -1,0 +1,51 @@
+{
+  "format": "foundgine-mutation-ledger-v1",
+  "journal": "mutation-ledger-journal.jsonl",
+  "finalRecords": [
+    {
+      "tenant": "t1",
+      "subject": "s1",
+      "idempotencyKey": "k-committed",
+      "requestId": "r-1",
+      "state": "COMMITTED",
+      "version": 2,
+      "affectedRows": [
+        1
+      ],
+      "resolution": "done"
+    },
+    {
+      "tenant": null,
+      "subject": null,
+      "idempotencyKey": "k-null-scope",
+      "requestId": "r-2",
+      "state": "IN_DOUBT",
+      "version": 2,
+      "affectedRows": [],
+      "resolution": "provider failed after dispatch"
+    },
+    {
+      "tenant": "t1",
+      "subject": "s1",
+      "idempotencyKey": "k-started",
+      "requestId": "r-3",
+      "state": "STARTED",
+      "version": 1,
+      "affectedRows": [],
+      "resolution": null
+    }
+  ],
+  "unresolved": [
+    "k-null-scope",
+    "k-started"
+  ],
+  "tornTail": {
+    "append": "{\"format\":\"foundgine-mutation-ledger-v1\",\"tenant\":\"t1\"",
+    "finalRecordsUnchanged": true
+  },
+  "corruptLine": {
+    "replaceLine": 1,
+    "with": "not json",
+    "expect": "fails closed"
+  }
+}

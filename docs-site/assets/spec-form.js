@@ -35,7 +35,7 @@ const SECTIONS=[
   S('modelStyle','How the semantic model is declared',['Fluent configuration (FoundgineModel; sample default)','Attributes / annotations','AOT source generator (Foundgine.Providers.Aot.Generator / foundgine-aot-generator)','Manual semantic model builder'],{hint:'All compile to the same metadata registry; see docs/MAPPING.md.'}),
   T('basePackage','Namespace / base package',{req:1,hint:'C#: Acme.Rental. Java: com.acme.rental. The samples use Foundgine.SupplyChain.Advanced and com.foundgine.samples.supplychain.advanced.'}),
   T('groupArtifact','Project coordinates',{hint:'NuGet package id and/or Maven groupId : artifactId. Foundgine itself ships as io.github.cristianbarragan on Maven.'}),
-  T('foundgineVersion','Foundgine version',{def:'3.4.1'}),
+  T('foundgineVersion','Foundgine version',{def:'3.4.2'}),
   T('port','HTTP port',{def:'4783',hint:'The Java sample serves /mcp and /intent on 4783.'}),
 ]},
 {id:'actors',title:'2. Actors and questions',intro:'Who asks, and what an agent should be able to answer. These drive the example intents and scenario tests.',items:[
@@ -319,7 +319,7 @@ function specMd(){
   return o;
 }
 const TPL_NET=[
-'- .NET reference: src/csharp/samples/Foundgine.SupplyChain.Advanced (README.md, VERIFY-GATES.md, docs/00-Overview-And-Setup.md to 05-Adversarial-Security-Testing.md). The project lives under Semantic/: Domain, Semantics (model + Configuration), Authorization (+ Claims: ClaimSchema, IdentitySpoofingValidator, CrossFieldClaimValidator), Application/Scenarios, Intent (SupplyChainIntentService, IntentCaller, EvidencingProvider), Api/Mcp (Program.cs, IntentEndpoint.cs, IntentMcpTools.cs), Infrastructure/Data, McpClient, Tests (xUnit), Benchmarks.',
+'- .NET reference: src/csharp/samples/Foundgine.SupplyChain.Advanced (README.md, VERIFY-GATES.md, docs/00-Overview-And-Setup.md to 05-Adversarial-Security-Testing.md). The project lives under Semantic/: Domain, Semantics (model + Configuration), Authorization (+ Claims: ClaimSchema, IdentitySpoofingValidator, CrossFieldClaimValidator), Application/Scenarios, Intent (SupplyChainIntentService, IntentCaller, EvidencingProvider), Api/Mcp (Program.cs; the intent adapters are the reusable ones in Foundgine.Providers and Foundgine.Extensions.GraphQL, bridged by Intent/SupplyChainIntentHandler.cs), Infrastructure/Data, McpClient, Tests (xUnit), Benchmarks.',
 '- net10.0, ProjectReference or package references to Foundgine.Core and Foundgine.Providers; ModelContextProtocol.AspNetCore for MCP; Npgsql for PostgreSQL; actor resolved from the ASP.NET authenticated principal (demo: server-side FOUNDGINE_DEMO_ACTOR or the X-Foundgine-* headers, labelled DEMO ONLY).',
 '- Verify with dotnet restore / build / test as in VERIFY-GATES.md.'
 ];
@@ -401,7 +401,7 @@ root.getElementById('bReset').onclick=function(){
 root.getElementById('bExample').onclick=()=>{data=EXAMPLE();build()};
 
 function EXAMPLE(){return {
-project:{name:'EquipmentRental',purpose:'Small equipment-rental business. Staff and agents ask which items are available, who has what out, and which rentals are overdue; customers can book and cancel.',language:'Java 27 (Maven)  - port: foundgine-supply-chain-advanced',shape:'New sample module inside the Foundgine reactor (like foundgine-supply-chain-advanced)',basePackage:'com.foundgine.samples.rental',groupArtifact:'io.github.cristianbarragan : foundgine-sample-rental',foundgineVersion:'3.4.1',port:'4790'},
+project:{name:'EquipmentRental',purpose:'Small equipment-rental business. Staff and agents ask which items are available, who has what out, and which rentals are overdue; customers can book and cancel.',language:'Java 27 (Maven)  - port: foundgine-supply-chain-advanced',shape:'New sample module inside the Foundgine reactor (like foundgine-supply-chain-advanced)',basePackage:'com.foundgine.samples.rental',groupArtifact:'io.github.cristianbarragan : foundgine-sample-rental',foundgineVersion:'3.4.2',port:'4790'},
 actors:{actors:[{name:'CUSTOMER',desc:'Books and cancels own rentals; sees equipment catalogue.'},{name:'CLERK',desc:'Sees all rentals in own branch tenant.'},{name:'MANAGER',desc:'Sees everything incl. replacement cost.'}],questions:[{q:'Which rentals are overdue?',entities:'Rental, Customer',who:'CLERK'},{q:'What drill models are free this weekend?',entities:'Equipment',who:'CUSTOMER'}],out:'Payments, invoicing.'},
 entities:{entities:[
 {name:'Customer',storage:'Persisted in a table',table:'customers',key:'id int',tenantScoped:true,tenantField:'tenantId',aliases:'Client:90, Renter:85',fields:[{name:'Name',type:'String',sqlType:'varchar(120)',required:true},{name:'TenantId',type:'String',sqlType:'varchar(80)',required:true}]},

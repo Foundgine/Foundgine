@@ -23,6 +23,7 @@ using System.Text.Json;
 using Foundgine.Core.Semantic.IR;
 using Foundgine.Core.Semantic.Planning;
 using Foundgine.SupplyChain.Advanced.OpenIntent.Services;
+using KeyNotFoundException = System.Collections.Generic.KeyNotFoundException;
 
 namespace Foundgine.SupplyChain.Advanced.OpenIntent.Repositories;
 

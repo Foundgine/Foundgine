@@ -59,6 +59,16 @@ public record ExecutionContext(Map<String, Object> values, Instant deadlineUtc) 
         return new ExecutionContext(values, deadline);
     }
 
+    /**
+     * Returns a copy with {@code additional} merged over the existing values (additional wins) and the same deadline.
+     * Used by the runtime to add engine-owned keys without mutating the caller's context.
+     */
+    public ExecutionContext withValues(Map<String, Object> additional) {
+        var merged = new java.util.LinkedHashMap<String, Object>(effectiveValues());
+        if (additional != null) merged.putAll(additional);
+        return new ExecutionContext(java.util.Collections.unmodifiableMap(merged), deadlineUtc);
+    }
+
     public CancellationTokenSource createDeadlineCancellationSource(CancellationToken callerToken) {
         ensureWithinDeadline();
         CancellationTokenSource source =

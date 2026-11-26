@@ -10,4 +10,6 @@ public final class FoundgineMcpToolNames {
     public static final String MUTATION_DRY_RUN = "foundgine_mutation_dry_run";
     public static final String MUTATION_APPROVE = "foundgine_mutation_approve";
     public static final String MUTATION_EXECUTE_APPROVED = "foundgine_mutation_execute_approved";
+    /** Registered only when the engine keeps an execution ledger. */
+    public static final String MUTATION_RECONCILE = "foundgine_mutation_reconcile";
 }

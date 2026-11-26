@@ -7,7 +7,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/Foundgine/Foundgine</PackageProjectUrl>
     <PackageId>Foundgine.Extensions.GraphQL</PackageId>
-    <Description>Hot Chocolate GraphQL integration for Foundgine 3.x: translates GraphQL operations into Foundgine semantic intent and provides the secure query and mutation executors that run that intent through the Foundgine authorization and execution boundary. It does not replace the Foundgine runtime and does not provide storage providers. Consumers configure their GraphQL server and semantic model; concrete provider execution is supplied by Foundgine.Providers.</Description>
+    <Description>Hot Chocolate GraphQL integration for Foundgine 3.x: translates GraphQL operations into Foundgine semantic intent, provides the reusable application-owned open-intent resolver, and provides the secure query and mutation executors that run that intent through the Foundgine authorization and execution boundary. It does not replace the Foundgine runtime and does not provide storage providers. Consumers configure their GraphQL server and semantic model; concrete provider execution is supplied by Foundgine.Providers.</Description>
     <PackageTags>graphql;hotchocolate;semantic-execution;authorization;dotnet</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RootNamespace>Foundgine.Extensions.GraphQL</RootNamespace>
@@ -21,6 +21,8 @@
     <ProjectReference Include="../Foundgine.Core/Foundgine.Core.csproj" />
     <ProjectReference Include="../Foundgine.Runtime/Foundgine.Runtime.csproj" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" PrivateAssets="all" />
+    <PackageReference Include="HotChocolate.Abstractions" Version="16.7.3" />
     <PackageReference Include="HotChocolate.Language" Version="16.7.3" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="16.7.3" />
   </ItemGroup>
 </Project>

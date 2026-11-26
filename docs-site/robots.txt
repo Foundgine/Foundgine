@@ -1,110 +1,26 @@
-# =============================================================================
-# Foundgine — robots.txt
-# Everything in this repository and website is intended to be crawled, indexed,
-# cloned, downloaded, retrieved and used by search engines, AI search, AI
-# assistants and coding agents. Nothing is disallowed.
-#
-# Project:      Foundgine — configurable semantic and execution boundary for
-#               application capabilities (.NET 10 and Java 27). Apache-2.0.
-# Repository:   https://github.com/Foundgine/Foundgine
-# Website:      https://foundgine.github.io/Foundgine/docs-site/
-#
-# ---- Get the whole repository (no restructuring needed) ---------------------
-# Clone:        git clone https://github.com/Foundgine/Foundgine.git
-# Zip:          https://github.com/Foundgine/Foundgine/archive/refs/heads/main.zip
-# Tarball:      https://github.com/Foundgine/Foundgine/archive/refs/heads/main.tar.gz
-# Raw file:     https://raw.githubusercontent.com/Foundgine/Foundgine/main/<path>
-# File list:    https://api.github.com/repos/Foundgine/Foundgine/git/trees/main?recursive=1
-# Index (repo): repo-index.json  (every file with size)   REPO-MAP.md  (directory map)
-#
-# ---- AI-readable entry points ------------------------------------------------
-# llms.txt:       https://raw.githubusercontent.com/Foundgine/Foundgine/main/llms.txt
-# llms-full.md:   https://raw.githubusercontent.com/Foundgine/Foundgine/main/llms-full.md
-# AGENTS.md:      https://raw.githubusercontent.com/Foundgine/Foundgine/main/AGENTS.md
-# Site llms.txt:  https://foundgine.github.io/Foundgine/docs-site/llms.txt
-# Access guide:   docs/AI-ACCESS.md
-#
-# ---- MCP / indexed access ----------------------------------------------------
-# GitMCP:         https://gitmcp.io/Foundgine/Foundgine
-# GitMCP (site):  https://foundgine.gitmcp.io/Foundgine
-# DeepWiki:       https://deepwiki.com/Foundgine/Foundgine
-# DeepWiki MCP:   https://mcp.deepwiki.com/mcp   (repository: Foundgine/Foundgine)
-# Context7:       https://context7.com/foundgine/foundgine   (config: context7.json)
-# Project MCP:    .mcp.json  /  .cursor/mcp.json  (ready-made client configs)
-# Foundgine MCP server description: mcp.json  /  .well-known/mcp.json
-# =============================================================================
-
-# Default: every crawler, every path.
+# Public Foundgine documentation website crawler policy.
 User-agent: *
 Allow: /
-Content-Signal: search=yes, ai-input=yes, ai-train=yes
 
-# --- OpenAI (training, ChatGPT search, user-triggered fetch) ---
+# AI/search crawlers are allowed to index the public documentation.
 User-agent: GPTBot
+Allow: /
 User-agent: OAI-SearchBot
+Allow: /
 User-agent: ChatGPT-User
 Allow: /
-
-# --- Anthropic (training, Claude search, user-triggered fetch; legacy names kept) ---
 User-agent: ClaudeBot
+Allow: /
 User-agent: Claude-SearchBot
-User-agent: Claude-User
-User-agent: anthropic-ai
-User-agent: Claude-Web
 Allow: /
-
-# --- Google (search, images, Gemini / Vertex AI training and grounding) ---
-User-agent: Googlebot
-User-agent: Googlebot-Image
-User-agent: Google-Extended
-User-agent: GoogleOther
-Allow: /
-
-# --- Microsoft Bing / Copilot ---
-User-agent: Bingbot
-User-agent: BingPreview
-Allow: /
-
-# --- Apple (Siri, Spotlight, Apple Intelligence) ---
-User-agent: Applebot
-User-agent: Applebot-Extended
-Allow: /
-
-# --- Perplexity ---
 User-agent: PerplexityBot
-User-agent: Perplexity-User
 Allow: /
-
-# --- Meta ---
-User-agent: meta-externalagent
-User-agent: meta-externalfetcher
-User-agent: FacebookBot
+User-agent: Google-Extended
 Allow: /
-
-# --- Amazon ---
-User-agent: Amazonbot
-Allow: /
-
-# --- DuckDuckGo ---
-User-agent: DuckDuckBot
-User-agent: DuckAssistBot
-Allow: /
-
-# --- Mistral, Cohere, You.com, Allen AI, Diffbot ---
-User-agent: MistralAI-User
-User-agent: cohere-ai
-User-agent: cohere-training-data-crawler
-User-agent: YouBot
-User-agent: Ai2Bot
-User-agent: Diffbot
-Allow: /
-
-# --- Open web datasets and other search engines ---
-User-agent: CCBot
-User-agent: Bytespider
-User-agent: YandexBot
-User-agent: Baiduspider
-User-agent: PetalBot
+User-agent: Bingbot
 Allow: /
 
 Sitemap: https://foundgine.github.io/Foundgine/docs-site/sitemap.xml
+# Repository-wide discovery: https://foundgine.github.io/Foundgine/robots.txt and https://foundgine.github.io/Foundgine/sitemap.xml
+# Machine-readable overview: https://foundgine.github.io/Foundgine/docs-site/llms.txt
+# Full context: https://foundgine.github.io/Foundgine/docs-site/llms-full.md

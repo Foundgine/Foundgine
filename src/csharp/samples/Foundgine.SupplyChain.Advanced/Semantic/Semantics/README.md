@@ -8,8 +8,8 @@ The domain types in `Domain/Domain.cs` are plain records with no Foundgine refer
 | --- | --- |
 | Entity names, aliases, dimensions, events, logical relationships | `SupplyChainModelConfigurations.cs` |
 | Tables, keys, indexes | `SupplyChainPersistenceConfigurations.cs` |
-| Model member to storage member | `SupplyChainEntityMaps.cs` |
-| Relationship to physical foreign key | `SupplyChainConnections.cs` |
+| Model member to storage member | none to write: the records are also the storage shape, so `SupplyChainModel.cs` registers `FoundgineIdentityEntityMap<T>` (every value-typed member maps to the member of the same name) |
+| Relationship to physical foreign key | inferred from member names; `SupplyChainConnections.cs` only lists the Product/ProductComponent relationships it cannot infer |
 | Model-to-entity connection, field maps, conversions, authorization | `SupplyChainModelConnections.cs` |
 | Registration | `SupplyChainModel.cs` |
 

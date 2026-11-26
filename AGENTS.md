@@ -4,7 +4,7 @@ Instructions for AI coding agents and assistants (Codex, Claude Code, Cursor, Co
 
 ## What this repository is
 
-Foundgine is a configurable semantic and execution boundary for application capabilities. It separates application meaning, persistence mapping, authorization and execution from the interfaces and agents that consume them. Fluent configuration is the primary developer experience in C# and Java. AI, MCP, GraphQL and agent frameworks are optional consumers; the project is conventional application infrastructure first. License: Apache-2.0. Current version: 3.4.1 (.NET 10 and Java 27).
+Foundgine is a configurable semantic and execution boundary for application capabilities. It separates application meaning, persistence mapping, authorization and execution from the interfaces and agents that consume them. Fluent configuration is the primary developer experience in C# and Java. AI, MCP, GraphQL and agent frameworks are optional consumers; the project is conventional application infrastructure first. License: Apache-2.0. Current version: 3.4.2 (.NET 10 and Java 27).
 
 ## Find your way around
 

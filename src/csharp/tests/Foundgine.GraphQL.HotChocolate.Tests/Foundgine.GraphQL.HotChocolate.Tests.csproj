@@ -19,5 +19,6 @@
     <ProjectReference Include="../../Foundgine.Extensions.Keycloak/Foundgine.Extensions.Keycloak.csproj" />
     <ProjectReference Include="../../benchmarks/SupplyChain.Performance/Foundgine.SupplyChain.BenchmarkApi/Foundgine.SupplyChain.BenchmarkApi.csproj" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="..\..\benchmarks\CoffeeBeanery.Performance\Foundgine.CoffeeBeanery.BenchmarkApi\Foundgine.CoffeeBeanery.BenchmarkApi.csproj" />
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@ package com.foundgine.samples.comparison.shop;
 
 import com.foundgine.core.semantic.metadata.SemanticModelDiscovery;
 import com.foundgine.core.semantic.security.warrants.MemorySecurityWarrantReplayStore;
+import com.foundgine.core.semantic.security.warrants.MemorySecurityWarrantRevocationStore;
 import com.foundgine.extensions.graphql.FoundgineGraphQLQueryExecutor;
 import com.foundgine.extensions.graphql.GraphQLSemanticAdapter;
 import com.foundgine.extensions.graphql.http.GraphQLHttpHandler;
@@ -64,7 +65,8 @@ public final class Main {
                 .authorizationPolicy(new ShopPolicy(metadata))
                 .warrantKeyResolver(FoundgineWarrantKeyResolver.create(keycloak, keys))
                 .expectedWarrantIssuer(keycloak.warrantIssuer)
-                .warrantReplayStore(new MemorySecurityWarrantReplayStore());
+                .warrantReplayStore(new MemorySecurityWarrantReplayStore())
+                .warrantRevocationStore(new MemorySecurityWarrantRevocationStore());
         var services = FoundgineServiceCollectionExtensions.addFoundgine(
                 new FoundgineServiceRegistry(), options, JpaOrmProvider.compiler(orm.registry()), JpaOrmProvider.execution(orm.registry(), emf));
 

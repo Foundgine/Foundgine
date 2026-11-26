@@ -3,6 +3,7 @@ using Foundgine.Core.Execution.Mutation;
 using Foundgine.Core.Semantic.Mutation;
 using ExecutionContext = Foundgine.Core.Execution.ExecutionContext;
 using Foundgine.Core.Semantic.Security.Execution;
+using Foundgine.Runtime.Recovery;
 
 namespace Foundgine.Runtime;
 
@@ -21,6 +22,12 @@ public interface IFoundgineMutations
         MutationPlanApproval approval,
         ExecutionContext? context = null,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Reconciliation and recovery operations, or <c>null</c> when no execution ledger is configured. A default
+    /// member so existing implementations keep compiling.
+    /// </summary>
+    MutationRecovery? Recovery => null;
 }
 
 public sealed record SemanticMutationRequest(
@@ -46,9 +53,11 @@ public sealed record MutationPlanApproval(
     string ApprovedBy,
     DateTimeOffset ApprovedAt);
 
+/// <summary>Outcome of a mutation. <c>Receipt</c> is the evidence of the execution; for an idempotent replay it is the receipt of the original execution.</summary>
 public sealed record MutationExecutionResult(
     MutationBatchResult Result,
     string PlanFingerprint,
     string ResultFingerprint,
     string? ApprovalId,
-    string? ApprovedBy);
+    string? ApprovedBy,
+    ExecutionReceipt? Receipt = null);

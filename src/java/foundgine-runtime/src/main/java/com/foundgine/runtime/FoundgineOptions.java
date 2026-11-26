@@ -12,6 +12,10 @@ import com.foundgine.core.semantic.security.warrants.ISecurityWarrantReplayStore
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import com.foundgine.runtime.controlplane.auditlog.IAuditLog;
+import com.foundgine.runtime.controlplane.auditlog.InMemoryAuditLog;
+import com.foundgine.runtime.recovery.IMutationExecutionLedger;
+import com.foundgine.core.execution.mutation.IMutationReconciler;
 
 /**
  * Application-level Foundgine configuration.
@@ -31,6 +35,8 @@ public final class FoundgineOptions {
     private ISecurityWarrantKeyResolver warrantKeyResolver;
     private String expectedWarrantIssuer;
     private ISecurityWarrantReplayStore warrantReplayStore;
+    private ISecurityWarrantRevocationStore warrantRevocationStore;
+    private ISecurityWarrantDelegationTrustResolver warrantDelegationTrustResolver;
     private SecurityResourceLimits securityResourceLimits = new SecurityResourceLimits();
     private IExecutionAuthorizationRevalidator executionAuthorizationRevalidator;
     private BiFunction<
@@ -40,6 +46,10 @@ public final class FoundgineOptions {
             executionAuthorizationAuthorityResolver;
     private MutationSchema mutationSchema;
     private com.foundgine.core.execution.mutation.IMutationBatchExecutionProvider mutationProvider;
+    private IAuditLog auditLog = new InMemoryAuditLog();
+    private IMutationExecutionLedger mutationLedger;
+    private IMutationReconciler mutationReconciler;
+    private java.time.Duration mutationLease;
 
     private final LinkedHashMap<Class<?>, IFoundgineCapability> enabledCapabilities =
             new LinkedHashMap<>();
@@ -84,6 +94,14 @@ public final class FoundgineOptions {
         return warrantReplayStore;
     }
 
+    public ISecurityWarrantRevocationStore warrantRevocationStore() {
+        return warrantRevocationStore;
+    }
+
+    public ISecurityWarrantDelegationTrustResolver warrantDelegationTrustResolver() {
+        return warrantDelegationTrustResolver;
+    }
+
     public SecurityResourceLimits securityResourceLimits() {
         return securityResourceLimits;
     }
@@ -108,6 +126,14 @@ public final class FoundgineOptions {
             mutationProvider() {
         return mutationProvider;
     }
+
+    public IAuditLog auditLog() { return auditLog; }
+    /** Write-ahead ledger for idempotent mutations; null disables idempotency and recovery. */
+    public IMutationExecutionLedger mutationLedger() { return mutationLedger; }
+    /** Provider-side reconciler; when null the mutation provider is used if it implements the interface. */
+    public IMutationReconciler mutationReconciler() { return mutationReconciler; }
+    /** How long an execution may stay STARTED before recovery treats it as abandoned (null = engine default). */
+    public java.time.Duration mutationLease() { return mutationLease; }
 
     public FoundgineOptions useMetadata(IMetadataCatalog metadata) {
         this.metadata = Objects.requireNonNull(metadata, "metadata");
@@ -176,6 +202,17 @@ public final class FoundgineOptions {
         return this;
     }
 
+    public FoundgineOptions warrantRevocationStore(ISecurityWarrantRevocationStore store) {
+        this.warrantRevocationStore = store;
+        return this;
+    }
+
+    public FoundgineOptions warrantDelegationTrustResolver(
+            ISecurityWarrantDelegationTrustResolver resolver) {
+        this.warrantDelegationTrustResolver = resolver;
+        return this;
+    }
+
     public FoundgineOptions securityResourceLimits(SecurityResourceLimits limits) {
         this.securityResourceLimits = Objects.requireNonNull(limits);
         return this;
@@ -205,6 +242,27 @@ public final class FoundgineOptions {
     public FoundgineOptions mutationProvider(
             com.foundgine.core.execution.mutation.IMutationBatchExecutionProvider provider) {
         this.mutationProvider = provider;
+        return this;
+    }
+
+    /** Configures the append-only execution audit sink. Defaults to process-local memory. */
+    public FoundgineOptions mutationLedger(IMutationExecutionLedger value) {
+        this.mutationLedger = value;
+        return this;
+    }
+
+    public FoundgineOptions mutationReconciler(IMutationReconciler value) {
+        this.mutationReconciler = value;
+        return this;
+    }
+
+    public FoundgineOptions mutationLease(java.time.Duration value) {
+        this.mutationLease = value;
+        return this;
+    }
+
+    public FoundgineOptions auditLog(IAuditLog value) {
+        this.auditLog = Objects.requireNonNull(value, "auditLog");
         return this;
     }
 

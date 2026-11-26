@@ -1,5 +1,6 @@
 package com.foundgine.samples.supplychain.advanced.mcp;
 
+import com.foundgine.samples.supplychain.advanced.graphql.AdvancedGraphQLIntentEndpoint;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -23,7 +24,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 /**
- * A minimal, dependency-free MCP (Model Context Protocol) server for the Advanced Supply Chain
+ * Combined HTTP, GraphQL intent and MCP (Model Context Protocol) server for the Advanced Supply Chain
  * sample.
  *
  * <p>This is the Java counterpart of the C# database-backed benchmark MCP host: it hosts the same
@@ -36,19 +37,23 @@ import java.util.concurrent.CompletionStage;
  *
  * <ul>
  *   <li>{@code foundgine_query} — arguments: {@code {"intentJson": "..."}}
- *   <li>{@code foundgine_mutation} — arguments: {@code {"mutationJson": "..."}}
+ *   <li>{@code foundgine_mutation} — arguments: {@code {"mutationJson": "..."}}; the mutation
+ *       JSON supports {@code execute}, {@code dry_run}, {@code approve} and {@code execute_approved}
+ *       modes, with opaque one-time approval handles.
  *   <li>{@code foundgine_intent} — arguments: {@code {"intent": {...}, "mode":
  *       "execute|explain|capabilities"}}. The canonical read intent run through a real Foundgine
  *       engine as the caller given by the {@code X-Foundgine-Tenant}/{@code X-Foundgine-Role}
- *       headers; also served directly at {@code /intent} (see {@link AdvancedIntentEndpoint}).
+ *       headers; also served directly at {@code /intent} and as a GraphQL field at {@code /graphql}.
  *   <li>{@code find_top_supplier_overdue_orders} — arguments: {@code {"actor": "...", "state":
  *       "...", "supplierName": "..." (optional)}}. Backed directly by Postgres via {@link
  *       com.foundgine.samples.supplychain.advanced.ambiguity.TopSupplierOverdueOrdersService}, not
  *       by {@link AdvancedMcpFacade} — see {@link #findTopSupplierOverdueOrders}.
  * </ul>
  *
- * <p>Uses only the JDK's built-in {@code com.sun.net.httpserver.HttpServer}, so it needs no
- * additional runtime dependencies beyond Jackson (already a project dependency).
+ * <p>Uses the JDK's built-in {@code com.sun.net.httpserver.HttpServer}; Jackson handles JSON and
+ * graphql-java powers the focused GraphQL intent endpoint. The same runtime intent handler is
+ * mounted behind {@code /intent}, {@code /intent/mutation}, {@code /graphql} and both Foundgine MCP
+ * intent tools.
  */
 public final class AdvancedMcpServer {
     public static final String DEFAULT_HOST = "localhost";
@@ -63,9 +68,10 @@ public final class AdvancedMcpServer {
     public AdvancedMcpServer(AdvancedMcpFacade facade, String host, int port) throws IOException {
         this.facade = Objects.requireNonNull(facade, "facade");
         this.httpServer = HttpServer.create(new InetSocketAddress(host, port), 0);
-        this.intentEndpoint = new AdvancedIntentEndpoint(facade.intentService());
+        this.intentEndpoint = new AdvancedIntentEndpoint(facade.intentService(), facade.intentHandler(), (json, caller, correlationId) -> facade.dispatchMutation(json, caller, correlationId));
         this.httpServer.createContext(MCP_PATH, this::handleMcp);
         this.intentEndpoint.register(httpServer);
+        new AdvancedGraphQLIntentEndpoint(this.intentEndpoint).register(httpServer);
         this.httpServer.createContext(
                 "/health", exchange -> respond(exchange, 200, "{\"status\":\"ok\"}"));
     }
@@ -109,9 +115,9 @@ public final class AdvancedMcpServer {
                                 facade.queryTools()
                                         .foundgineQuery(arguments.path("intentJson").asText("{}"));
                         case "foundgine_mutation" ->
-                                facade.mutationTools()
-                                        .foundgineMutation(
-                                                arguments.path("mutationJson").asText("{}"))
+                                facade.mutate(
+                                                arguments.path("mutationJson").asText("{}"),
+                                                intentEndpoint.caller(exchange), correlationId(exchange))
                                         .thenApply(this::toJson);
                         case "foundgine_intent" -> callIntentTool(exchange, arguments);
                         case "find_top_supplier_overdue_orders" ->
@@ -154,7 +160,7 @@ public final class AdvancedMcpServer {
      */
     private CompletionStage<String> callIntentTool(HttpExchange exchange, JsonNode arguments) {
         try {
-            return intentEndpoint.callTool(intentEndpoint.caller(exchange), arguments);
+            return intentEndpoint.callTool(intentEndpoint.caller(exchange), arguments, correlationId(exchange));
         } catch (Throwable t) {
             return CompletableFuture.failedFuture(t);
         }
@@ -167,6 +173,14 @@ public final class AdvancedMcpServer {
             return failure.type() + ": " + failure.message();
         }
         return rootMessage(error);
+    }
+
+    private static String correlationId(HttpExchange exchange) {
+        String supplied = exchange.getRequestHeaders().getFirst("X-Correlation-ID");
+        if (supplied == null || supplied.isBlank()) return java.util.UUID.randomUUID().toString();
+        if (!supplied.matches("[A-Za-z0-9._:-]{1,128}"))
+            throw new IllegalArgumentException("X-Correlation-ID must contain 1-128 safe identifier characters.");
+        return supplied;
     }
 
     // The ambiguity-resolution demo capability from the Foundgine walkthrough
@@ -278,11 +292,12 @@ public final class AdvancedMcpServer {
         var server = new AdvancedMcpServer(facade, DEFAULT_HOST, port);
         server.start();
 
-        System.out.println("Foundgine Advanced Supply Chain — MCP server");
+        System.out.println("Foundgine Advanced Supply Chain — HTTP, GraphQL and MCP server");
         System.out.println("=============================================");
         System.out.println("Listening on http://" + DEFAULT_HOST + ":" + server.port() + MCP_PATH);
         System.out.println(
                 "Health check: http://" + DEFAULT_HOST + ":" + server.port() + "/health");
+        System.out.println("GraphQL intent: POST http://" + DEFAULT_HOST + ":" + server.port() + AdvancedGraphQLIntentEndpoint.PATH);
         System.out.println(
                 "Canonical intent: POST http://"
                         + DEFAULT_HOST

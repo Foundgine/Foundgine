@@ -24,6 +24,20 @@ Foundgine separates semantic discovery from permission to execute. Authorization
 6. Enforce the decision at the execution/provider boundary, including row/tenant predicates where required.
 7. Record appropriate audit evidence.
 
+## Mutation warrant revalidation
+
+The Java query and mutation runtimes now mirror the C# warrant trust boundary. Warrant-backed
+discovery and planning require a configured revocation store. Both engines re-verify issuer/signature
+trust before dispatch and validate revocation again after provider execution, rejecting if the
+revocation sequence changed during the operation. The mutation engine additionally consumes its
+single-use replay key only after the final pre-dispatch trust and revocation checks. Delegated warrants
+require an explicit trusted
+root issuer, a complete root-to-leaf chain attached to `SecurityExecutionContext`, and a configured
+`ISecurityWarrantDelegationTrustResolver`; every chain signature and delegation edge is checked and
+child authority cannot exceed parent authority. The Java `HighAssurance` capability provides an
+in-memory revocation store for development; production deployments should supply durable shared
+stores. See `src/java/foundgine-runtime/README.md` for fluent configuration.
+
 ## Tenant isolation
 
 Tenant scope must be derived from a trusted identity/security context. A client must not be able to switch tenants by changing a query parameter or semantic filter. Scope should be bound consistently to authorization, plan identity, cursor identity, cache keys, event visibility, and execution context.

@@ -8,6 +8,12 @@ A reproducible end-to-end supply-chain reference application exercising the Foun
 > testing, each tied to the exact test files that prove it — see
 > [`docs/00-Overview-And-Setup.md`](./docs/00-Overview-And-Setup.md).
 
+[Cross-language scope and C#-only demonstrations](./CROSS-LANGUAGE-SCOPE.md) records which optional agent, benchmark, and database examples intentionally remain C#-only.
+
+## Configuration options, from simple to advanced
+
+The full fluent-configuration ladder is documented in [`Semantic/CONFIGURATION-COOKBOOK.md`](./Semantic/CONFIGURATION-COOKBOOK.md): convention-only registration, inline builders, reusable configuration classes, separate model/storage mapping, semantic and physical relationships, model-to-entity connections, conversions, and authorization predicates. It also inventories the REST, GraphQL and MCP transport setup and calls out cross-language API gaps rather than implying parity where it does not exist.
+
 ## Two execution paths in this folder
 
 The canonical semantic API/MCP project lives under `Semantic/Api/Mcp/`. The PostgreSQL-backed benchmark
@@ -134,6 +140,16 @@ Besides the closed capability surface, `admin` can address any entity of the mod
 filters through the authorized semantic read path), `get_entity`, `create_entity`, `update_entity`, `delete_entity`.
 Every other actor is denied by the same uniform blocked-call error as any other unauthorized capability.
 
+## Shared API adapters (PostgreSQL-backed host)
+
+The benchmark host exposes three transports over the same application service:
+
+- MCP: `/mcp`
+- REST: `/api/v1/supply-chain`
+- GraphQL: `/graphql`
+
+REST and GraphQL derive the demo actor only after validating both `X-Foundgine-Actor` and `X-Foundgine-Token`; an actor header alone is not accepted. Both delegate to `SupplyChainService`, preserving its capability authorization, ownership checks, uniform blocked-call response and repository transactions. GraphQL resolvers expose provider-neutral JSON payloads, not EF entities, `DbSet`, or unrestricted `IQueryable`. The legacy closed MCP tools retain explicit actor arguments for benchmark-agent compatibility; that is a demo contract and must be replaced with transport-bound identity before production use. The Foundgine semantic MCP tools continue to use the host-established `SecurityExecutionContext` and warrant boundary. See [`API/README.md`](../Foundgine.SupplyChain.Advanced.Benchmark/MCP.Foundgine/Api/README.md) for the adapter contract.
+
 ## Run
 
 ```powershell
@@ -192,61 +208,48 @@ See `Semantic/README.md` and `Semantic/GUIDE.md` for the full architecture and a
 
 The Semantic MCP API also provides a plain JSON open semantic agent adapter. Its authoritative actor is resolved by the host, not supplied by the request body. The semantic request is passed through resolution and authorization before planning and SQL execution; there is no named-intent dispatch layer on this endpoint.
 
-## Canonical intent endpoint
+## Canonical open-intent boundary across REST, GraphQL and MCP
 
-One endpoint takes the canonical read intent itself, not an endpoint per query. The intent names
-*what is wanted* in the semantic vocabulary (entity, field and relationship names or aliases). Foundgine
-does the rest in a real engine: name and path resolution, authorization, planning, execution, receipt.
-The caller (tenant and role) is supplied by the host and is never part of the intent. This is the C#
-counterpart of the Java Advanced sample's endpoint and speaks the same wire format.
+The sample exposes one application-owned `IFoundgineIntentHandler` through three reusable protocol adapters. Each protocol accepts the same canonical semantic intent; each supplies the authenticated principal from the host; and each delegates to the same `SupplyChainIntentService`. None of the adapters contains Supply Chain business logic or its authorization policy.
+
+The intent names *what is wanted* in the semantic vocabulary (entity, field and relationship names or aliases). Foundgine resolves names and paths, authorizes the resolved request, plans and executes it, and returns evidence and a receipt. Identity and authority are never part of the intent.
 
 ```bash
-dotnet run --project Semantic/Api/Mcp --urls http://localhost:4783
+# The sample's X-Foundgine-* header bridge is enabled only in Development.
+ASPNETCORE_ENVIRONMENT=Development dotnet run --project Semantic/Api/Mcp --urls http://localhost:4783
 
-# 1. Same intent, two roles: the analyst sees RiskScore, the operator does not (it is pruned, not an error)
 INTENT='{"rootEntity":"Supplier","selections":[{"field":"Name"},{"field":"RiskScore"}]}'
-curl -s localhost:4783/intent -H 'X-Foundgine-Role: analyst'            -d "$INTENT"
-curl -s localhost:4783/intent -H 'X-Foundgine-Role: warehouse_operator' -d "$INTENT"
 
-# 2. Tenant isolation comes from the policy, not the intent
-curl -s localhost:4783/intent -H 'X-Foundgine-Role: analyst' -H 'X-Foundgine-Tenant: tenant-b' \
-  -d '{"rootEntity":"Supplier","selections":[{"field":"Name"}]}'
+# REST
+curl -s localhost:4783/intent -H 'X-Foundgine-Role: analyst' -d "$INTENT"
 
-# 3. A relationship name resolves to the declared path (Product > PurchaseOrderLine > PurchaseOrder > Shipment)
-curl -s localhost:4783/intent/explain -H 'X-Foundgine-Role: analyst' \
-  -d '{"rootEntity":"Product","selections":[{"field":"Name"},{"relationship":"shipments","children":[{"field":"Status"}]}]}'
+# GraphQL (same intent, same caller policy)
+curl -s localhost:4783/graphql -H 'Content-Type: application/json' -H 'X-Foundgine-Role: analyst' \
+  -d '{"query":"query Intent($intent: Any!) { foundgineIntent(intent: $intent, mode: \"execute\") }","variables":{"intent":{"rootEntity":"Supplier","selections":[{"field":"Name"},{"field":"RiskScore"}]}}}'
 
-# 4. What may this caller do?
+# REST explain and capabilities
+curl -s localhost:4783/intent/explain -H 'X-Foundgine-Role: warehouse_operator' -d "$INTENT"
 curl -s localhost:4783/intent/capabilities -H 'X-Foundgine-Role: customer'
 ```
 
-| Path | Method | Does |
+| Protocol | Entry point | Adapter implementation |
 | --- | --- | --- |
-| `/intent` | POST | Executes the intent as the caller; returns rows keyed `Entity.Field`, evidence and receipt. |
-| `/intent/explain` | POST | Dry run: how names resolved, which requested fields the caller's policy removed (`prunedFields`), the authorized plan. |
-| `/intent/capabilities` | GET | Per entity: read access (`ALLOWED`/`CONDITIONAL`/`DENIED`), visible fields and relationships, aliases, intent shape. |
-| `/mcp` tool `foundgine_intent` | POST | `{"intent": {...}, "mode": "execute\|explain\|capabilities"}`, same service and header-based caller. |
+| REST | `POST /intent`, `POST /intent/explain`, `GET /intent/capabilities` | `Foundgine.Providers.Tools.Http.FoundgineIntentEndpoints` |
+| GraphQL | `POST /graphql`, field `foundgineIntent(intent:, mode:)` | `Foundgine.Extensions.GraphQL.HotChocolate.FoundgineIntentGraphQLResolver` |
+| MCP | `POST /mcp`, tool `foundgine_intent` | `Foundgine.Providers.Tools.MCP.FoundgineIntentMcpTools` |
 
-| Piece | File | Role |
+| Shared application component | File | Responsibility |
 | --- | --- | --- |
-| Intent boundary | `Semantic/Intent/SupplyChainIntentService.cs` | Parses the intent with `JsonReadIntentAdapter`, then runs it through one real `IFoundgine` engine per (tenant, role): execute, explain, capabilities, and failure classification. |
-| Caller | `Semantic/Intent/IntentCaller.cs` | Host-owned tenant and role. Unknown tenants and roles are refused; the default is the least privileged role (`Customer`). |
-| Fixture rows | `Semantic/Intent/SupplyChainRows.cs` | Loads `SupplyChainData` into the in-memory provider keyed by the semantic metadata, so no second hand-written model exists. |
-| Receipt evidence | `Semantic/Intent/EvidencingProvider.cs` | The in-memory provider returns rows only; this adds provider evidence so every result carries a receipt, as the SQL and ORM providers do. |
-| HTTP and MCP | `Semantic/Api/Mcp/IntentEndpoint.cs`, `Program.cs` | `/intent*` routes (64 KiB body limit) and the `foundgine_intent` tool. |
+| Protocol-neutral contract | `Foundgine.Runtime/Api/IFoundgineIntentHandler.cs` | One request/result contract shared by every transport. |
+| Supply Chain handler | `Semantic/Intent/SupplyChainIntentHandler.cs` | Maps the authenticated principal to the sample caller and invokes execute, explain or capabilities. |
+| Semantic service | `Semantic/Intent/SupplyChainIntentService.cs` | Uses Foundgine resolution, authorization, planning and execution; owns Supply Chain-specific result/error semantics. |
+| Caller | `Semantic/Intent/IntentCaller.cs` | Maps host claims to the sample tenant and role; rejects unknown tenants and roles. |
+| Development identity bridge | `Semantic/Intent/SupplyChainIntentDemoIdentityMiddleware.cs` | Converts demonstration headers to claims only in Development. Production hosts must use real authentication. |
 
-Errors are `{"error":{"type","message"}}`: `invalid_intent` (400, including unknown names and any
-identity-shaped property such as `tenant` or `role` in the body), `forbidden` (403), `payload_too_large`
-(413, limit 64 KiB), `method_not_allowed` (405), `timeout` (504). Through MCP the same classification is
-the error text, for example `forbidden: Access denied for entity 'Supplier'.`
+The shared contract deliberately does not contain `IntentCaller`, `SupplyChainIntentService`, or Supply Chain policies. Those remain in the application. The protocol packages know only `IFoundgineIntentHandler` and the host identity boundary: REST passes `HttpContext.User`; GraphQL and MCP use `IFoundgineIntentPrincipalProvider`.
 
-DEMO ONLY: `X-Foundgine-Tenant` and `X-Foundgine-Role` are plain headers so the sample can show one intent
-behaving differently per role. A real host derives identity from an authenticated principal. Unknown
-tenants and roles are refused, the default is the least privileged role, and every response echoes the
-effective caller. Reads run on a snapshot of the in-memory fixture taken at startup. Tests:
-`Semantic/Tests/CanonicalIntentEndpointTests.cs`.
+The application handler classifies errors into a transport-neutral outcome and error code (`invalid_intent`, `forbidden`, `timeout`, and fail-closed internal errors). REST maps the outcome to an HTTP status (400, 403, 504 or 500, and 401 when unauthenticated) and returns an HTTP error envelope; GraphQL returns a GraphQL error; MCP returns an error tool result. REST enforces a 64 KiB intent body limit.
 
-Differences from the Java sample, all from the C# fixture: `Product` has `SafetyStock` rather than
-`UnitPrice`, so the ordering example sorts on `SafetyStock`; and the fixture has no customers table, so
-tenants come from suppliers and warehouses.
+DEMO ONLY: `X-Foundgine-Tenant` and `X-Foundgine-Role` are plain headers accepted only by `SupplyChainIntentDemoIdentityMiddleware` when the host is running in Development. A real host derives the principal from validated authentication (OIDC/JWT, mTLS, or another trusted mechanism). The intent body cannot choose its tenant, role or identity. Reads run on a snapshot of the in-memory fixture taken at startup. Tests: `Semantic/Tests/CanonicalIntentEndpointTests.cs`.
 
+Differences from the Java sample, all from the C# fixture: `Product` has `SafetyStock` rather than `UnitPrice`, so the ordering example sorts on `SafetyStock`; and the fixture has no customers table, so tenants come from suppliers and warehouses.

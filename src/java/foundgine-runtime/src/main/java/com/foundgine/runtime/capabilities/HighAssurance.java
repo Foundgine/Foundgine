@@ -31,6 +31,8 @@ public final class HighAssurance implements IFoundgineCapability {
                                             System.getProperty("java.io.tmpdir"),
                                             "foundgine-dev-warrant-replay.log")
                                     .toString()));
+        if (options.warrantRevocationStore() == null)
+            options.warrantRevocationStore(new MemorySecurityWarrantRevocationStore());
     }
 
     /** Process-local development key resolver. */

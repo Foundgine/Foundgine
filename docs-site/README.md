@@ -1,6 +1,6 @@
 # Foundgine website
 
-Static public documentation for Foundgine **3.4.1 · .NET 10 and Java 27**.
+Static public documentation for Foundgine **3.4.2 · .NET 10 and Java 27**.
 
 ## Public reading path
 
@@ -18,6 +18,12 @@ The site is a guided product story rather than a dump of repository internals:
 10. **Packages** — choose packages by architectural responsibility, including the TypeScript, Python and WebAssembly client SDKs.
 
 The main concept pages include an in-page table of contents and previous/home/next navigation. Benchmark and run-result pages use a separate evidence layout. Deeper implementation detail belongs in the linked repository Markdown files, including the Java 27 build guide at `src/java/BUILDING.md` and the shared technical reference under `docs/`.
+
+11. **Complete technical overview** — the supplied long-form v3.4.2 HTML reference, linked from the landing page and included in both sitemaps and LLM indexes.
+
+## Discovery and indexing
+
+The repository root exposes `robots.txt`, `sitemap.xml`, `llms.txt`, `llms-full.md` and `repo-index.json`. The root robots file advertises both the repository sitemap and the website sitemap. The website directory has its own `robots.txt`, `sitemap.xml`, `llms.txt` and `llms-full.md`. The full technical overview is published at `foundgine-overview.html` and linked from the website home page. Keep these indexes synchronized whenever public HTML pages are added or removed.
 
 ## Content rules
 

@@ -9,7 +9,7 @@
     <Authors>Foundgine</Authors>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageId>Foundgine.Extensions</PackageId>
-    <Description>Foundgine.Extensions contains the optional host integrations for Foundgine 3.x: Hot Chocolate GraphQL translation and the secure query and mutation executors, Temporal durable-workflow integration (outbox bridge, saga and approval workflow, operation activities and endpoints), and Keycloak identity integration (JWT validation, role and tenant mapping, short-lived signed warrants, including for Temporal workers). Third-party libraries are restored as NuGet dependencies and are not bundled as DLLs.</Description>
+    <Description>Foundgine.Extensions contains the optional host integrations for Foundgine 3.x: Hot Chocolate GraphQL translation, the shared open-intent resolver, and the secure query and mutation executors, Temporal durable-workflow integration (outbox bridge, saga and approval workflow, operation activities and endpoints), and Keycloak identity integration (JWT validation, role and tenant mapping, short-lived signed warrants, including for Temporal workers). Third-party libraries are restored as NuGet dependencies and are not bundled as DLLs.</Description>
     <PackageTags>extensions;graphql;hotchocolate;temporal;keycloak;oidc;jwt;warrants;dotnet</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <IsPackable>true</IsPackable>
@@ -36,6 +36,7 @@
 
     <!-- Third-party dependencies of the bundled assemblies (restored by consumers, never bundled). -->
     <PackageReference Include="HotChocolate.Language" Version="16.7.3" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="16.7.3" />
     <PackageReference Include="Temporalio" Version="1.21.1" />
     <PackageReference Include="Temporalio.Extensions.Hosting" Version="1.18.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />

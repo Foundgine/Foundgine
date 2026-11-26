@@ -3,6 +3,7 @@ using Foundgine.Providers.EntityFrameworkCore;
 using Foundgine.SupplyChain.Advanced.OpenIntent.Repositories;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol;
+using KeyNotFoundException = System.Collections.Generic.KeyNotFoundException;
 
 namespace Foundgine.SupplyChain.Advanced.OpenIntent.Services;
 

@@ -44,6 +44,7 @@ final class SemanticConfigurations {
             model.hasFieldNaming(FieldNaming.PASCAL_CASE);
             model.hasAlias("Vendor", 95);
             model.hasAlias("Seller", 90);
+            model.hasMinimumWeight(80);
             model.hasDimension(Supplier::country).as("country");
             model.hasDimension(Supplier::tenantId).as("tenant");
             model.property(Supplier::country).hasAlias("State", 85);

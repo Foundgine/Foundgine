@@ -120,6 +120,8 @@ public final class ErpModel extends FoundgineModel {
 MetadataRegistry registry = new ErpModel().build();
 ```
 
+In .NET, an entity map whose model and storage members share names and types does not have to be written out: `FoundgineIdentityEntityMap<T>` maps a type onto itself, and `map.Convention()` inside a `FoundgineEntityMap<TModel, TEntity>` maps every remaining value-typed or `string` member by name, failing on any member it cannot match unless it is listed as ignored. See `src/csharp/Foundgine.Core/Semantic/Configuration/README.md`.
+
 `Build()` / `build()` validates the whole set and throws one exception listing
 every problem (missing key, unmapped relationship, ambiguous connection,
 mismatched types). To combine with attribute- or annotation-generated metadata,
@@ -138,6 +140,14 @@ connections.HasRelationship<Customer, SalesOrder>()
 
 One connection configures both directions of a pair. Use `HasForeignKeyOnSource`
 (`hasForeignKeyOnSource`) when the source owns the key (* - 1).
+
+In .NET the connection can often be left out: a relationship with no connection gets
+its foreign key from member names (`Shipment.Order` -> `Shipment.OrderId`, the
+collection `Customer.Orders` -> `SalesOrder.CustomerId`), pointing at the target's
+`Id`. Likewise a mapped `Id` is the primary key without `HasKey`, and an entity map
+alone defines an entity named after the model type. Write the explicit form when the
+names differ or the same two models are related more than once. See the Core
+configuration README.
 
 ### Conversions and authorization on connections
 

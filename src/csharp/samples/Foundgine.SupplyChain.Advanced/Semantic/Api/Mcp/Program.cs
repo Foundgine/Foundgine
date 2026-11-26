@@ -1,3 +1,7 @@
+using Foundgine.Extensions.GraphQL.HotChocolate;
+using Foundgine.Runtime;
+using Foundgine.Providers.Tools.Http;
+using Foundgine.Providers.Tools.MCP;
 using Foundgine.Core.Abstractions;
 using Foundgine.Core.Semantic;
 using Foundgine.Core.Semantic.Authorization;
@@ -7,6 +11,7 @@ using System.Text.Json;
 using Foundgine.SupplyChain.Advanced.Authorization;
 using Foundgine.SupplyChain.Advanced.Data;
 using Foundgine.SupplyChain.Advanced.Intent;
+using Foundgine.SupplyChain.Advanced.Mutation;
 using Foundgine.SupplyChain.Advanced.Semantics;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -18,17 +23,28 @@ using ModelContextProtocol.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton(SupplyChainSemanticModel.Build());
-// Canonical intent boundary: one service, served at /intent* and as the foundgine_intent MCP tool.
-builder.Services.AddHttpContextAccessor();
+// One application-owned intent handler, shared by the REST, GraphQL and MCP protocol adapters.
+builder.Services.AddFoundgineIntentHttpPrincipal();
 builder.Services.AddSingleton(new SupplyChainIntentService(SupplyChainData.Seed()));
+builder.Services.AddSingleton<IFoundgineIntentHandler, SupplyChainIntentHandler>();
+// Mutation lifecycle state is application-owned and shared by MCP and GraphQL.
+// Replace the in-memory sample dispatcher with a durable implementation in production.
+builder.Services.AddSingleton<SupplyChainMutationDispatcher>();
+builder.Services.AddGraphQLServer()
+    .AddQueryType<FoundgineIntentGraphQLResolver>()
+    .AddMutationType<FoundgineMutationGraphQLResolver>();
 builder.Services.AddMcpServer()
     .WithHttpTransport(o => o.Stateless = true)
     .WithTools<SupplyChainMcpTools>()
-    .WithTools<IntentMcpTools>();
+    .WithTools<FoundgineIntentMcpTools>()
+    .WithTools<FoundgineMutationMcpTools>();
 
 var app = builder.Build();
+if (app.Environment.IsDevelopment())
+    app.UseMiddleware<SupplyChainIntentDemoIdentityMiddleware>();
 app.MapMcp("/mcp");
-app.MapIntentEndpoints(app.Services.GetRequiredService<SupplyChainIntentService>());
+app.MapFoundgineIntentEndpoints();
+app.MapGraphQL("/graphql");
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 // Readiness is required by the Advanced sample agent and startup scripts.
 // This canonical host uses the in-memory intent service, so readiness means
