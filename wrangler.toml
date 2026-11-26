@@ -1,4 +1,5 @@
 name = "foundgine"
+compatibility_date = "2026-11-23"
 
 [vars]
 ENVIRONMENT = "production"
