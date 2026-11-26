@@ -17,6 +17,100 @@
   --fx-deny: #f08a7a;
 }
 
+/* Navigation layout fallback: keep the shared menu functional even if the
+   optional legacy style.css is not present in a deployment artifact. */
+.site-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0.85rem 1.5rem;
+}
+.site-header-inner a.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex: 0 0 auto;
+  font-weight: 700;
+  text-decoration: none;
+}
+.site-header-inner nav.site-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+}
+.site-header-inner nav.site-nav a,
+.site-header-inner nav.site-nav .submenu-toggle {
+  font: inherit;
+  text-decoration: none;
+}
+.nav-item { position: relative; }
+.nav-item-row { display: inline-flex; align-items: center; gap: 0.35rem; }
+.submenu-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.submenu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  left: 0;
+  z-index: 80;
+  min-width: 13rem;
+  padding: 0.45rem;
+  border: 1px solid;
+  border-radius: 0.65rem;
+}
+.submenu a { display: block; padding: 0.55rem 0.7rem; border-radius: 0.35rem; }
+.has-submenu.is-open > .submenu,
+.submenu.is-open { display: block; }
+.nav-toggle { display: none; cursor: pointer; }
+@media (max-width: 760px) {
+  .site-header-inner { flex-wrap: wrap; gap: 0.65rem; }
+  .nav-toggle {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: 42px;
+    height: 38px;
+    margin-left: auto;
+    padding: 8px;
+    border: 1px solid;
+    border-radius: 0.45rem;
+  }
+  .nav-toggle span { display: block; width: 100%; height: 2px; background: currentColor; }
+  .site-header-inner nav.site-nav {
+    display: none;
+    flex: 1 0 100%;
+    width: 100%;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0;
+    padding-top: 0.5rem;
+  }
+  .site-header-inner nav.site-nav.is-open,
+  .site-header-inner nav.site-nav.open { display: flex; }
+  .site-header-inner nav.site-nav > a,
+  .site-header-inner nav.site-nav .nav-item { width: 100%; padding: 0.65rem 0; }
+  .nav-item-row { display: flex; justify-content: space-between; width: 100%; }
+  .submenu {
+    position: static;
+    min-width: 0;
+    margin-top: 0.4rem;
+    box-shadow: none;
+  }
+}
+
 /* ---- 1. Sitewide chrome ------------------------------------------------ */
 
 header.site-header {
