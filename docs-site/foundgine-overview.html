@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Foundgine (v3.4.1) — Complete Technical Overview, Architecture &amp; Developer Reference (.NET 10 &amp; Java 27)</title>
+  <title>Foundgine (v3.4.2) — Complete Technical Overview, Architecture &amp; Developer Reference (.NET 10 &amp; Java 27)</title>
   <meta
     name="description"
-    content="Complete technical reference for Foundgine v3.4.1: configurable semantic and execution boundary for .NET 10 and Java 27 separating domain meaning, persistence mapping, warrant-based authorization, lexical grounding, and execution from GraphQL, MCP, Temporal, and AI agents."
+    content="Complete technical reference for Foundgine v3.4.2: configurable semantic and execution boundary for .NET 10 and Java 27 separating domain meaning, persistence mapping, warrant-based authorization, lexical grounding, and execution from GraphQL, MCP, Temporal, and AI agents."
   />
   <meta
     name="keywords"
@@ -21,7 +21,7 @@
   <meta name="publisher" content="Foundgine" />
   <meta name="application-name" content="Foundgine" />
   <meta name="theme-color" content="#2557d6" />
-  <meta name="DC.title" content="Foundgine (v3.4.1) — Complete Semantic &amp; Execution Boundary Reference" />
+  <meta name="DC.title" content="Foundgine (v3.4.2) — Complete Semantic &amp; Execution Boundary Reference" />
   <meta name="DC.creator" content="Foundgine" />
   <meta name="DC.subject" content="Semantic Execution Boundary, .NET 10, Java 27, GraphQL, Model Context Protocol, Warrant Authorization" />
   <meta name="DC.date" content="2026-11-26" />
@@ -40,7 +40,7 @@
   <!-- Open Graph / Social -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Foundgine" />
-  <meta property="og:title" content="Foundgine (v3.4.1) — Complete Semantic &amp; Execution Boundary Reference" />
+  <meta property="og:title" content="Foundgine (v3.4.2) — Complete Semantic &amp; Execution Boundary Reference" />
   <meta
     property="og:description"
     content="Configure domain meaning, persistence mapping, and warrant-enforced authorization once; execute safely across GraphQL, MCP, Temporal, agent frameworks, and application code."
@@ -50,7 +50,7 @@
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Foundgine (v3.4.1) — Complete Semantic &amp; Execution Boundary Reference" />
+  <meta name="twitter:title" content="Foundgine (v3.4.2) — Complete Semantic &amp; Execution Boundary Reference" />
   <meta
     name="twitter:description"
     content="Configure domain meaning, persistence mapping, and warrant-enforced authorization once; execute safely across GraphQL, MCP, Temporal, agent frameworks, and application code."
@@ -66,10 +66,10 @@
         "@type": "SoftwareSourceCode",
         "@id": "https://github.com/Foundgine/Foundgine#software",
         "name": "Foundgine",
-        "version": "3.4.1",
+        "version": "3.4.2",
         "description": "Configurable semantic and execution boundary for application capabilities in .NET 10 and Java 27. Separates application meaning, persistence mapping, authorization, lexical grounding, and provider execution from GraphQL, MCP, Temporal, and AI agent consumers.",
         "codeRepository": "https://github.com/Foundgine/Foundgine",
-        "programmingLanguage": ["C#", "Java", "TypeScript", "Python", "Rust"],
+        "programmingLanguage": ["C#", "Java", "TypeScript", "Python", "Rust (WebAssembly client)"],
         "runtimePlatform": [".NET 10", "Java 27", "WebAssembly"],
         "license": "https://www.apache.org/licenses/LICENSE-2.0",
         "author": {
@@ -80,7 +80,7 @@
       },
       {
         "@type": "TechArticle",
-        "headline": "Foundgine (v3.4.1) Complete Architecture, Security, Providers, SDKs, and Benchmark Reference",
+        "headline": "Foundgine (v3.4.2) Complete Architecture, Security, Providers, SDKs, and Benchmark Reference",
         "description": "Complete canonical reference covering Foundgine's 12-stage semantic execution lifecycle, plan binding, cryptographic warrant security, lexical grounding, fluent configuration, ORM/SQL providers, extensions, MCP tools, client SDKs, and benchmark evidence.",
         "dateModified": "2026-11-26",
         "author": { "@type": "Organization", "name": "Foundgine" },
@@ -98,7 +98,7 @@
           {
             "@type": "ListItem",
             "position": 2,
-            "name": "Complete Technical Overview & Reference (v3.4.1)",
+            "name": "Complete Technical Overview & Reference (v3.4.2)",
             "item": "https://foundgine.github.io/Foundgine/docs-site/foundgine-overview.html"
           }
         ]
@@ -775,8 +775,9 @@
 <body>
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="brand" href="#overview">Foundgine <small style="font-weight:500;opacity:.7;">v3.4.1</small></a>
+      <a class="brand" href="#overview">Foundgine <small style="font-weight:500;opacity:.7;">v3.4.2</small></a>
       <nav class="nav-links" aria-label="Primary">
+        <a href="#product-architecture">Why Foundgine</a>
         <a href="#lifecycle">Architecture</a>
         <a href="#modeling">Model &amp; Queries</a>
         <a href="#mutations">Mutations</a>
@@ -879,7 +880,267 @@
       </section>
 
       <!-- 2. LIFECYCLE & ARCHITECTURE DIAGRAM -->
-      <section id="lifecycle">
+
+      <!-- PRODUCT OVERVIEW: PROBLEM, BOUNDARY, CONFIGURATION & ECOSYSTEM -->
+      <section id="product-architecture">
+        <h2>Why Foundgine: One Governed Execution Boundary Across Every Interface</h2>
+        <p>
+          Most applications implement the same business capability more than once: an API resolver applies one set of
+          rules, a background worker applies another, an MCP tool adds its own checks, and an AI integration translates
+          natural language into yet another execution path. Over time, validation, tenant scoping, field visibility,
+          approval requirements, and persistence behavior drift. A secure endpoint does not make a second endpoint
+          secure, and a prompt instruction is not an authorization policy.
+        </p>
+        <p>
+          Foundgine addresses that duplication by placing a semantic execution boundary between callers and data
+          providers. The application defines what entities and operations mean, the host supplies trusted identity and
+          policy, the runtime resolves and authorizes a request, and a provider executes the resulting constrained plan.
+          GraphQL, MCP, application code, and workflow activities are consumers of that same boundary—not independent
+          implementations of business authority.
+        </p>
+
+        <div class="grid-2">
+          <article class="card">
+            <h3>Without a shared boundary</h3>
+            <ul>
+              <li>Rules and authorization are repeated in controllers, resolvers, jobs, and agent tools.</li>
+              <li>Tenant and row filters can be omitted on a new interface or nested relationship.</li>
+              <li>Natural-language retrieval can be mistaken for permission or treated as a confident guess.</li>
+              <li>Each integration develops its own mutation, approval, retry, and audit semantics.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>With Foundgine</h3>
+            <ul>
+              <li>Semantic meaning and persistence mapping are configured independently of the caller.</li>
+              <li>Host-owned identity and authorization constrain the operation before provider execution.</li>
+              <li>Ambiguous intent is clarified or rejected; retrieval scores never grant authority.</li>
+              <li>Adapters converge on shared planning, provider execution, and execution evidence.</li>
+            </ul>
+          </article>
+        </div>
+
+        <h3>Architectural boundary</h3>
+        <div class="diagram-box">
+          <div class="rail" aria-label="Foundgine architecture from consumers to providers">
+            <span class="chip">Application code</span><span class="chip">GraphQL</span>
+            <span class="chip">MCP / agents</span><span class="chip">Temporal activities</span>
+          </div>
+          <p class="diagram-caption">Consumer interfaces translate requests; they do not become separate sources of business authority.</p>
+          <div class="rail">
+            <span class="chip signal">Domain application</span>
+            <span>→</span><span class="chip signal">Semantic model &amp; operations</span>
+            <span>→</span><span class="chip gate">Host identity &amp; policy</span>
+          </div>
+          <div class="rail">
+            <span class="chip">Intent</span><span>→</span><span class="chip">Resolution</span>
+            <span>→</span><span class="chip gate">Authorization warrant</span>
+            <span>→</span><span class="chip signal">Execution plan / IR</span>
+          </div>
+          <div class="rail">
+            <span class="chip ok">Provider conformance</span><span>→</span>
+            <span class="chip ok">EF Core / JPA / SQL / custom provider</span>
+            <span>→</span><span class="chip">Result &amp; receipt</span>
+          </div>
+          <p class="diagram-caption">
+            Identity is established by the hosting application or its trusted identity integration. Providers receive
+            a constrained execution representation; they do not infer caller identity from user-supplied filters.
+          </p>
+        </div>
+
+        <h3>Where the main components fit</h3>
+        <div class="grid-3">
+          <article class="card">
+            <h4>Domain application</h4>
+            <p>Owns business concepts, invariants, operation definitions, and the decision to expose a capability. Foundgine does not replace domain services or application workflows.</p>
+          </article>
+          <article class="card">
+            <h4>Semantic model</h4>
+            <p>Names entities, fields, aliases, dimensions, relationships, and operation capabilities independently of physical tables and columns.</p>
+          </article>
+          <article class="card">
+            <h4>Runtime &amp; planner</h4>
+            <p>Resolves structured intent, applies bounded grounding, obtains authorization, creates a logical plan, and lowers it into provider-facing execution IR.</p>
+          </article>
+          <article class="card">
+            <h4>Identity &amp; policy</h4>
+            <p>The host validates authentication and supplies trusted subject, tenant, claims, and policy decisions. Foundgine binds the authorized scope to execution.</p>
+          </article>
+          <article class="card">
+            <h4>Providers</h4>
+            <p>Translate the provider-independent plan into supported SQL or ORM operations and enforce the provider contract. Physical execution remains separate from semantic meaning.</p>
+          </article>
+          <article class="card">
+            <h4>Workflow integrations</h4>
+            <p>Temporal can coordinate durable steps, timers, retries, approvals, and compensation. Each activity obtains fresh authority and invokes Foundgine for the underlying operation.</p>
+          </article>
+        </div>
+
+        <h3>Execution lifecycle: intent to evidence</h3>
+        <p>
+          The exact stages and their contracts are detailed in the
+          <a href="#lifecycle">canonical lifecycle reference</a>. At a product level, a request moves through these
+          boundaries in order; later stages cannot retroactively turn an untrusted input into authority.
+        </p>
+        <ol>
+          <li><strong>Intent:</strong> a caller supplies a typed request or structured intent document.</li>
+          <li><strong>Semantic resolution:</strong> the runtime maps names and relationships to the configured model; bounded retrieval may propose candidates, but ambiguity is surfaced.</li>
+          <li><strong>Authorization:</strong> the host-owned security context and policy determine allowed operations, rows, and fields. A warrant binds that authority to the request.</li>
+          <li><strong>Execution planning:</strong> the planner creates a provider-independent logical plan and lowers it to ExecutionIR with the required constraints.</li>
+          <li><strong>Provider conformance:</strong> the selected provider validates and translates supported IR nodes into its physical query or mutation mechanism.</li>
+          <li><strong>Execution &amp; evidence:</strong> the provider executes within the host's transaction and operational controls; the runtime returns a result and applicable execution evidence.</li>
+        </ol>
+
+        <h3>Fluent configuration in C# and Java</h3>
+        <p>
+          The following excerpts use the Advanced Supply Chain sample's actual configuration style. Semantic
+          configuration describes domain meaning and relationships; persistence configuration is separate. The full
+          sample contains additional entities, mappings, policies, and registrations.
+        </p>
+        <div class="code-wrap">
+          <div class="code-head"><span>C# — semantic model configuration</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><code>public sealed class SupplierModelConfiguration
+    : FoundgineModelConfiguration&lt;Supplier&gt;
+{
+    public override void Configure(FoundgineModelBuilder&lt;Supplier&gt; model)
+    {
+        model.ToEntity("Supplier");
+        model.HasAlias("Vendor", 95);
+        model.HasAlias("Seller", 90);
+        model.HasMinimumWeight(80);
+        model.HasDimension(x =&gt; x.Country).As("country");
+        model.HasDimension(x =&gt; x.TenantId).As("tenant");
+        model.Property(x =&gt; x.Country).HasAlias("State", 85);
+        model.HasRelationship(x =&gt; x.Certifications)
+            .To&lt;SupplierCertification&gt;().Named("certifications");
+        model.HasRelationship(x =&gt; x.Incidents)
+            .To&lt;ComplianceIncident&gt;().Named("incidents");
+    }
+}</code></pre>
+        </div>
+        <div class="code-wrap">
+          <div class="code-head"><span>Java — semantic model configuration</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><code>static final class SupplierSemantics
+        extends FoundgineModelConfiguration&lt;Supplier&gt; {
+    @Override
+    public void configure(FoundgineModelBuilder&lt;Supplier&gt; model) {
+        model.toEntity("Supplier");
+        model.hasFieldNaming(FieldNaming.PASCAL_CASE);
+        model.hasAlias("Vendor", 95);
+        model.hasAlias("Seller", 90);
+        model.hasMinimumWeight(80);
+        model.hasDimension(Supplier::country).as("country");
+        model.hasDimension(Supplier::tenantId).as("tenant");
+        model.property(Supplier::country).hasAlias("State", 85);
+        model.hasMany("certifications", SupplierCertification.class);
+        model.hasMany("incidents", ComplianceIncident.class);
+    }
+}</code></pre>
+        </div>
+        <p>
+          Both examples configure the same kinds of semantic facts while retaining idiomatic language APIs. The
+          Java sample registers these configurations through <code>FoundgineModel</code> and
+          <code>FoundgineModelRegistrar</code>; the C# sample registers configuration classes through its model
+          builder. See the
+          <a href="../src/csharp/samples/Foundgine.SupplyChain.Advanced/Semantic/Semantics/Configuration/SupplyChainModelConfigurations.cs">C# configuration source</a>
+          and
+          <a href="../src/java/samples/foundgine-supply-chain-advanced/src/main/java/com/foundgine/samples/supplychain/advanced/model/SemanticConfigurations.java">Java configuration source</a>.
+        </p>
+
+        <h3>Security is part of the execution contract</h3>
+        <ul>
+          <li><strong>Host-owned identity:</strong> authentication and claim validation belong to the host or trusted identity integration; caller-provided subject and tenant values are not authority.</li>
+          <li><strong>Tenant and row isolation:</strong> authorization contributes constrained predicates that must survive planning and provider lowering.</li>
+          <li><strong>Field policies:</strong> permitted projections and field-level restrictions are applied before data is returned; masking/redaction is distinct from authorization to read.</li>
+          <li><strong>Authorization warrants:</strong> signed, scoped execution authority binds the operation to its security context and relevant plan provenance.</li>
+          <li><strong>Replay and idempotency controls:</strong> single-use/replay defenses and mutation idempotency protect the applicable execution paths; deployments must configure the shared backing stores required for distributed guarantees.</li>
+          <li><strong>Audit:</strong> execution evidence and durable audit integrations support traceability; they do not replace operational retention, monitoring, or incident-response controls.</li>
+        </ul>
+        <p>
+          Read the <a href="#security">security and warrant specification</a>,
+          <a href="#mutations">mutation lifecycle</a>, and
+          <a href="#events-observability">audit and observability design</a> for the detailed contracts and deployment
+          requirements.
+        </p>
+
+        <h3>Retrieval, mutations, approvals, and receipts</h3>
+        <p>
+          Retrieval is a bounded semantic-discovery aid, not an authority system. The runtime grounds candidates against
+          configured entities, fields, aliases, relationships, and limits. If candidates remain ambiguous, the request
+          requires clarification or is rejected rather than silently selecting a convenient interpretation.
+        </p>
+        <p>
+          Mutations follow a controlled lifecycle: propose a mutation, validate and dry-run the proposed plan, obtain
+          the required approval against the exact proposal, then execute under fresh valid authority. The resulting
+          execution receipt records the outcome and relevant provenance. Approval is not a substitute for rechecking
+          authorization at execution time.
+        </p>
+
+        <h3>GraphQL, MCP, and Temporal are integrations—not the semantic core</h3>
+        <div class="grid-3">
+          <article class="card">
+            <h4>GraphQL</h4>
+            <p>GraphQL adapters translate schema selections and mutation requests into Foundgine operations. Hot Chocolate remains the GraphQL server; Foundgine supplies the shared semantic and authorization boundary.</p>
+          </article>
+          <article class="card">
+            <h4>MCP &amp; agents</h4>
+            <p>MCP exposes bounded tools for capability discovery and governed execution. Agent frameworks may choose tools and formulate intent, but neither prompts nor model output can mint authority.</p>
+          </article>
+          <article class="card">
+            <h4>Temporal</h4>
+            <p>Temporal owns durable orchestration. Foundgine owns authorization and execution of each business operation; workers should obtain fresh activity-scoped authority on every attempt.</p>
+          </article>
+        </div>
+        <p>
+          See <a href="#extensions">GraphQL, identity, and Temporal integrations</a>,
+          <a href="#agents-sdks">MCP and agent integration</a>, and the
+          <a href="#agent-loop-walkthrough">agent clarification and execution walkthrough</a>.
+        </p>
+
+        <h3>Provider and SDK coverage — implementation boundaries</h3>
+        <p>
+          These components do not all have the same role. C# and Java contain server-side runtime and provider
+          implementations. TypeScript, Python, and WebAssembly are thin transport clients: they call a running
+          Foundgine server and do not embed the semantic runtime or enforce server-side authorization locally.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Technology</th><th>Role in the repository</th><th>Implementation status / boundary</th></tr></thead>
+            <tbody>
+              <tr><td><strong>C# / .NET</strong></td><td>Server runtime, semantic model, planning, authorization, providers and integrations</td><td><span class="badge ok">Implemented</span> Main server-side implementation; see NuGet package and sample documentation.</td></tr>
+              <tr><td><strong>Java</strong></td><td>Server runtime, semantic model, planning, authorization, providers and integrations</td><td><span class="badge ok">Implemented</span> Server-side implementation with Maven modules and Advanced Supply Chain sample.</td></tr>
+              <tr><td><strong>EF Core</strong></td><td>.NET ORM provider</td><td><span class="badge ok">Implemented</span> Provider integration in the C# provider packages.</td></tr>
+              <tr><td><strong>JPA / Hibernate</strong></td><td>Java ORM provider</td><td><span class="badge ok">Implemented</span> Java ORM provider path; validate the chosen dialect and feature set against provider conformance documentation.</td></tr>
+              <tr><td><strong>TypeScript</strong></td><td>MCP and Temporal HTTP client</td><td><span class="badge ok">Source implemented</span> Thin client; requires a .NET or Java Foundgine host.</td></tr>
+              <tr><td><strong>Python</strong></td><td>Async and sync MCP / Temporal HTTP client</td><td><span class="badge ok">Source implemented</span> Repository source and tests; README documents local editable installation and does not claim a PyPI release.</td></tr>
+              <tr><td><strong>WebAssembly (Rust core)</strong></td><td>Thin WASM transport client for MCP and Temporal HTTP</td><td><span class="badge ok">Source implemented</span> Build from the repository with the documented Rust / wasm-bindgen toolchain; not a server runtime.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Package publication and runtime capability are separate questions. Consult the
+          <a href="#package-topology-deep">package and module directory</a> and each SDK's README before assuming
+          that a source project is published to a public registry or that a client SDK contains server functionality.
+        </p>
+
+        <h3>Deployment shape</h3>
+        <p>
+          A typical deployment runs a Foundgine-enabled application service beside its database and optional shared
+          infrastructure. The host validates incoming credentials, builds the trusted security context, registers the
+          semantic model and provider, and exposes only the interfaces required by the application. MCP and GraphQL
+          can be hosted by the same service or separate adapters; Temporal workers are commonly deployed separately
+          from the HTTP API. Redis-backed replay/session controls, durable audit, event stores, and outbox dispatchers
+          are optional infrastructure selected according to the guarantees the deployment requires.
+        </p>
+        <p>
+          Start with the <a href="#sample-walkthroughs">reference samples</a>,
+          <a href="#deployments-wire">deployment topologies</a>,
+          <a href="#prod-ops-runbook">production operations guide</a>, and
+          <a href="#developer-quickstart-checklist">developer onboarding</a>.
+        </p>
+      </section>
+
+<section id="lifecycle">
         <h2>Canonical 12-Stage Lifecycle &amp; Component Topology</h2>
         <p>
           Every entry surface—typed C#/Java code, dynamic queries, JSON intent, Hot Chocolate GraphQL, GraphQL Java, MCP tools, Microsoft Agent Framework, LangChain4j, Spring Boot, or Temporal activities—converges on one monotonic pipeline before any provider work occurs.
@@ -2006,7 +2267,7 @@ var response = await agent.RunAsync("Which purchase orders are overdue?", sessio
             <div class="code-head"><span>Java 27 — LangChain4j Tool Map &amp; Spring Boot Auto-Configuration</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
             <pre><code>// 1. LangChain4j AiServices integration (io.github.cristianbarragan:foundgine-providers)
 FoundgineMcpServer server = FoundgineMcpServer.builder()
-        .serverInfo("foundgine", "3.4.1")
+        .serverInfo("foundgine", "3.4.2")
         .withReadTools(tools)
         .build();
 
@@ -2090,7 +2351,7 @@ const rows = await client.execute("foundgine_query_semantic", {
       <section id="repo-tree">
         <h2>Repository Tree &amp; Class Reference (XML Doc &amp; Javadoc Summaries)</h2>
         <p>
-          Complete directory map of <code>Foundgine/Foundgine</code> (<code>v3.4.1</code>) annotated with the canonical XML documentation (<code>&lt;summary&gt;</code>) and Javadoc descriptions from each assembly, package, and primary class/interface. Use the filter bar below to search by class name, namespace, file path, or responsibility.
+          Complete directory map of <code>Foundgine/Foundgine</code> (<code>v3.4.2</code>) annotated with the canonical XML documentation (<code>&lt;summary&gt;</code>) and Javadoc descriptions from each assembly, package, and primary class/interface. Use the filter bar below to search by class name, namespace, file path, or responsibility.
         </p>
 
         <div class="tree-controls">
@@ -2587,7 +2848,7 @@ const rows = await client.execute("foundgine_query_semantic", {
             <thead>
               <tr>
                 <th>Capability</th>
-                <th>Foundgine (v3.4.1)</th>
+                <th>Foundgine (v3.4.2)</th>
                 <th>Direct MCP / Tool Wrappers</th>
                 <th>Semantic Kernel / LangChain</th>
                 <th>Plain GraphQL + ORM</th>
@@ -2714,33 +2975,33 @@ Accept: application/json, text/event-stream
         <div id="wire-pkg" class="tab-panel" data-tab-group="wire-tabs">
           <div class="grid-2">
             <div class="code-wrap">
-              <div class="code-head"><span>.NET 10 CLI — NuGet Package Installation (v3.4.1)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-              <pre><code>dotnet add package Foundgine.Core --version 3.4.1
-dotnet add package Foundgine.Runtime --version 3.4.1
-dotnet add package Foundgine.Providers --version 3.4.1
-dotnet add package Foundgine.Extensions --version 3.4.1</code></pre>
+              <div class="code-head"><span>.NET 10 CLI — NuGet Package Installation (v3.4.2)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+              <pre><code>dotnet add package Foundgine.Core --version 3.4.2
+dotnet add package Foundgine.Runtime --version 3.4.2
+dotnet add package Foundgine.Providers --version 3.4.2
+dotnet add package Foundgine.Extensions --version 3.4.2</code></pre>
             </div>
             <div class="code-wrap">
-              <div class="code-head"><span>Java 27 — Maven pom.xml Dependencies (v3.4.1)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+              <div class="code-head"><span>Java 27 — Maven pom.xml Dependencies (v3.4.2)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
               <pre><code>&lt;dependency&gt;
   &lt;groupId&gt;io.github.cristianbarragan&lt;/groupId&gt;
   &lt;artifactId&gt;foundgine-core&lt;/artifactId&gt;
-  &lt;version&gt;3.4.1&lt;/version&gt;
+  &lt;version&gt;3.4.2&lt;/version&gt;
 &lt;/dependency&gt;
 &lt;dependency&gt;
   &lt;groupId&gt;io.github.cristianbarragan&lt;/groupId&gt;
   &lt;artifactId&gt;foundgine-runtime&lt;/artifactId&gt;
-  &lt;version&gt;3.4.1&lt;/version&gt;
+  &lt;version&gt;3.4.2&lt;/version&gt;
 &lt;/dependency&gt;
 &lt;dependency&gt;
   &lt;groupId&gt;io.github.cristianbarragan&lt;/groupId&gt;
   &lt;artifactId&gt;foundgine-providers&lt;/artifactId&gt;
-  &lt;version&gt;3.4.1&lt;/version&gt;
+  &lt;version&gt;3.4.2&lt;/version&gt;
 &lt;/dependency&gt;
 &lt;dependency&gt;
   &lt;groupId&gt;io.github.cristianbarragan&lt;/groupId&gt;
   &lt;artifactId&gt;foundgine-extensions&lt;/artifactId&gt;
-  &lt;version&gt;3.4.1&lt;/version&gt;
+  &lt;version&gt;3.4.2&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
             </div>
           </div>
@@ -3095,7 +3356,7 @@ builder.Services.AddSingleton&lt;IFoundgineGatewayApprovalStore&gt;(sp =&gt;
           </div>
         </div>
 
-        <h3>4. Primary Package Artifacts (v3.4.1)</h3>
+        <h3>4. Primary Package Artifacts (v3.4.2)</h3>
         <div class="grid-2">
           <div class="card">
             <h3>.NET 10 (NuGet)</h3>
@@ -3997,7 +4258,7 @@ pwsh ./merge-supply-chain-pentest-report.ps1</code></pre>
                 <td>Stabilized 1.0 contracts and expanded lexical grounding diagnostics, ambiguity resolution UX, and cross-surface coverage.</td>
               </tr>
               <tr>
-                <td><strong>v3.3.5 – v3.4.1 (Current)</strong></td>
+                <td><strong>v3.3.5 – v3.4.2 (Current)</strong></td>
                 <td>Full dual-runtime parity across <strong>.NET 10</strong> and <strong>Java 27</strong>, SES-018 AOT metadata parity, SES-025 provider execution fidelity, MCP <code>2025-06-18</code> Streamable HTTP, and unified <code>Runtime/ControlPlane</code> authority/recovery consolidation.</td>
               </tr>
             </tbody>
@@ -4158,7 +4419,7 @@ pwsh ./merge-supply-chain-pentest-report.ps1</code></pre>
       <section id="build-release-playbook">
         <h2>Build, Packaging, Container Hardening &amp; Release Verification</h2>
         <p>
-          Reproducible build and verification commands across all five language ecosystems in the Foundgine monorepo (<code>v3.4.1</code>):
+          Reproducible build and verification commands across all five language ecosystems in the Foundgine monorepo (<code>v3.4.2</code>):
         </p>
 
         <div class="grid-2">
@@ -4635,12 +4896,12 @@ public sealed class TenantIsolationPenTest
   &lt;dependency&gt;
     &lt;groupId&gt;io.github.cristianbarragan&lt;/groupId&gt;
     &lt;artifactId&gt;foundgine-core&lt;/artifactId&gt;
-    &lt;version&gt;3.4.1&lt;/version&gt;
+    &lt;version&gt;3.4.2&lt;/version&gt;
   &lt;/dependency&gt;
   &lt;dependency&gt;
     &lt;groupId&gt;io.github.cristianbarragan&lt;/groupId&gt;
     &lt;artifactId&gt;foundgine-runtime&lt;/artifactId&gt;
-    &lt;version&gt;3.4.1&lt;/version&gt;
+    &lt;version&gt;3.4.2&lt;/version&gt;
   &lt;/dependency&gt;
   &lt;dependency&gt;
     &lt;groupId&gt;org.postgresql&lt;/groupId&gt;
@@ -4659,7 +4920,7 @@ public sealed class TenantIsolationPenTest
           &lt;path&gt;
             &lt;groupId&gt;io.github.cristianbarragan&lt;/groupId&gt;
             &lt;artifactId&gt;foundgine-aot-generator&lt;/artifactId&gt;
-            &lt;version&gt;3.4.1&lt;/version&gt;
+            &lt;version&gt;3.4.2&lt;/version&gt;
           &lt;/path&gt;
         &lt;/annotationProcessorPaths&gt;
         &lt;compilerArgs&gt;
@@ -5201,7 +5462,7 @@ public static bool VerifyReceiptIntegrity(
 
       <!-- 54. COMPLETE MULTI-ECOSYSTEM PACKAGE & ARTIFACT DIRECTORY -->
       <section id="ecosystem-packages-index">
-        <h2>Complete Multi-Ecosystem Package &amp; Artifact Directory (v3.4.1)</h2>
+        <h2>Complete Multi-Ecosystem Package &amp; Artifact Directory (v3.4.2)</h2>
         <div class="table-wrap">
           <table>
             <thead>
@@ -5871,7 +6132,7 @@ ORDER BY "TotalRevenue" DESC, o.status ASC;</code></pre>
 
       <!-- 72. RELEASE VERIFICATION & MULTI-REGISTRY PUBLISHING CHECKLIST -->
       <section id="release-checklist-matrix">
-        <h2>Release Verification &amp; Multi-Registry Publishing Checklist (v3.4.1)</h2>
+        <h2>Release Verification &amp; Multi-Registry Publishing Checklist (v3.4.2)</h2>
         <div class="table-wrap">
           <table>
             <thead>
@@ -6529,7 +6790,7 @@ cargo test --manifest-path src/wasm/Cargo.toml
 # 4. Validate Documentation Sitemap XML &amp; Robots.txt Integrity
 xmllint --noout docs-site/sitemap.xml
 grep -q "Sitemap: https://cristianbarragan.github.io/foundgine/sitemap.xml" docs-site/robots.txt
-echo "All Foundgine v3.4.1 release gates passed."</code></pre>
+echo "All Foundgine v3.4.2 release gates passed."</code></pre>
         </div>
       </section>
 
@@ -6868,7 +7129,7 @@ CREATE INDEX CONCURRENTLY ix_foundgine_outbox_ready
             <h3>Documentation Pages</h3>
             <ul>
               <li><a href="https://foundgine.github.io/Foundgine/docs-site/">Documentation Portal Home</a></li>
-              <li><a href="https://foundgine.github.io/Foundgine/docs-site/foundgine-overview.html">Complete Technical Overview (v3.4.1)</a></li>
+              <li><a href="https://foundgine.github.io/Foundgine/docs-site/foundgine-overview.html">Complete Technical Overview (v3.4.2)</a></li>
               <li><a href="https://foundgine.github.io/Foundgine/docs-site/sitemap.xml">XML Sitemap (<code>sitemap.xml</code>)</a></li>
               <li><a href="https://foundgine.github.io/Foundgine/docs-site/robots.txt">Crawler Directives (<code>robots.txt</code>)</a></li>
             </ul>
@@ -7007,7 +7268,7 @@ CREATE INDEX CONCURRENTLY ix_foundgine_outbox_ready
   </div>
 
   <footer>
-    Foundgine v3.4.1 · Apache-2.0 License ·
+    Foundgine v3.4.2 · Apache-2.0 License ·
     <a href="https://github.com/Foundgine/Foundgine">GitHub Repository</a> ·
     <a href="https://foundgine.github.io/Foundgine/docs-site/llms.txt">llms.txt</a> ·
     <a href="https://foundgine.github.io/Foundgine/docs-site/llms-full.md">llms-full.md</a> ·

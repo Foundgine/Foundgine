@@ -93,7 +93,7 @@ Foundgine complements ORMs, API frameworks, databases, identity providers, autho
 ## Complete public website and technical reference
 
 - [Website home](https://foundgine.github.io/Foundgine/docs-site/): guided documentation and product overview.
-- [Complete technical overview (HTML)](https://foundgine.github.io/Foundgine/docs-site/foundgine-overview.html): detailed v3.4.1 reference covering architecture, semantic configuration, the execution lifecycle, authorization, mutations, retrieval, providers, GraphQL, MCP, Temporal, agent integrations, SDKs, tests, deployment and operational guidance.
+- [Complete technical overview (HTML)](https://foundgine.github.io/Foundgine/docs-site/foundgine-overview.html): detailed v3.4.2 reference covering architecture, semantic configuration, the execution lifecycle, authorization, mutations, retrieval, providers, GraphQL, MCP, Temporal, agent integrations, SDKs, tests, deployment and operational guidance.
 - [Website full-context Markdown](https://foundgine.github.io/Foundgine/docs-site/llms-full.md): machine-readable technical context.
 - [Website sitemap](https://foundgine.github.io/Foundgine/docs-site/sitemap.xml): indexable public documentation URLs.
 - [Website crawler policy](https://foundgine.github.io/Foundgine/docs-site/robots.txt): crawler access and sitemap discovery.

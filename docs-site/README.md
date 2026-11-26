@@ -1,6 +1,6 @@
 # Foundgine website
 
-Static public documentation for Foundgine **3.4.1 · .NET 10 and Java 27**.
+Static public documentation for Foundgine **3.4.2 · .NET 10 and Java 27**.
 
 ## Public reading path
 
@@ -19,7 +19,7 @@ The site is a guided product story rather than a dump of repository internals:
 
 The main concept pages include an in-page table of contents and previous/home/next navigation. Benchmark and run-result pages use a separate evidence layout. Deeper implementation detail belongs in the linked repository Markdown files, including the Java 27 build guide at `src/java/BUILDING.md` and the shared technical reference under `docs/`.
 
-11. **Complete technical overview** — the supplied long-form v3.4.1 HTML reference, linked from the landing page and included in both sitemaps and LLM indexes.
+11. **Complete technical overview** — the supplied long-form v3.4.2 HTML reference, linked from the landing page and included in both sitemaps and LLM indexes.
 
 ## Discovery and indexing
 

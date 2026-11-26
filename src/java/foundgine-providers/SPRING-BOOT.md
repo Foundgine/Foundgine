@@ -52,7 +52,7 @@ FoundgineOrmCustomizer<MyCaller> foundgineModel() {
 <dependency>
   <groupId>io.github.cristianbarragan</groupId>
   <artifactId>foundgine-providers</artifactId>
-  <version>3.4.1</version>
+  <version>3.4.2</version>
 </dependency>
 ```
 

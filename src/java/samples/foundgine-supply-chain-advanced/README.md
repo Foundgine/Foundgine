@@ -10,7 +10,7 @@ transports → a PostgreSQL-backed high-assurance `place_order` / `cancel_order`
 > sample's numbered `docs/` set — see
 > [`SupplyChain-Advanced-Tutorial.md`](./SupplyChain-Advanced-Tutorial.md).
 
-> **Status (3.4.1 source):** the most recent reported Maven run failed in the Advanced
+> **Status (3.4.2 source):** the most recent reported Maven run failed in the Advanced
 > sample test phase. Fixes for semantic discovery, physical-column expectations and the catalog
 > count are in the source but have not yet been re-run. Treat this sample as
 > implemented-unverified until the Java 27 Maven and PostgreSQL gates pass.

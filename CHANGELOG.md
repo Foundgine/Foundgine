@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 3.4.2 — November 26, 2026
+
 ### Added
 
 - C# Advanced Supply Chain: wire the typed `place_order` / `cancel_order` mutation dispatcher into the canonical API host. MCP `foundgine_mutation` and GraphQL `foundgineMutation` now share one DI-owned dispatcher and approval lifecycle; both transports enforce the same 64 KiB request ceiling. Mutation JSON rejects duplicate properties and unknown nested order-line properties. Receipts and audit entries retain correlation IDs. Customer ownership validation is consistent between preview and execution, including the tenant-B Charlie fixture. Tests cover approval single-use/context binding, replay, cross-tenant denial, both adapters, correlation IDs, duplicate/nested-property rejection and tenant-B place/cancel lifecycle. The Advanced test project references the API adapter project so those adapter tests compile as part of the suite. The approval and mutation stores remain in-memory sample fixtures, not production durability claims.
