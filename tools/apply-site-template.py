@@ -202,6 +202,17 @@ def set_description(html: str, rel: str) -> str:
         html = html.replace("</title>", "</title>\n    " + tag.rstrip(), 1)
     return html
 
+ICONS = (
+    '<link href="/assets/favicon.svg" rel="icon" type="image/svg+xml" />\n'
+    '    <link href="/favicon.ico" rel="icon" sizes="48x48" />\n'
+    '    <link href="/assets/favicon-32.png" rel="icon" sizes="32x32" type="image/png" />\n'
+    '    <link href="/apple-touch-icon.png" rel="apple-touch-icon" />'
+)
+
+def set_icons(html: str) -> str:
+    html = re.sub(r'\s*<link[^>]*rel="(?:icon|apple-touch-icon)"[^>]*/?>', "", html)
+    return html.replace("</head>", "    " + ICONS + "\n  </head>", 1)
+
 def set_theme_color(html: str) -> str:
     if 'name="theme-color"' in html:
         return html
@@ -224,6 +235,7 @@ def apply_page(path: Path) -> str:
     html = set_title(html, rel)
     html = set_description(html, rel)
     html = set_theme_color(html)
+    html = set_icons(html)
     link = '<a href="/verified/">Verified claims</a>'
     if link not in html.split("</header>")[0]:
         html = html.replace('<a href="/performance/">Performance reports</a>', link + '\n              <a href="/performance/">Performance reports</a>', 1)
