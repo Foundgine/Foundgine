@@ -8,9 +8,15 @@ ENVIRONMENT = "production"
 directory = "./docs-site"
 not_found_handling = "404-page"
 
+# Apex domain (custom domain, no wildcard allowed here)
 [[routes]]
 pattern = "foundgine.io"
 custom_domain = true
+
+# All subdomains (regular route, requires zone_name)
+[[routes]]
+pattern = "*.foundgine.io/*"
+zone_name = "foundgine.io"
 
 [previews.vars]
 ENVIRONMENT = "preview"
