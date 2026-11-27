@@ -242,3 +242,9 @@ footer.site-footer .footer-top .footer-grid { max-width:none; margin:0; }
 @media print {
   header.site-header, .fx-rules, footer.site-footer, .toc, .page-nav, .skip-link { display:none !important; }
 }
+
+/* ---- AI section cards: dark panels need light text ---- */
+.fx-section .fx-agent > div h3 { color:#fff; }
+.fx-section .fx-agent > div ul, .fx-section .fx-agent > div li, .fx-section .fx-agent > div p { color:#d6deef; }
+.fx-section .fx-agent > div li::marker { color:#8fb2ff; }
+.fx-section .fx-agent .closed li::marker { color:#eba94f; }
