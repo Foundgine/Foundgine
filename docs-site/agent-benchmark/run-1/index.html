@@ -16,16 +16,16 @@
       property="og:description"
     />
     <link
-      href="https://foundgine.github.io/Foundgine/docs-site/agent-benchmark/run-1/"
+      href="https://foundgine.io/agent-benchmark/run-1/"
       rel="canonical"
     />
     <meta
-      content="https://foundgine.github.io/Foundgine/docs-site/agent-benchmark/run-1/"
+      content="https://foundgine.io/agent-benchmark/run-1/"
       property="og:url"
     />
     <meta content="Foundgine" property="og:site_name" />
     <meta
-      content="https://foundgine.github.io/Foundgine/docs-site/Foundgine.webp"
+      content="https://foundgine.io/Foundgine.webp"
       property="og:image"
     />
     <meta content="1280" property="og:image:width" />
@@ -37,7 +37,7 @@
       name="twitter:description"
     />
     <meta
-      content="https://foundgine.github.io/Foundgine/docs-site/Foundgine.webp"
+      content="https://foundgine.io/Foundgine.webp"
       name="twitter:image"
     />
     <script type="application/ld+json">
@@ -46,115 +46,102 @@
         "@type": "TechArticle",
         "headline": "Agent Benchmark Run 1 — End-to-end baseline",
         "description": "Foundgine Agent Benchmark Run 1: Establish the baseline: can semantic execution reduce agent work?",
-        "url": "https://foundgine.github.io/Foundgine/docs-site/agent-benchmark/run-1/",
+        "url": "https://foundgine.io/agent-benchmark/run-1/",
         "author": { "@type": "Organization", "name": "Foundgine" }
       }
     </script>
-    <link href="../../assets/favicon.svg" rel="icon" type="image/svg+xml" />
-    <link href="../../assets/style.css?v=20260828-2" rel="stylesheet" />
-    <link href="../../assets/foundgine-theme.css" rel="stylesheet" />
+    <link href="/assets/favicon.svg" rel="icon" type="image/svg+xml" />
+    <link href="/assets/style.css" rel="stylesheet" />
+    <link href="/assets/foundgine-theme.css" rel="stylesheet" />
       <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-    <link rel="alternate" type="text/plain" href="https://foundgine.github.io/Foundgine/docs-site/llms.txt" title="llms.txt" />
-    <link rel="alternate" type="text/markdown" href="https://foundgine.github.io/Foundgine/docs-site/llms-full.md" title="llms-full.md" />
+    <link rel="alternate" type="text/plain" href="https://foundgine.io/llms.txt" title="llms.txt" />
+    <link rel="alternate" type="text/markdown" href="https://foundgine.io/llms-full.md" title="llms-full.md" />
     <link rel="code-repository" href="https://github.com/Foundgine/Foundgine" />
+    <link href="/assets/site-chrome.css" rel="stylesheet" />
   </head>
   <body>
+    <a class="skip-link" href="#content">Skip to content</a>
     <header class="site-header">
       <div class="site-header-inner">
-        <a class="brand" href="../../index.html"
-          ><svg aria-hidden="true" class="brand-mark" height="20" viewbox="0 0 32 32" width="20">
-            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="4">
-              <line x1="6" x2="6" y1="6" y2="26"></line>
-              <line x1="6" x2="14" y1="6" y2="6"></line>
-              <line x1="6" x2="14" y1="26" y2="26"></line>
-            </g>
-            <circle cx="24" cy="16" fill="currentColor" r="4.5"></circle></svg
-          >Foundgine</a
-        ><button
-          aria-controls="site-nav"
-          aria-expanded="false"
-          aria-label="Open navigation"
-          class="nav-toggle"
-          type="button"
-        >
-          <span></span><span></span><span></span>
-        </button>
-        <nav class="site-nav" id="site-nav">
-          <a href="../../what-is-foundgine.html">What is it</a>
-          <a href="../../getting-started/index.html">Getting started</a>
-          <a href="../../how-it-works/index.html">How it works</a>
-          <a href="../../architecture/index.html">Architecture</a>
-          <a href="../../ai-agents/index.html">AI agents</a>
-          <a href="../../security/index.html">Security</a>
+        <a class="brand" href="/"><svg aria-hidden="true" class="brand-mark" width="20" height="20" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M6 6v20M6 6h8M6 26h8"/></g><circle cx="24" cy="16" r="4.5" fill="currentColor"/></svg>Foundgine</a>
+        <button class="nav-toggle" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation"><span></span><span></span><span></span></button>
+        <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
+          <div class="nav-item has-submenu ov-item">
+            <div class="ov-split"><a class="nav-feature" href="/foundgine-overview">Technical overview</a><button class="submenu-toggle" type="button" aria-controls="submenu-overview" aria-expanded="false" aria-label="Show technical overview topics"><svg aria-hidden="true" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+            <div class="submenu ovm" id="submenu-overview">
+              <a class="ovm-all" href="/foundgine-overview">Open the full technical overview →</a>
+              <div class="ovm-groups">
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-0">Start here <span>6</span></button>
+                <ul class="ovm-list" id="ovm-0" hidden><li><a href="/foundgine-overview#overview">Overview &amp; 12-Stage Rail</a></li><li><a href="/foundgine-overview#lifecycle">Lifecycle &amp; Architecture</a></li><li><a href="/foundgine-overview#application-categories">Application Categories</a></li><li><a href="/foundgine-overview#developer-quickstart-checklist">15-Minute Quickstart</a></li><li><a href="/foundgine-overview#adoption-faq">Adoption, FAQ &amp; Sitemap</a></li><li><a href="/foundgine-overview#vocabulary-glossary">Normative Glossary</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-1">Modeling &amp; queries <span>13</span></button>
+                <ul class="ovm-list" id="ovm-1" hidden><li><a href="/foundgine-overview#modeling">Fluent Model &amp; Queries</a></li><li><a href="/foundgine-overview#type-system-spec">Canonical Type System</a></li><li><a href="/foundgine-overview#graph-traversals-aggregates">Graph Traversals &amp; SQL</a></li><li><a href="/foundgine-overview#json-intent-ast">Canonical JSON Intent AST</a></li><li><a href="/foundgine-overview#value-converters-nulls">Value Converters &amp; Nulls</a></li><li><a href="/foundgine-overview#computed-fields-ast">Computed Virtual Fields</a></li><li><a href="/foundgine-overview#recursive-hierarchies">Recursive CTE Hierarchies</a></li><li><a href="/foundgine-overview#aggregations-grouping">Aggregations &amp; HAVING</a></li><li><a href="/foundgine-overview#keyset-cursor-internals">Keyset Cursor Internals</a></li><li><a href="/foundgine-overview#streaming-backpressure">Cursor Streaming &amp; Flow</a></li><li><a href="/foundgine-overview#domain-invariants-validation">Domain Invariants &amp; Hooks</a></li><li><a href="/foundgine-overview#query-optimizer-internals">Query Optimizer Passes</a></li><li><a href="/foundgine-overview#sql-dialect-matrix">SQL Dialect Matrix</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-2">Mutations &amp; workflows <span>7</span></button>
+                <ul class="ovm-list" id="ovm-2" hidden><li><a href="/foundgine-overview#mutations">Controlled Mutations</a></li><li><a href="/foundgine-overview#temporal-sagas">Temporal Sagas</a></li><li><a href="/foundgine-overview#mutation-graph-internals">Multi-Step Mutation DAGs</a></li><li><a href="/foundgine-overview#idempotency-exactly-once">Idempotency &amp; Retries</a></li><li><a href="/foundgine-overview#temporal-compensation-playbook">Temporal Saga Compensation</a></li><li><a href="/foundgine-overview#batch-mutation-pipelines">Batch &amp; Chunked Mutations</a></li><li><a href="/foundgine-overview#outbox-webhook-signing">Outbox &amp; Webhook Signing</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-3">Grounding &amp; retrieval <span>3</span></button>
+                <ul class="ovm-list" id="ovm-3" hidden><li><a href="/foundgine-overview#grounding">Lexical Grounding</a></li><li><a href="/foundgine-overview#hybrid-retrieval-deep">Hybrid Retrieval Fusion</a></li><li><a href="/foundgine-overview#cdc-cache-invalidation">CDC &amp; Retrieval Index Sync</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-4">Security &amp; identity <span>12</span></button>
+                <ul class="ovm-list" id="ovm-4" hidden><li><a href="/foundgine-overview#security">Security &amp; Warrants</a></li><li><a href="/foundgine-overview#kms-key-rotation">KMS &amp; Key Rotation</a></li><li><a href="/foundgine-overview#keycloak-oidc-internals">Keycloak OIDC &amp; RFC 8693</a></li><li><a href="/foundgine-overview#security-supply-chain">Security &amp; Supply Chain</a></li><li><a href="/foundgine-overview#redis-lua-internals">Redis Lua &amp; Anchor Script</a></li><li><a href="/foundgine-overview#audit-verification">Audit Receipt Verification</a></li><li><a href="/foundgine-overview#field-masking-redaction">Field Masking &amp; Redaction</a></li><li><a href="/foundgine-overview#policy-combinator-algebra">Policy Combinator Algebra</a></li><li><a href="/foundgine-overview#cryptographic-agility-kms">KMS Rotation &amp; Encryption</a></li><li><a href="/foundgine-overview#spiffe-mtls-mesh">mTLS &amp; SPIFFE Identity</a></li><li><a href="/foundgine-overview#attachment-blob-governance">Binary Attachment Governance</a></li><li><a href="/foundgine-overview#rate-limiting-quotas">Rate Limiting &amp; Quotas</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-5">Providers &amp; integrations <span>10</span></button>
+                <ul class="ovm-list" id="ovm-5" hidden><li><a href="/foundgine-overview#orm-sql">ORM, SQL &amp; AOT</a></li><li><a href="/foundgine-overview#extensions">GraphQL, Keycloak &amp; Temporal</a></li><li><a href="/foundgine-overview#custom-providers-spi">Custom Provider SPI</a></li><li><a href="/foundgine-overview#graphql-internals">GraphQL &amp; Federation</a></li><li><a href="/foundgine-overview#graphql-executors-deep">GraphQL Boundary Executors</a></li><li><a href="/foundgine-overview#aot-generator-internals">AOT Compiler Diagnostics</a></li><li><a href="/foundgine-overview#read-your-writes-consistency">Read-Your-Writes WAL Routing</a></li><li><a href="/foundgine-overview#custom-storage-provider-spi">Custom Storage Provider SPI</a></li><li><a href="/foundgine-overview#graphql-schema-stitching">GraphQL Federation Roots</a></li><li><a href="/foundgine-overview#ddl-migrations">Database Schema &amp; DDL</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-6">AI agents, MCP &amp; SDKs <span>6</span></button>
+                <ul class="ovm-list" id="ovm-6" hidden><li><a href="/foundgine-overview#agents-sdks">Agents, MCP &amp; SDKs</a></li><li><a href="/foundgine-overview#mcp-protocol-spec">MCP 2025-06-18 Spec</a></li><li><a href="/foundgine-overview#ai-discovery-spec">AI Discovery Artifacts</a></li><li><a href="/foundgine-overview#agent-loop-walkthrough">Agent Tool &amp; Clarify Loop</a></li><li><a href="/foundgine-overview#sdk-wire-framing">Multi-Language SDK Wire</a></li><li><a href="/foundgine-overview#mcp-resources-prompts">Custom MCP Resources &amp; Prompts</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-7">Operations &amp; scale <span>18</span></button>
+                <ul class="ovm-list" id="ovm-7" hidden><li><a href="/foundgine-overview#deployments-wire">Topologies &amp; Wire</a></li><li><a href="/foundgine-overview#events-observability">Events, Outbox &amp; Telemetry</a></li><li><a href="/foundgine-overview#config-errors">Config &amp; Error Catalog</a></li><li><a href="/foundgine-overview#performance-tuning">Performance &amp; Caching</a></li><li><a href="/foundgine-overview#prod-ops-runbook">Production Ops &amp; Probes</a></li><li><a href="/foundgine-overview#multi-tenancy-models">Multi-Tenancy Models</a></li><li><a href="/foundgine-overview#env-diagnostics-cheatsheet">Env Vars &amp; Ports</a></li><li><a href="/foundgine-overview#incident-forensics-runbook">Incident &amp; Forensics Runbook</a></li><li><a href="/foundgine-overview#multi-region-dr">Multi-Region &amp; DR</a></li><li><a href="/foundgine-overview#runtime-footprint-profiles">Runtime Footprint Profiles</a></li><li><a href="/foundgine-overview#rfc9457-problem-details">RFC 9457 Problem Details</a></li><li><a href="/foundgine-overview#federated-service-mesh">Multi-Service Federation</a></li><li><a href="/foundgine-overview#capacity-sizing-slos">Capacity Sizing &amp; SLOs</a></li><li><a href="/foundgine-overview#diagnostic-decision-tree">Diagnostic Decision Tree</a></li><li><a href="/foundgine-overview#otel-semantic-conventions">OpenTelemetry Conventions</a></li><li><a href="/foundgine-overview#soft-delete-retention">Soft-Delete &amp; GDPR Erasure</a></li><li><a href="/foundgine-overview#active-active-conflict-resolution">Active-Active Merge Rules</a></li><li><a href="/foundgine-overview#db-index-tuning-guide">PostgreSQL Index Tuning Guide</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-8">Testing, evidence &amp; release <span>11</span></button>
+                <ul class="ovm-list" id="ovm-8" hidden><li><a href="/foundgine-overview#evidence">Benchmarks &amp; Packages</a></li><li><a href="/foundgine-overview#benchmark-data">Full Metrics &amp; Attack Matrix</a></li><li><a href="/foundgine-overview#compliance-threat-model">Compliance &amp; Threat Model</a></li><li><a href="/foundgine-overview#build-release-playbook">Build &amp; Release Playbook</a></li><li><a href="/foundgine-overview#deterministic-testing-harness">Chaos &amp; Clock Harness</a></li><li><a href="/foundgine-overview#repo-verification-matrix">Monorepo Quality Gates</a></li><li><a href="/foundgine-overview#testcontainers-integration">Testcontainers CI Harness</a></li><li><a href="/foundgine-overview#release-checklist-matrix">Release Verification Gates</a></li><li><a href="/foundgine-overview#production-signoff-matrix">Production Sign-Off Matrix</a></li><li><a href="/foundgine-overview#ci-smoke-script">Unified CI Release Gate</a></li><li><a href="/foundgine-overview#compliance-framework-mapping">Compliance Control Map</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-9">Reference <span>16</span></button>
+                <ul class="ovm-list" id="ovm-9" hidden><li><a href="/foundgine-overview#repo-tree">Repo Tree &amp; Classes</a></li><li><a href="/foundgine-overview#interactive-explorer">Interactive IR Inspector</a></li><li><a href="/foundgine-overview#api-parity-matrix">.NET / Java API Parity</a></li><li><a href="/foundgine-overview#ses-standard">SES Standard (001–025)</a></li><li><a href="/foundgine-overview#sample-walkthroughs">Samples &amp; E2E Runners</a></li><li><a href="/foundgine-overview#version-history">Architecture History</a></li><li><a href="/foundgine-overview#full-stack-recipe">Full-Stack Wiring Recipe</a></li><li><a href="/foundgine-overview#code-cookbook">Complete Code Cookbook</a></li><li><a href="/foundgine-overview#package-topology-deep">Granular Module Topology</a></li><li><a href="/foundgine-overview#java-advanced-reactor">Java AOT &amp; Docker Setup</a></li><li><a href="/foundgine-overview#control-plane-parity">ControlPlane (.NET vs Java)</a></li><li><a href="/foundgine-overview#cross-ref-index">Invariant Cross-Reference</a></li><li><a href="/foundgine-overview#ecosystem-packages-index">Package Registry Index</a></li><li><a href="/foundgine-overview#di-lifetimes-reference">DI Lifetimes &amp; Safety</a></li><li><a href="/foundgine-overview#contract-evolution">Contract Evolution Playbook</a></li><li><a href="/foundgine-overview#adr-catalog">Architecture Decision Records</a></li></ul>
+              </div>
+            </div>
+          </div>
           <div class="nav-item has-submenu">
-            <span class="nav-item-row"
-              ><a class="nav-parent-link" href="../../samples/index.html">Samples</a
-              ><button
-                aria-controls="submenu-samples"
-                aria-expanded="false"
-                aria-label="Show Samples pages"
-                class="submenu-toggle"
-                type="button"
-              >
-                <svg aria-hidden="true" height="6" viewbox="0 0 10 6" width="10">
-                  <path
-                    d="M1 1l4 4 4-4"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1.6"
-                  ></path>
-                </svg></button
-            ></span>
+            <button class="submenu-toggle" type="button" aria-controls="submenu-learn" aria-expanded="false">Learn <svg aria-hidden="true" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="submenu" id="submenu-learn">
+              <a href="/what-is-foundgine">What is Foundgine<small>The problem and the boundary</small></a>
+              <a href="/getting-started/">Getting started<small>Run the starter sample</small></a>
+              <a href="/how-it-works/">How it works<small>How a request moves</small></a>
+              <a href="/walkthrough/">Walkthrough<small>One request, every layer</small></a>
+              <a href="/architecture/">Architecture<small>The canonical lifecycle</small></a>
+            </div>
+          </div>
+          <div class="nav-item has-submenu">
+            <button class="submenu-toggle" type="button" aria-controls="submenu-build" aria-expanded="false">Build <svg aria-hidden="true" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="submenu" id="submenu-build">
+              <a href="/ai-agents/">AI agents<small>Capabilities without authority</small></a>
+              <a href="/security/">Security<small>Fail-closed invariants</small></a>
+              <a href="/packages/">Packages<small>NuGet, Maven and client SDKs</small></a>
+              <a href="/spec-form/">App generator<small>Describe a domain, get a prompt</small></a>
+            </div>
+          </div>
+          <div class="nav-item has-submenu">
+            <button class="submenu-toggle" type="button" aria-controls="submenu-samples" aria-expanded="false">Samples <svg aria-hidden="true" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             <div class="submenu" id="submenu-samples">
-              <a href="../../samples/index.html">Overview</a
-              ><a href="../../samples/semantic/index.html">Semantic execution</a
-              ><a href="../../samples/pentest/index.html">Security PenTest</a>
+              <a href="/samples/">All samples</a>
+              <a href="/samples/semantic/">Semantic execution</a>
+              <a href="/samples/pentest/">Security PenTest</a>
+              <a href="/case-studies/supply-chain/">Supply Chain case study</a>
             </div>
           </div>
-          <div class="nav-item has-submenu">
-            <span class="nav-item-row"
-              ><a class="nav-parent-link" href="../index.html">Evidence</a
-              ><button
-                aria-controls="submenu-evidence"
-                aria-expanded="false"
-                aria-label="Show Evidence pages"
-                class="submenu-toggle"
-                type="button"
-              >
-                <svg aria-hidden="true" height="6" viewbox="0 0 10 6" width="10">
-                  <path
-                    d="M1 1l4 4 4-4"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1.6"
-                  ></path>
-                </svg></button
-            ></span>
-            <div class="submenu" id="submenu-evidence">
-              <a href="../index.html">Evidence</a><a href="index.html">Run 1 · Baseline</a
-              ><a href="../run-2/index.html">Run 2 · Scalability</a
-              ><a href="../run-3/index.html">Run 3 · Efficiency</a
-              ><a href="../run-4/index.html">Run 4 · Graph execution</a
-              ><a href="../run-5/index.html">Run 5 · High-assurance TransferFunds</a
-              ><a href="../run-5b/index.html">Run 5b · Individual vs batch</a
-              ><a href="../supply-chain/index.html">Supply Chain E2E</a
-              ><a href="../../performance/index.html">Performance</a>
+          <div class="nav-item has-submenu has-current">
+            <button class="submenu-toggle" type="button" aria-controls="submenu-evidence" aria-expanded="false">Evidence <svg aria-hidden="true" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="submenu align-right" id="submenu-evidence">
+              <a href="/agent-benchmark/">Agent benchmark explorer</a>
+              <a href="/agent-benchmark/run-1/" aria-current="page">Run 1 · Baseline</a>
+              <a href="/agent-benchmark/run-2/">Run 2 · Scalability</a>
+              <a href="/agent-benchmark/run-3/">Run 3 · Efficiency</a>
+              <a href="/agent-benchmark/run-4/">Run 4 · Graph execution</a>
+              <a href="/agent-benchmark/run-5/">Run 5 · TransferFunds</a>
+              <a href="/agent-benchmark/run-5b/">Run 5b · Individual vs batch</a>
+              <a href="/agent-benchmark/supply-chain/">Supply Chain E2E</a>
+              <a href="/performance/">Performance reports</a>
             </div>
           </div>
-          <a href="../../packages/index.html">Packages</a>
-          <a href="../../spec-form/index.html">App generator</a>
-          <a href="https://github.com/Foundgine/Foundgine" rel="noopener" target="_blank"
-            >GitHub</a
-          >
+          <a class="nav-github" href="https://github.com/Foundgine/Foundgine" rel="noopener" target="_blank">GitHub ↗</a>
         </nav>
       </div>
     </header>
     <div class="page page-wide">
-      <main class="article article-wide">
+      <main id="content" class="article article-wide">
         <div class="run-page-hero">
           <span class="eyebrow">End-to-end evidence · Run 1 · 17 August 2026</span>
           <h1>Establish the baseline: can semantic execution reduce agent work?</h1>
@@ -236,9 +223,14 @@
       </main>
     </div>
     <footer class="site-footer">
-      Foundgine 3.4.2 · .NET 10 & Java 27 ·
-      <a href="https://github.com/Foundgine/Foundgine">source on GitHub</a>
+      <nav class="footer-grid" aria-label="Footer">
+        <div><h2>Reference</h2><a href="/foundgine-overview">Technical overview</a><a href="/architecture/">Architecture</a><a href="/packages/">Packages</a><a href="/llms.txt">llms.txt</a></div>
+        <div><h2>Learn</h2><a href="/what-is-foundgine">What is Foundgine</a><a href="/getting-started/">Getting started</a><a href="/how-it-works/">How it works</a><a href="/walkthrough/">Walkthrough</a></div>
+        <div><h2>Build</h2><a href="/ai-agents/">AI agents</a><a href="/security/">Security</a><a href="/samples/">Samples</a><a href="/spec-form/">App generator</a></div>
+        <div><h2>Project</h2><a href="/agent-benchmark/">Benchmarks</a><a href="/performance/">Performance</a><a href="https://github.com/Foundgine/Foundgine">GitHub ↗</a></div>
+      </nav>
+      <div class="footer-meta">Foundgine 3.4.2 · .NET 10 &amp; Java 27 · Apache-2.0</div>
     </footer>
-    <script src="../../assets/site-nav.js"></script>
+    <script src="/assets/site-nav.js"></script>
   </body>
 </html>

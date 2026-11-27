@@ -6,6 +6,7 @@ ENVIRONMENT = "production"
 
 [assets]
 directory = "./docs-site"
+not_found_handling = "404-page"
 
 [[routes]]
 pattern = "foundgine.io"
