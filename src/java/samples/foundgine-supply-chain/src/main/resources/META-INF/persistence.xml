@@ -6,9 +6,9 @@
   <!-- Connection settings are supplied at runtime by SupplyChainJpa (SUPPLYCHAIN_JDBC_* environment variables). -->
   <persistence-unit name="foundgine-supply-chain" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-    <class>com.foundgine.samples.supplychain.jpa.SupplierEntity</class>
-    <class>com.foundgine.samples.supplychain.jpa.WarehouseEntity</class>
-    <class>com.foundgine.samples.supplychain.jpa.ProductEntity</class>
+    <class>com.foundgine.samples.supplychain.domain.Supplier</class>
+    <class>com.foundgine.samples.supplychain.domain.Warehouse</class>
+    <class>com.foundgine.samples.supplychain.domain.Product</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>

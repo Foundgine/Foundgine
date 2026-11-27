@@ -12,9 +12,7 @@ import com.foundgine.samples.supplychain.model.SupplyChainFoundgineModel;
 /**
  * The fluent {@link FoundgineOrm} configuration for the starter. Semantic metadata comes from the fluent
  * {@link SupplyChainFoundgineModel}; entity maps and direct-access models are generated from
- * {@code @FoundgineOrmEntity} (the persistence classes only).
- *
- * <p>UNVERIFIED: not compiled or run where it was written (no Foundgine/Jakarta jars available).
+ * {@code @FoundgineOrmEntity} on the domain classes.
  */
 public final class SupplyChainOrm {
     static final FoundgineOrm.Authorization<Authorization.Context> AUTHORIZATION =

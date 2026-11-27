@@ -181,3 +181,64 @@ main.page > * { min-width:0; max-width:100%; }
 .fx-home .fx-topicgrid li.topic > a::after { content:none; }
 .fx-home .fx-topicgrid li.topic > a:hover { background:var(--signal-soft); }
 @media (max-width:700px) { .fx-topicgrid { grid-template-columns:minmax(0,1fr); } }
+
+/* ==========================================================================
+   Template v2 — shared by every page (generated parts live in tools/apply-site-template.py)
+   ========================================================================== */
+html { scroll-behavior:smooth; }
+@media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+main a:focus-visible, main button:focus-visible, main summary:focus-visible, .fx-rules a:focus-visible, .site-footer a:focus-visible {
+  outline:2px solid var(--signal,#6ea0ff); outline-offset:3px; border-radius:4px; }
+
+/* ---- "Same rules" band, above the footer on every page except home ---- */
+.fx-rules { padding:3.25rem 1.25rem; background:var(--nx-bg); border-top:1px solid var(--nx-rim); color:var(--nx-mist); font-family:var(--nx-font); }
+.fx-rules *, .site-footer * { box-sizing:border-box; }
+.fx-rules-inner { max-width:1160px; margin:0 auto; display:grid; grid-template-columns:minmax(0,5fr) minmax(0,7fr); gap:3rem; align-items:center; }
+.fx-rules h2 { margin:0 0 .75rem; padding:0; border:0; color:#fff; font:700 clamp(1.6rem,3.2vw,2.3rem)/1.12 var(--nx-font); letter-spacing:-.01em; }
+.fx-rules p { margin:0 0 1rem; max-width:46ch; color:var(--nx-mist); font:400 1rem/1.6 var(--nx-font); }
+.fx-rules .fx-rules-actions { display:flex; flex-wrap:wrap; gap:.6rem; margin:1.4rem 0 0; max-width:none; }
+.fx-rules .fx-rules-actions a { display:inline-flex; align-items:center; min-height:44px; padding:.6rem 1.1rem; border:1px solid var(--nx-rim); border-radius:9px; color:#fff; font:600 .93rem/1.2 var(--nx-font); text-decoration:none; }
+.fx-rules .fx-rules-actions a:hover { background:var(--nx-panel); border-color:#34549c; }
+.fx-rules .fx-rules-actions a.fx-rules-primary { background:var(--nx-blue); border-color:var(--nx-blue); color:#081028; }
+.fx-rules .fx-rules-actions a.fx-rules-primary:hover { background:#93b9ff; border-color:#93b9ff; }
+/* The path: many callers, one checkpoint, your own stack. The amber gate is the one bold element. */
+.fx-rules-path { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.05fr) minmax(0,1fr); align-items:stretch; }
+.fx-rules-path h3 { margin:0 0 .7rem; color:#fff; font:700 .95rem/1.25 var(--nx-font); }
+.fx-rules-path ul { list-style:none; margin:0; padding:0; display:grid; gap:.45rem; }
+.fx-rules-path li { margin:0; padding:.55rem .75rem; border:1px solid var(--nx-rim); border-radius:8px; background:var(--nx-panel); color:var(--nx-mist); font:500 .88rem/1.3 var(--nx-font); }
+.fx-rules-col { padding:1.1rem .25rem; }
+.fx-rules-col:first-child { padding-right:1.1rem; }
+.fx-rules-col:last-child { padding-left:1.1rem; }
+.fx-rules-gate { padding:1.1rem 1.1rem; border-left:3px solid #eba94f; border-right:3px solid #eba94f; background:linear-gradient(180deg,rgba(235,169,79,.10),rgba(235,169,79,.03)); }
+.fx-rules-gate h3 { color:#eba94f; }
+.fx-rules-gate li { border-color:rgba(235,169,79,.35); color:#fff; font-weight:600; }
+@media (max-width:900px) {
+  .fx-rules-inner { grid-template-columns:minmax(0,1fr); gap:2rem; }
+  .fx-rules p { max-width:60ch; }
+}
+@media (max-width:640px) {
+  .fx-rules { padding:2.5rem 1rem; }
+  .fx-rules-path { grid-template-columns:minmax(0,1fr); }
+  .fx-rules-col:first-child, .fx-rules-col:last-child { padding:1rem 0; }
+  .fx-rules-gate { border-left:0; border-right:0; border-top:3px solid #eba94f; border-bottom:3px solid #eba94f; }
+}
+
+/* ---- Footer with brand block ---- */
+footer.site-footer .footer-top { max-width:1160px; margin:0 auto; display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,3fr); gap:2.5rem; }
+footer.site-footer .footer-top .footer-grid { max-width:none; margin:0; }
+.footer-brand a.brand { display:inline-flex; align-items:center; gap:.5rem; color:#fff; font-weight:700; font-size:1.08rem; text-decoration:none; }
+.footer-brand p { margin:.7rem 0 0; max-width:32ch; color:var(--nx-mist); font:400 .9rem/1.55 var(--nx-font); }
+.footer-brand p.footer-tag { color:#eba94f; font-weight:600; font-size:.95rem; }
+.footer-meta { color:#8391af; }
+@media (max-width:900px) { footer.site-footer .footer-top { grid-template-columns:minmax(0,1fr); gap:1.75rem; } .footer-brand p { max-width:50ch; } }
+
+/* ---- Home: the six-statement story ---- */
+.fx-docs.fx-story { grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:1.6rem 2rem; }
+.fx-docs.fx-story section { border-top:3px solid var(--signal,#2557d6); padding-top:1rem; }
+.fx-docs.fx-story h3 { font-size:1.2rem; line-height:1.25; margin:0 0 .55rem; }
+.fx-docs.fx-story p { margin:0; max-width:48ch; line-height:1.6; }
+
+/* ---- Print: documentation only ---- */
+@media print {
+  header.site-header, .fx-rules, footer.site-footer, .toc, .page-nav, .skip-link { display:none !important; }
+}

@@ -4,13 +4,14 @@
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width,initial-scale=1" name="viewport" />
-    <title>Getting started with Foundgine | .NET and Java</title>
+    <title>Getting started — Foundgine</title>
+    <meta content="#0a1020" name="theme-color" />
     <meta
       content="Build and run the Foundgine Supply Chain sample in .NET or Java, then follow the request through the application-controlled semantic execution boundary."
       name="description"
     />
     <link href="https://foundgine.io/getting-started/" rel="canonical" />
-    <meta content="Getting started with Foundgine | .NET and Java" property="og:title" />
+    <meta content="Getting started — Foundgine" property="og:title" />
     <meta
       content="Build and run the Foundgine Supply Chain sample in .NET or Java, then follow the request through the application-controlled semantic execution boundary."
       property="og:description"
@@ -28,7 +29,7 @@
     <meta content="1280" property="og:image:width" />
     <meta content="320" property="og:image:height" />
     <meta content="summary_large_image" name="twitter:card" />
-    <meta content="Getting started with Foundgine | .NET and Java" name="twitter:title" />
+    <meta content="Getting started — Foundgine" name="twitter:title" />
     <meta
       content="Build and run the Foundgine Supply Chain sample in .NET or Java, then follow the request through the application-controlled semantic execution boundary."
       name="twitter:description"
@@ -50,7 +51,7 @@
       {
         "@context": "https://schema.org",
         "@type": "TechArticle",
-        "headline": "Getting started with Foundgine | .NET and Java",
+        "headline": "Getting started — Foundgine",
         "description": "Build and run the Foundgine Supply Chain sample in .NET or Java, then follow the request through the application-controlled semantic execution boundary.",
         "url": "https://foundgine.io/getting-started/",
         "author": { "@type": "Organization", "name": "Foundgine" }
@@ -136,6 +137,7 @@
               <a href="/agent-benchmark/run-5/">Run 5 · TransferFunds</a>
               <a href="/agent-benchmark/run-5b/">Run 5b · Individual vs batch</a>
               <a href="/agent-benchmark/supply-chain/">Supply Chain E2E</a>
+              <a href="/verified/">Verified claims</a>
               <a href="/performance/">Performance reports</a>
             </div>
           </div>
@@ -214,15 +216,49 @@ Foundgine.Providers → PostgreSQL</pre>
         <div class="toc-return"><a href="../index.html">↑ Documentation home</a></div>
       </aside>
     </div>
+    <!-- fx:rules -->
+    <aside class="fx-rules" aria-labelledby="fx-rules-title">
+      <div class="fx-rules-inner">
+        <div class="fx-rules-copy">
+          <h2 id="fx-rules-title">The same rules. Applied every time.</h2>
+          <p>You describe what things mean, what is valid and who may do what once. Foundgine checks every request against it, whether it comes from an app, an API, GraphQL, a workflow or an AI assistant.</p>
+          <p class="fx-rules-actions"><a class="fx-rules-primary" href="/getting-started/">Get started</a><a href="/how-it-works/">See how a request is checked</a></p>
+        </div>
+        <div class="fx-rules-path">
+          <div class="fx-rules-col">
+            <h3>Clients ask</h3>
+            <ul><li>Your apps</li><li>APIs and GraphQL</li><li>Workflows</li><li>AI assistants (MCP)</li></ul>
+          </div>
+          <div class="fx-rules-gate">
+            <h3>One checkpoint</h3>
+            <ul><li>Same meaning</li><li>Same validation</li><li>Same permissions</li></ul>
+          </div>
+          <div class="fx-rules-col">
+            <h3>You keep your stack</h3>
+            <ul><li>Your databases</li><li>EF Core or JPA</li><li>Your sign-in system</li><li>Your workflow tools</li></ul>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <!-- /fx:rules -->
+    <!-- fx:footer -->
     <footer class="site-footer">
-      <nav class="footer-grid" aria-label="Footer">
-        <div><h2>Reference</h2><a href="/foundgine-overview">Technical overview</a><a href="/architecture/">Architecture</a><a href="/packages/">Packages</a><a href="/llms.txt">llms.txt</a></div>
-        <div><h2>Learn</h2><a href="/what-is-foundgine">What is Foundgine</a><a href="/getting-started/">Getting started</a><a href="/how-it-works/">How it works</a><a href="/walkthrough/">Walkthrough</a></div>
-        <div><h2>Build</h2><a href="/ai-agents/">AI agents</a><a href="/security/">Security</a><a href="/samples/">Samples</a><a href="/spec-form/">App generator</a></div>
-        <div><h2>Project</h2><a href="/agent-benchmark/">Benchmarks</a><a href="/performance/">Performance</a><a href="https://github.com/Foundgine/Foundgine">GitHub ↗</a></div>
-      </nav>
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a class="brand" href="/"><svg aria-hidden="true" class="brand-mark" width="20" height="20" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M6 6v20M6 6h8M6 26h8"/></g><circle cx="24" cy="16" r="4.5" fill="currentColor"/></svg>Foundgine</a>
+          <p class="footer-tag">The same rules. Applied every time.</p>
+          <p>One shared checkpoint for your apps, APIs, databases and AI assistants.</p>
+        </div>
+        <nav class="footer-grid" aria-label="Footer">
+          <div><h2>Learn</h2><a href="/what-is-foundgine">What is Foundgine</a><a href="/getting-started/">Getting started</a><a href="/how-it-works/">How it works</a><a href="/walkthrough/">Walkthrough</a></div>
+          <div><h2>Build</h2><a href="/ai-agents/">AI agents</a><a href="/security/">Security</a><a href="/samples/">Samples</a><a href="/spec-form/">App generator</a></div>
+          <div><h2>Reference</h2><a href="/foundgine-overview">Technical overview</a><a href="/architecture/">Architecture</a><a href="/packages/">Packages</a><a href="/llms.txt">llms.txt</a></div>
+          <div><h2>Evidence</h2><a href="/agent-benchmark/">Benchmarks</a><a href="/performance/">Performance</a><a href="/verified/">Verified claims</a><a href="https://github.com/Foundgine/Foundgine">GitHub ↗</a></div>
+        </nav>
+      </div>
       <div class="footer-meta">Foundgine 3.4.2 · .NET 10 &amp; Java 27 · Apache-2.0</div>
     </footer>
+    <!-- /fx:footer -->
     <script src="/assets/site-nav.js"></script>
     <script src="/assets/toc.js"></script>
   </body>
