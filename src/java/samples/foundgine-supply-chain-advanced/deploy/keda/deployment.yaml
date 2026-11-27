@@ -1,0 +1,45 @@
+# Foundgine supplychain-advanced-java: horizontally scalable Deployment.
+# The image name is a PLACEHOLDER: build it from the Dockerfile in the sample and push it to your registry.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: supplychain-advanced-java
+  labels: {app: supplychain-advanced-java}
+spec:
+  # KEDA (through the HPA it manages) owns the replica count once the ScaledObject exists.
+  # Do not set spec.replicas in the live manifest if you want GitOps tools to leave it alone.
+  selector:
+    matchLabels: {app: supplychain-advanced-java}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: {maxUnavailable: 0, maxSurge: 1}
+  template:
+    metadata:
+      labels: {app: supplychain-advanced-java}
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: app
+          image: ghcr.io/example/foundgine-supplychain-advanced-java:3.4.2
+          ports:
+            - {name: http, containerPort: 4783}
+          env:
+            - {name: FOUNDGINE_MCP_HOST, value: "0.0.0.0"}
+            - {name: FOUNDGINE_MCP_PORT, value: "4783"}
+          resources:
+            requests: {cpu: 250m, memory: 256Mi}   # the KEDA cpu trigger needs a CPU request
+            limits: {memory: 512Mi}
+          startupProbe:
+            httpGet: {path: /health, port: http}
+            periodSeconds: 2
+            failureThreshold: 30
+          readinessProbe:
+            httpGet: {path: /health, port: http}
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: {path: /health, port: http}
+            periodSeconds: 10
+            failureThreshold: 3
+          lifecycle:
+            preStop:
+              exec: {command: ["sleep", "5"]}      # let the Service drop the pod before it stops

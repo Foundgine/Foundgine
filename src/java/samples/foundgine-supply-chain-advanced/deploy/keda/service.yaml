@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: supplychain-advanced-java
+spec:
+  selector: {app: supplychain-advanced-java}
+  ports:
+    - {name: http, port: 80, targetPort: http}
+  # DEMO-ONLY mitigation. Mutation approvals (approve -> execute_approved) are held in this process's memory,
+  # so both calls must reach the same pod. ClientIP affinity is unreliable behind an ingress or NAT, because
+  # every request then appears to come from the same address. Production fix: a shared approval store (see README).
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP: {timeoutSeconds: 600}       # matches the 10-minute approval lifetime

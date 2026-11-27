@@ -1,0 +1,35 @@
+# KEDA ScaledObject: KEDA creates and drives a HorizontalPodAutoscaler for the Deployment.
+# Requires KEDA to be installed in the cluster (https://keda.sh) and metrics-server for the cpu trigger.
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: supplychain-advanced-java
+spec:
+  scaleTargetRef:
+    name: supplychain-advanced-java
+  minReplicaCount: 2        # at least two replicas for availability; this host is not designed to scale to zero
+  maxReplicaCount: 10
+  pollingInterval: 15
+  cooldownPeriod: 300
+  advanced:
+    horizontalPodAutoscalerConfig:
+      behavior:
+        scaleUp:
+          stabilizationWindowSeconds: 0
+          policies:
+            - {type: Pods, value: 2, periodSeconds: 30}
+        scaleDown:
+          stabilizationWindowSeconds: 300    # avoid flapping when traffic dips briefly
+          policies:
+            - {type: Pods, value: 1, periodSeconds: 60}
+  triggers:
+    - type: cpu
+      metricType: Utilization
+      metadata:
+        value: "60"                          # target average CPU utilization across replicas
+    # Optional: scale on request rate instead of, or as well as, CPU. Metric name depends on your instrumentation.
+    # - type: prometheus
+    #   metadata:
+    #     serverAddress: http://prometheus.monitoring:9090
+    #     query: sum(rate(http_server_requests_total{app="supplychain-advanced-java"}[1m]))
+    #     threshold: "100"                    # requests per second per replica
