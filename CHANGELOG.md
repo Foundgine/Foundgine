@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Java core: `SemanticAuthorizer` now applies read policy to fields, relationships and entities referenced by a node's filter and ordering, not only to its selections. Previously a caller who could not read a field (for example `Supplier.RiskScore` for a warehouse operator) could still filter or order on it, and the resulting row count or row order let them recover the value by bisection. Such queries are now refused with `SemanticAuthorizationException` (a 403 at the intent boundary) instead of being run or silently ignored; filters and ordering on readable fields are unchanged. The check covers field, AND/OR, relationship and aggregate filters, ordering through relationship paths, and fails closed on unrecognised expression types. Tests: `QueryOptionsAuthorizationTest` (core) and the existing `IntentInjectionCorpusTest.filteringOnAFieldTheCallerCannotReadDoesNotLeakItsValue` (supply-chain-advanced). The C# `SemanticAuthorizer` has not been checked for the same gap.
+
 ## 3.4.2 — November 26, 2026
 
 ### Added

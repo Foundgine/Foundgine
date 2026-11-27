@@ -4,6 +4,8 @@ import com.foundgine.core.abstractions.*;
 import com.foundgine.core.semantic.*;
 import com.foundgine.core.semantic.ir.*;
 import com.foundgine.core.semantic.ir.graph.*;
+import com.foundgine.core.semantic.expressions.SemanticExpression;
+import com.foundgine.core.semantic.query.*;
 
 import java.util.*;
 
@@ -140,21 +142,26 @@ public final class SemanticAuthorizer {
         Objects.requireNonNull(c);
         Objects.requireNonNull(op);
         SemanticAuthorizationContractValidator.validate(c, op);
-        var authorized = authorize(op);
+        var authorized = authorizeOperation(c, op);
         return new SemanticAuthorizationResult(
                 authorized, SemanticAuthorizationEvidence.create(c, authorized));
     }
 
     public SemanticOperation authorize(SemanticOperation op) {
+        return authorizeOperation(null, op);
+    }
+
+    private SemanticOperation authorizeOperation(SemanticContractSnapshot c, SemanticOperation op) {
         Objects.requireNonNull(op);
-        var root = authorizeNode(op.root(), true);
+        var root = authorizeNode(c, op.root(), true);
         if (root == null)
             throw new SemanticAuthorizationException(
                     "Access denied for entity '" + op.root().entityId() + "'.");
         return new SemanticOperation(root);
     }
 
-    private SemanticReadNode authorizeNode(SemanticReadNode n, boolean root) {
+    private SemanticReadNode authorizeNode(
+            SemanticContractSnapshot contract, SemanticReadNode n, boolean root) {
         var effective =
                 AuthorizationDecision.combine(
                         policy.getEntityAccess(n.entityId(), AuthorizationOperation.READ),
@@ -166,6 +173,11 @@ public final class SemanticAuthorizer {
                         "Access denied for entity '" + n.entityId() + "'.");
             return null;
         }
+        // Filtering and ordering observe field values, so they need the same read access as
+        // selecting them. Otherwise result shape (row count, order) leaks values the caller may
+        // not read, recoverable by bisection. Refuse rather than silently ignore: an ignored
+        // filter would return rows the caller did not ask to be limited to.
+        authorizeQueryOptions(contract, n);
         var fields = new ArrayList<FieldId>();
         for (var f : new LinkedHashSet<>(n.fields())) {
             var d = policy.getFieldAccess(n.entityId(), f, AuthorizationOperation.READ);
@@ -190,7 +202,7 @@ public final class SemanticAuthorizer {
                         policy.getRelationshipAccess(
                                 n.entityId(), child.viaRelationship(), AuthorizationOperation.READ);
                 if (!rd.isAllowed()) continue;
-                var ca = authorizeNode(child, false);
+                var ca = authorizeNode(contract, child, false);
                 if (ca == null) continue;
                 var combined =
                         AuthorizationDecision.combine(
@@ -200,7 +212,7 @@ public final class SemanticAuthorizer {
                                         : predicateDecision(ca.authorization()));
                 children.add(ca.withAuthorization(combined.predicate()));
             } else {
-                var ca = authorizeNode(child, false);
+                var ca = authorizeNode(contract, child, false);
                 if (ca != null) children.add(ca);
             }
         }
@@ -214,6 +226,122 @@ public final class SemanticAuthorizer {
                 n.queryOptions(),
                 effective.predicate(),
                 n.requiredFields());
+    }
+
+    // ---- filter / order authorization -------------------------------------------------------
+
+    private void authorizeQueryOptions(SemanticContractSnapshot contract, SemanticReadNode n) {
+        var options = n.queryOptions();
+        if (options == null) return;
+        if (options.filter() != null) checkFilter(contract, n.entityId(), options.filter());
+        for (var term : options.effectiveOrder()) {
+            var entity = n.entityId();
+            for (var relationship : term.effectivePath())
+                entity = traverse(contract, entity, relationship);
+            if (term.field() != null) requireField(entity, term.field());
+        }
+    }
+
+    private void checkFilter(
+            SemanticContractSnapshot contract, EntityId entity, SemanticFilterExpression filter) {
+        switch (filter) {
+            case SemanticFieldFilter f -> requireField(entity, f.field());
+            case SemanticAndFilter f ->
+                    f.expressions().forEach(e -> checkFilter(contract, entity, e));
+            case SemanticOrFilter f ->
+                    f.expressions().forEach(e -> checkFilter(contract, entity, e));
+            case SemanticRelationshipFilter f -> {
+                var target = traverse(contract, entity, f.relationship());
+                if (f.predicate() != null) checkFilter(contract, target, f.predicate());
+            }
+            case SemanticAggregateFilter f -> {
+                var target = traverse(contract, entity, f.relationship());
+                if (f.field() != null) requireField(target, f.field());
+                if (f.predicate() != null) checkFilter(contract, target, f.predicate());
+            }
+            default -> checkExpression(contract, entity, filter);
+        }
+    }
+
+    /** Generic expression walk; anything not understood fails closed. */
+    private void checkExpression(
+            SemanticContractSnapshot contract, EntityId entity, SemanticExpression e) {
+        if (e == null) return;
+        switch (e) {
+            case SemanticFilterExpression f
+                    when f instanceof SemanticFieldFilter
+                            || f instanceof SemanticAndFilter
+                            || f instanceof SemanticOrFilter
+                            || f instanceof SemanticRelationshipFilter
+                            || f instanceof SemanticAggregateFilter -> checkFilter(contract, entity, f);
+            case SemanticExpression.Literal l -> {}
+            case SemanticExpression.FieldReference r -> requireField(entity, r.field());
+            case SemanticExpression.RelationshipReference r ->
+                    traverse(contract, entity, r.relationship());
+            case SemanticExpression.Path p -> {
+                var current = entity;
+                // The path's source is evaluated against the current entity.
+                checkExpression(contract, entity, p.source());
+                for (var r : p.relationships()) current = traverse(contract, current, r);
+            }
+            case SemanticExpression.Unary u -> checkExpression(contract, entity, u.operand());
+            case SemanticExpression.Binary b -> {
+                checkExpression(contract, entity, b.left());
+                checkExpression(contract, entity, b.right());
+            }
+            case SemanticExpression.Logical l ->
+                    l.operands().forEach(o -> checkExpression(contract, entity, o));
+            case SemanticExpression.Aggregate a -> {
+                checkExpression(contract, entity, a.source());
+                checkExpression(contract, entity, a.argument());
+            }
+            case SemanticExpression.Function f ->
+                    f.arguments().forEach(o -> checkExpression(contract, entity, o));
+            default ->
+                    throw new SemanticAuthorizationException(
+                            "Access denied: unsupported expression in query for entity '"
+                                    + entity
+                                    + "'.");
+        }
+    }
+
+    private void requireField(EntityId entity, FieldId field) {
+        if (!policy.getFieldAccess(entity, field, AuthorizationOperation.READ).isAllowed())
+            throw new SemanticAuthorizationException(
+                    "Access denied: query references a field that is not readable on entity '"
+                            + entity
+                            + "'.");
+    }
+
+    /** Checks the relationship and its target entity are readable; returns the target. */
+    private EntityId traverse(
+            SemanticContractSnapshot contract, EntityId from, RelationshipId relationship) {
+        if (contract == null)
+            throw new SemanticAuthorizationException(
+                    "Access denied: relationship filters and ordering require a semantic contract.");
+        if (!policy.getRelationshipAccess(from, relationship, AuthorizationOperation.READ)
+                .isAllowed())
+            throw new SemanticAuthorizationException(
+                    "Access denied: query references a relationship that is not readable on entity '"
+                            + from
+                            + "'.");
+        var target =
+                contract.get(from).relationships().stream()
+                        .filter(r -> r.id().equals(relationship))
+                        .map(SemanticRelationship::target)
+                        .findFirst()
+                        .orElseThrow(
+                                () ->
+                                        new IllegalArgumentException(
+                                                "Query references relationship '"
+                                                        + relationship
+                                                        + "' not declared on '"
+                                                        + from
+                                                        + "'."));
+        if (!policy.getEntityAccess(target, AuthorizationOperation.READ).isAllowed())
+            throw new SemanticAuthorizationException(
+                    "Access denied for entity '" + target + "'.");
+        return target;
     }
 
     private static AuthorizationDecision predicateDecision(AuthorizationPredicate p) {

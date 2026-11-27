@@ -6,10 +6,8 @@ using Foundgine.Core.Semantic.Security.Execution;
 using Foundgine.Core.Semantic.Security.Warrants;
 using Foundgine.Extensions.GraphQL.HotChocolate;
 using Foundgine.Extensions.GraphQL.Http;
-using Foundgine.Extensions.Keycloak.Configuration;
 using Foundgine.Extensions.Keycloak.Hosting;
 using Foundgine.Providers.EntityFrameworkCore;
-using Foundgine.Providers.Tools.MCP;
 using Foundgine.Runtime;
 using Foundgine.Shop;
 using Foundgine.Shop.Domain;
@@ -37,18 +35,14 @@ builder.Services.AddAuthorization();
 var accessor = new HttpContextAccessor();
 builder.Services.AddSingleton<IHttpContextAccessor>(accessor);
 
-// ---- Foundgine: model, EF provider, JWT -> warrant bridge, engine ----
+// ---- Foundgine: model, EF provider, warrant bridge, engine ----
 var metadata = new ShopModel().Build();
 var semanticModel = metadata.Discover();
 builder.Services.AddFoundgineEf(metadata, (_, o) => o.UseNpgsql(cs), o => o.UseEngineProvider());
 
 builder.Services.AddFoundgineKeycloakWarrants(o =>
 {
-    o.WarrantIssuer = "shop-jwt-bridge"; o.WarrantAudience = "foundgine";
-    // Every role may read every entity; WHERE it may start and WHICH rows it sees is decided below.
-    foreach (var role in new[] { "manager", "customer" })
-        o.RoleGrants[role] = new[] { "Customer", "Order", "OrderLine", "Product" }
-            .Select(e => new FoundgineKeycloakGrant { Capability = $"{e}.read", Operation = "read" }).ToList();
+    o.WarrantIssuer = "shop-jwt-bridge"; o.WarrantAudience = "foundgine"; ShopAuth.MapGrants(o);
 }).UseEphemeralWarrantKey(); // single instance only; use a mounted key / KMS provider when scaling out
 builder.Services.AddSingleton<ISecurityExecutionContextProvider, JwtSecurityContextProvider>();
 builder.Services.AddSingleton<ISecurityWarrantReplayStore, MemorySecurityWarrantReplayStore>();
@@ -61,7 +55,7 @@ builder.Services.AddFoundgine(o =>
     o.ExpectedWarrantIssuer = "shop-jwt-bridge";
 });
 
-// What a customer's row-level rule may reference: a validated claim, never protocol input. Shared by every protocol below.
+// What a customer's row-level rule may reference (validated claim, never GraphQL input). Shared by every protocol below.
 ExecutionContext ShopContext()
 {
     var values = new Dictionary<string, object?>(StringComparer.Ordinal);
@@ -80,30 +74,13 @@ builder.Services.AddScoped(sp => new FoundgineGraphQLQueryExecutor(
     sp.GetRequiredService<ISecurityExecutionContextProvider>(),
     ShopContext));
 
-// ---- Protocol 2 (opt-in, Mcp:Enabled=true): MCP. Same model, same row-level policy, same JWT: no new mapping code. ----
+// ---- Protocol 2 (opt-in, Mcp:Enabled=true): MCP. Same model, same row-level policy, same JWT. No new mapping code. ----
 var mcp = builder.Configuration.GetValue<bool>("Mcp:Enabled");
-if (mcp)
-{
-    builder.Services.AddFoundgineMcp(ShopContext);
-    builder.Services.AddMcpServer().WithHttpTransport(o => o.Stateless = true).WithTools<FoundgineMcpTools>();
-}
+if (mcp) builder.Services.AddShopMcp(ShopContext);
 
 var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapFoundgineGraphQL(o =>
-{
-    // Customers hold OrderLine.read so their own orders can include lines, but only Customer and Order have
-    // row-level predicates, so a customer must not START a query at the OrderLine root.
-    o.QueryRootRoles["customer"] = ["manager", "customer"];
-    o.QueryRootRoles["order"] = ["manager", "customer"];
-    o.QueryRootRoles["product"] = ["manager", "customer"];
-    o.QueryRootRoles["orderLine"] = ["manager"];
-
-    // customer_id is a validated token claim, never a GraphQL argument.
-    o.Authorize = ctx => ctx.User.IsInRole("customer") && !int.TryParse(ctx.User.FindFirst("customer_id")?.Value, out _)
-        ? new GraphQLAdapterError("FORBIDDEN", "A customer_id claim is required for customer operations.", Category: "FORBIDDEN")
-        : null;
-});
-if (mcp) app.MapMcp("/mcp").RequireAuthorization();
+app.MapFoundgineGraphQL(ShopGraphQL.Configure);
+if (mcp) app.MapShopMcp();
 app.Run();
