@@ -133,3 +133,9 @@ The [complete technical overview](https://foundgine.github.io/Foundgine/docs-sit
 - [Testing](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/TESTING.md)
 - [Feature wiki](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/wiki/index.md)
 - [Repository map](https://raw.githubusercontent.com/Foundgine/Foundgine/main/REPO-MAP.md)
+
+## Horizontal scaling and KEDA
+
+run many identical replicas of an application that hosts Foundgine and scale them with an autoscaler such as KEDA (for example on request rate, CPU or outbox backlog) without changing business logic. The metadata registry is immutable after build, authorization policies are stateless, and replay, revocation and MCP session state can live in shared Redis/Valkey/Garnet anchored in PostgreSQL (fail-closed). Outbox workers use `FOR UPDATE SKIP LOCKED` plus idempotency keys. No autoscaled throughput figure is published; measure your own workload. See https://foundgine.io/#scale-out
+
+A ScaledObject example (Prometheus request-rate trigger for the API, PostgreSQL backlog trigger for the outbox worker) is on https://foundgine.io/#scale-out. The example is a starting point, not a benchmarked result.

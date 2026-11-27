@@ -18,6 +18,8 @@ Foundgine is designed for conventional application development first. It does no
 - Designed for conventional application code and APIs; AI, MCP and agent integrations are optional.
 - Complements existing ORM, database, API and domain architectures, with incremental adoption by design.
  
+- **Horizontal scaling:** run many identical replicas of an application that hosts Foundgine and scale them with an autoscaler such as KEDA (for example on request rate, CPU or outbox backlog) without changing business logic. The metadata registry is immutable after build, authorization policies are stateless, and replay, revocation and MCP session state can live in shared Redis/Valkey/Garnet anchored in PostgreSQL (fail-closed). Outbox workers use `FOR UPDATE SKIP LOCKED` plus idempotency keys. No autoscaled throughput figure is published; measure your own workload. See https://foundgine.io/#scale-out
+
 ## Canonical concepts
  
 - **Semantic configuration:** application-defined entities, fields, relationships, aliases and capabilities.

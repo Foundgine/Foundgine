@@ -1,5 +1,7 @@
 # Foundgine Supply Chain — Advanced Sample
 
+**Replicate and scale out horizontally. The same business logic, with no impact on how it behaves.** See [Horizontal scaling with KEDA](#horizontal-scaling-with-keda) for what is replica-safe in this sample today.
+
 A reproducible end-to-end supply-chain reference application exercising the Foundgine layers from an agent-like bot through MCP, semantic modeling, authorization, planning, execution and PostgreSQL.
 
 > **New here?** This README covers _how to run it_. For _why it's built this
@@ -253,3 +255,42 @@ The application handler classifies errors into a transport-neutral outcome and e
 DEMO ONLY: `X-Foundgine-Tenant` and `X-Foundgine-Role` are plain headers accepted only by `SupplyChainIntentDemoIdentityMiddleware` when the host is running in Development. A real host derives the principal from validated authentication (OIDC/JWT, mTLS, or another trusted mechanism). The intent body cannot choose its tenant, role or identity. Reads run on a snapshot of the in-memory fixture taken at startup. Tests: `Semantic/Tests/CanonicalIntentEndpointTests.cs`.
 
 Differences from the Java sample, all from the C# fixture: `Product` has `SafetyStock` rather than `UnitPrice`, so the ordering example sorts on `SafetyStock`; and the fixture has no customers table, so tenants come from suppliers and warehouses.
+
+## Horizontal scaling with KEDA
+
+This sample can run as many identical replicas, with [KEDA](https://keda.sh) adding and removing them as load changes. The business logic is the same in every replica; what differs is where state lives, so read this table first.
+
+| Part | Replica-safe as shipped? | Why |
+| ---- | ------------------------ | --- |
+| Semantic model, authorization policy | Yes | Built once at startup and immutable; policy keeps no per-user state. |
+| MCP transport | Yes | Configured with `Stateless = true`, so any replica can serve any call. |
+| Read intents (`/intent`, `/graphql`, MCP `foundgine_intent`) | Yes, for the seeded demo data | Every replica seeds the same in-memory data. |
+| Mutations (`place_order`, `cancel_order`) | **No** | `SupplyChainIntentService` data is in memory per process, so a write on one replica is invisible to the others. |
+| Approvals (`approve` then `execute_approved`) | **No** | `MutationApprovalHandleStore` is an in-memory, single-use, ten-minute store per process. |
+
+**To scale writes safely:** Replace `SupplyChainIntentService` data and `MutationApprovalHandleStore` with durable, shared implementations (PostgreSQL for data, plus a shared single-use approval store such as the Redis-backed stores in `Foundgine.Providers.Redis`) before relying on more than one replica for writes.
+
+> **Status:** the manifests were validated as YAML only. They have **not** been applied to a cluster, and no autoscaled throughput or correctness result is published for this sample. The image names are placeholders.
+
+### Deploy
+
+```bash
+# 1. Install KEDA and metrics-server in your cluster (see keda.sh), then build and push the image:
+docker build -f src/csharp/samples/Foundgine.SupplyChain.Advanced/Dockerfile -t <registry>/foundgine-supplychain-advanced-mcp-api:3.4.2 .   # run from the repository root
+# 2. Put your image name in src/csharp/samples/Foundgine.SupplyChain.Advanced/deploy/keda/deployment.yaml (placeholder: ghcr.io/example/foundgine-supplychain-advanced-mcp-api:3.4.2), then:
+kubectl apply -k src/csharp/samples/Foundgine.SupplyChain.Advanced/deploy/keda
+kubectl get scaledobject,hpa,pods -l app=supplychain-advanced-mcp-api
+```
+
+What is in `src/csharp/samples/Foundgine.SupplyChain.Advanced/deploy/keda`:
+
+- `deployment.yaml`: rolling updates with no unavailable pods, resource requests (the CPU trigger needs them), startup, readiness and liveness probes on `/health` (liveness) and `/health/ready` (readiness), and a short `preStop` delay.
+- `service.yaml`: a ClusterIP Service. It sets `sessionAffinity: ClientIP` for 600 seconds as a **demo-only** mitigation for in-memory approvals. It is unreliable behind an ingress or NAT, so treat it as a stopgap, not a design.
+- `scaledobject.yaml`: two to ten replicas, scaling on average CPU utilization of 60%, with a five-minute scale-down window so it does not flap. A Prometheus request-rate trigger is included as a commented example.
+- `pdb.yaml`: keeps at least one pod available during node drains.
+
+The minimum is two replicas, not zero: this host is not designed for scale-to-zero, and cold starts would hit the first caller.
+
+### Check that it scales
+
+Send your own load to the Service (for example with `k6` or `hey`) and watch `kubectl get hpa -w`. Compare the same request against different replicas to confirm they agree, and expect writes to disagree until the state in the table above is shared.

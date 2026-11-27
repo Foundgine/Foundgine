@@ -20,6 +20,8 @@
 # Foundgine
  
 **A configurable semantic and execution boundary for application capabilities.**
+
+**Replicate and scale out horizontally. The same business logic, with no impact on how it behaves.** Run many identical replicas and scale them with [KEDA](https://keda.sh) as traffic changes: [how it works](https://foundgine.io/#scale-out) · [.NET sample manifests](src/csharp/samples/Foundgine.SupplyChain.Advanced/deploy/keda) · [Java sample manifests](src/java/samples/foundgine-supply-chain-advanced/deploy/keda).
  
 Foundgine separates application meaning, persistence mapping, authorization and execution from the interfaces and agents that consume them. Configure capabilities with fluent APIs, resolve operations against application-defined semantics, and execute through providers—without making a particular API, ORM, database, or AI framework the center of your architecture.
  
