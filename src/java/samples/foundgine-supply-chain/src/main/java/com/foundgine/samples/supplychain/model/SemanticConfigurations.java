@@ -1,7 +1,7 @@
 package com.foundgine.samples.supplychain.model;
 
 import com.foundgine.core.semantic.configuration.*;
-import com.foundgine.samples.supplychain.domain.Domain.*;
+import com.foundgine.samples.supplychain.domain.*;
 
 /** Semantic side: entity names, aliases and dimensions. Says nothing about storage. */
 final class SemanticConfigurations {
@@ -14,8 +14,8 @@ final class SemanticConfigurations {
             model.hasFieldNaming(FieldNaming.PASCAL_CASE);
             model.hasAlias("Vendor", 95);
             model.hasAlias("Seller", 90);
-            model.hasDimension(Supplier::country).as("country");
-            model.hasDimension(Supplier::tenantId).as("tenant");
+            model.hasDimension(Supplier::getCountry).as("country");
+            model.hasDimension(Supplier::getTenantId).as("tenant");
         }
     }
 
@@ -24,8 +24,8 @@ final class SemanticConfigurations {
         public void configure(FoundgineModelBuilder<Warehouse> model) {
             model.toEntity("Warehouse");
             model.hasFieldNaming(FieldNaming.PASCAL_CASE);
-            model.hasDimension(Warehouse::businessUnitId).as("businessUnit");
-            model.hasDimension(Warehouse::tenantId).as("tenant");
+            model.hasDimension(Warehouse::getBusinessUnitId).as("businessUnit");
+            model.hasDimension(Warehouse::getTenantId).as("tenant");
         }
     }
 
@@ -34,7 +34,7 @@ final class SemanticConfigurations {
         public void configure(FoundgineModelBuilder<Product> model) {
             model.toEntity("Product");
             model.hasFieldNaming(FieldNaming.PASCAL_CASE);
-            model.hasDimension(Product::category).as("category");
+            model.hasDimension(Product::getCategory).as("category");
         }
     }
 }

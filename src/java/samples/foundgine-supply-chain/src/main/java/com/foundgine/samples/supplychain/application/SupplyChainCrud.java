@@ -19,7 +19,7 @@ import java.util.Map;
  *       the tenant rules: a created Supplier/Warehouse is stamped with the caller's tenant (a supplied
  *       {@code tenantId} is ignored), and update/delete only touch rows the caller can read.
  * </ul>
- * The caller owns the {@link EntityManager}. UNVERIFIED: not compiled or run where it was written.
+ * The caller owns the {@link EntityManager}.
  */
 public final class SupplyChainCrud {
     private static final List<String> TENANT_OWNED = List.of("Supplier", "Warehouse");

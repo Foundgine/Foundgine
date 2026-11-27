@@ -1,26 +1,24 @@
 # Foundgine Supply Chain (Java) — Starter Sample
 
 The Java counterpart to [`Foundgine.SupplyChain`](../../../csharp/samples/Foundgine.SupplyChain/README.md), on the same
-fluent pattern as the e2e CRM reference. Everything is configured through the fluent API; there are no
-`@FoundgineEntity` annotations.
+fluent pattern as the C# starter. Each domain class is both the semantic model and the JPA entity: there are no
+separate records, storage classes or `@FoundgineEntity` annotations. It is a smaller scope than the C# starter
+(three entities; no MCP tools or order workflows).
 
 **Caller → application → fluent semantic model → authorization → Foundgine planning/execution → JPA → PostgreSQL**
 
-> **Verification note.** The migration generator and starter migration tests have been exercised
-> against PostgreSQL 16. The Flyway Java integration and Hibernate/JPA path still need a local
-> `mvn verify`.
+> **Verification note.** Run `mvn verify` (below) before relying on changes: the Flyway Java integration and the
+> Hibernate/JPA path need a local build and PostgreSQL.
 
 ## Layout
 
 | Path | Role |
 | --- | --- |
-| `domain/Domain.java` | Annotation-free records: `Supplier`, `Warehouse`, `Product`. |
-| `model/SupplyChainFoundgineModel.java` | The application registration point (`FoundgineModel`) for semantics, persistence and entity maps. |
-| `model/SimplePhysicalSchemaModel.java` | Physical-schema projection used by migration generation; registers only the three persisted tables. |
+| `domain/` | `Supplier`, `Warehouse`, `Product`: domain classes and JPA entities in one (`@FoundgineOrmEntity` generates the ORM maps and direct-access models). |
+| `model/SupplyChainFoundgineModel.java` | The single registration point (`FoundgineModel`), used by the application and by migration generation. |
 | `model/SemanticConfigurations.java` | `FoundgineModelConfiguration<T>`: names, aliases (`Vendor`, `Seller`), dimensions. |
 | `model/PersistenceConfigurations.java` | `FoundginePersistenceConfiguration<T>`: authoritative tables, columns, keys and indexes. |
-| `model/EntityMaps.java` | `FoundgineEntityMap<T, T>`: semantic member → storage member, via method references. |
-| `jpa/*Entity.java` | JPA persistence classes (`@FoundgineOrmEntity` generates the ORM maps and direct-access models). |
+| `model/EntityMaps.java` | `FoundgineEntityMap<T, T>`: one-to-one member maps (Java has no `IdentityEntityMap`). |
 | `jpa/SupplyChainOrm.java` | `FoundgineOrm` configuration: fluent metadata + generated maps/models + mandatory authorization. |
 | `jpa/SupplyChainPolicy.java` | Tenant predicate, `riskScore` field rule, customer entity limits; writes and relationships denied. |
 | `jpa/SupplyChainDatabase.java` | Connection settings and Flyway migrations. |
@@ -32,18 +30,22 @@ fluent pattern as the e2e CRM reference. Everything is configured through the fl
 | `migrations.sh` / `migrations.cmd` | Cross-platform wrappers for the EF-style migration CLI. |
 | `foundgine-migrations.properties` | Model class and demo-data location for the CLI. |
 
+Table and column names appear in two places: `model/PersistenceConfigurations.java` (drives migrations and
+Foundgine) and the JPA annotations in `domain/` (read by Hibernate). Unlike the C# EF provider, the Java JPA
+provider does not derive its mapping from the fluent model, so `SupplyChainOrmTest` fails if the two differ.
+
 ## Reads with method references
 
 ```java
 var reader = new SupplyChainReader(orm.reader(em), caller);
 var rows = reader.from(Supplier.class)
-        .eq(Supplier::country, "US")
-        .select(Supplier::id, Supplier::name, Supplier::riskScore)
-        .orderBy(Supplier::name, SemanticSortDirection.ASC)
+        .eq(Supplier::getCountry, "US")
+        .select(Supplier::getId, Supplier::getName, Supplier::getRiskScore)
+        .orderBy(Supplier::getName, SemanticSortDirection.ASC)
         .rows();
 ```
 
-Java lambdas expose no expression trees, so only getter/record-accessor **method references** are accepted (a plain
+Java lambdas expose no expression trees, so only getter **method references** are accepted (a plain
 lambda is rejected). Each becomes a semantic field name. Every read goes through authorize → plan → ExecutionIR →
 JPA, so the caller's tenant predicate and field rules apply whatever the filter says.
 
@@ -59,13 +61,9 @@ JPA, so the caller's tenant predicate and field rules apply whatever the filter 
 ## Migrations (EF-style model-derived migrations)
 
 The starter is the reference sample for `foundgine-migrations`. The fluent persistence model in
-`model/PersistenceConfigurations.java` is the schema source of truth. As in the Advanced sample,
-`SimplePhysicalSchemaModel` projects only physical persistence declarations (not semantic
-configurations or entity maps). The standard migrations CLI uses that projection via
-`foundgine-migrations.properties`, diffs it against the committed model snapshot, and writes a
-versioned Flyway migration plus rollback SQL and an updated snapshot. `SimpleMigrationGenerator`
-provides the same direct deterministic-DDL path as `AdvancedMigrationGenerator`; it writes to
-`target/generated-migrations` by default and never overwrites the checked-in Flyway migration.
+`model/PersistenceConfigurations.java` is the schema source of truth. The migrations CLI builds
+`SupplyChainFoundgineModel` (set in `foundgine-migrations.properties`), diffs its schema against the committed
+snapshot, and writes a versioned Flyway migration, rollback SQL and an updated snapshot.
 
 From this sample directory:
 
@@ -126,10 +124,10 @@ reachable, `Main` prints a "JPA demo skipped" line instead of failing.
 
 ## Tests
 
-`SimpleSchemaModelParityTest` locks the three-table physical projection and its key columns/indexes;
-`SimpleMigrationGeneratorTest` verifies deterministic SQL and explicit output paths. `SupplyChainOrmTest`
-(fluent configuration, fail-closed validation, tenant isolation, field authorization, plan fingerprints,
-against the in-memory ORM source) and `SupplyChainApplicationTest` (method-reference names, write gate)
+`SimpleSchemaModelParityTest` locks the three tables and their key columns/indexes; `ModelMigrationsTest` checks
+that no model change is missing a migration. `SupplyChainOrmTest` (fail-closed validation, tenant isolation, field
+authorization, JPA annotation parity, plan fingerprints, against the in-memory ORM source),
+`SupplyChainPolicyWriteTest` (write rules) and `SupplyChainApplicationTest` (method-reference names, write gate)
 cover the application path.
 
 ## Next sample

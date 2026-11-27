@@ -664,3 +664,46 @@ body.fx-home {
   :not(pre) > code { overflow-wrap: anywhere; word-break: break-word; white-space: normal; }
   pre { max-width: 100%; overflow-x: auto; }
 }
+
+/* ---- Homepage: plain-language sections --------------------------------- */
+.fx-hero.fx-hero-simple { padding: 3rem 0 3.25rem; }
+.fx-hero-simple .fx-hero-head { margin-bottom: 0; }
+.fx-hero-simple .fx-version { margin: 0 0 1rem; }
+.fx-measure { margin-top: 2rem; padding: 1.2rem 1.4rem; border: 1px solid var(--line); border-left: 4px solid var(--fx-signal); border-radius: 10px; max-width: 78ch; }
+.fx-measure p { margin: 0 0 0.6rem; }
+.fx-measure p:last-child { margin: 0; }
+.fx-compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem; }
+.fx-compare > div { border: 1px solid var(--line); border-top: 4px solid var(--fx-signal); border-radius: 12px; padding: 1.3rem 1.4rem; }
+.fx-compare > .bad { border-top-color: var(--fx-deny); }
+.fx-compare h3 { margin: 0 0 0.8rem; font-size: 1.15rem; }
+.fx-compare ul { list-style: none; margin: 0 0 1rem; padding: 0; }
+.fx-compare li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.3rem 1rem; padding: 0.55rem 0; margin: 0; border-bottom: 1px solid var(--line); }
+.fx-compare p { margin: 0; }
+.fx-note { margin: 1.2rem 0 0; max-width: 78ch; font-size: 0.92rem; color: var(--muted); }
+.fx-steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1rem; counter-reset: step; }
+.fx-steps li { counter-increment: step; margin: 0; border-top: 4px solid var(--fx-signal); padding-top: 0.9rem; }
+.fx-steps li.gate { border-top-color: var(--fx-gate); }
+.fx-steps strong { display: block; font-family: var(--font-display); font-size: 1.25rem; margin-bottom: 0.35rem; }
+.fx-steps strong::before { content: counter(step) ". "; }
+.fx-links { margin-top: 1.6rem; }
+.fx-detail .fx-tech { min-width: 0; padding: 1.3rem 1.4rem; color: var(--mist); }
+.fx-tech summary { cursor: pointer; }
+.fx-tech pre { margin-top: 0.8rem; border-radius: 8px; }
+.fx-rail { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@media (max-width: 900px) {
+  .fx-compare { grid-template-columns: 1fr; }
+  .fx-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .fx-steps { grid-template-columns: 1fr; }
+}
+.fx-chain { margin: 0 0 2rem; font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; line-height: 2.8; }
+.fx-section.dark .fx-chain { color: #fff; }
+.fx-chain span { display: inline-block; line-height: 1.4; padding: 0.45rem 0.8rem; border: 1px solid var(--fx-signal); border-radius: 8px; }
+.fx-chain small { display: block; font-weight: 500; font-size: 0.8rem; color: var(--mist); }
+.fx-pillars { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem; }
+.fx-pillars > div { background: var(--deep); border: 1px solid var(--rim); border-radius: 12px; padding: 1.3rem 1.4rem; }
+.fx-pillars h3 { margin: 0 0 0.5rem; font-size: 1.15rem; }
+.fx-pillars p { margin: 0; }
+.fx-section.dark .fx-note { color: var(--mist); }
+@media (max-width: 760px) { .fx-pillars { grid-template-columns: 1fr; } }

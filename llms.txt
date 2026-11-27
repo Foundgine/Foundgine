@@ -1,6 +1,8 @@
 # Foundgine
  
 > Configurable semantic and execution boundary for application capabilities.
+
+Foundgine applies the same rules every time: meaning, validation and permissions are defined once and checked on every request, whether it comes from an app, an API, GraphQL, a workflow or an AI assistant. An AI asking for something never means it is allowed.
  
 Foundgine is a configurable semantic and execution boundary for application capabilities. It separates application meaning, persistence mapping, authorization and execution from the interfaces and agents that consume them.
  

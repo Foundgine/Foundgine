@@ -14,9 +14,9 @@ import java.util.function.Consumer;
 
 /**
  * Semantic reads written with method references, the Java twin of the C# lambda reader:
- * {@code reader.from(Supplier.class).eq(Supplier::country, "US").select(Supplier::id, Supplier::name).rows()}.
+ * {@code reader.from(Supplier.class).eq(Supplier::getCountry, "US").select(Supplier::getId, Supplier::getName).rows()}.
  *
- * <p>Java lambdas expose no expression trees, so only getter/record-accessor method references are accepted and
+ * <p>Java lambdas expose no expression trees, so only getter method references are accepted and
  * each is turned into a semantic field name (matched case-insensitively by the planner). Every read still goes
  * through authorize -> plan -> ExecutionIR -> JPA, so the caller's tenant predicate and field rules apply.
  */
@@ -29,7 +29,7 @@ public final class SupplyChainReader {
         this.caller = caller;
     }
 
-    /** Starts a read of the semantic entity named after the domain type ({@code Domain.Supplier -> "Supplier"}). */
+    /** Starts a read of the semantic entity named after the domain type ({@code Supplier.class -> "Supplier"}). */
     public <T> Query<T> from(Class<T> domainType) {
         return new Query<>(domainType.getSimpleName());
     }
@@ -86,7 +86,7 @@ public final class SupplyChainReader {
         }
     }
 
-    /** The semantic field name behind a getter or record accessor reference ({@code Supplier::country -> country}). */
+    /** The semantic field name behind a getter or record accessor reference ({@code Supplier::getCountry -> country}). */
     static String fieldName(PropertyRef<?, ?> reference) {
         try {
             var writeReplace = reference.getClass().getDeclaredMethod("writeReplace");
@@ -94,7 +94,7 @@ public final class SupplyChainReader {
             var lambda = (SerializedLambda) writeReplace.invoke(reference);
             var method = lambda.getImplMethodName();
             if (method.startsWith("lambda$")) {
-                throw new IllegalArgumentException("Use a method reference such as Supplier::country, not a lambda.");
+                throw new IllegalArgumentException("Use a method reference such as Supplier::getCountry, not a lambda.");
             }
             if (method.length() > 3 && method.startsWith("get") && Character.isUpperCase(method.charAt(3))) {
                 return Character.toLowerCase(method.charAt(3)) + method.substring(4);
