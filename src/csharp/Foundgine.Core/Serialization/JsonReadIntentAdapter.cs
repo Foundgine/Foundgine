@@ -47,7 +47,12 @@ public sealed class JsonReadIntentAdapter
         }
         catch (JsonException ex)
         {
-            throw Invalid($"Invalid JSON read intent: {ex.Message}", ex);
+            // System.Text.Json messages embed CLR type names (System.*, Foundgine.*); never echo them to the caller.
+            // The original exception stays attached as the inner exception for server-side diagnostics.
+            var where = string.IsNullOrEmpty(ex.Path) ? "" : $" at '{ex.Path}'";
+            throw Invalid(
+                $"Invalid JSON read intent{where}: a value is malformed, has the wrong type, or is not allowed here.",
+                ex);
         }
     }
 
