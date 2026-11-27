@@ -8,12 +8,17 @@ ENVIRONMENT = "production"
 directory = "./docs-site"
 not_found_handling = "404-page"
 
-# Apex domain (custom domain, no wildcard allowed here)
+# Apex domain
 [[routes]]
 pattern = "foundgine.io"
 custom_domain = true
 
-# All subdomains (regular route, requires zone_name)
+# www (custom domain, DNS record is created automatically on deploy)
+[[routes]]
+pattern = "www.foundgine.io"
+custom_domain = true
+
+# Any other subdomain (needs a manual DNS record, see below)
 [[routes]]
 pattern = "*.foundgine.io/*"
 zone_name = "foundgine.io"
