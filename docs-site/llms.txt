@@ -1,0 +1,109 @@
+# Foundgine
+
+> Configurable semantic and execution boundary for application capabilities.
+
+Foundgine is a configurable semantic and execution boundary for application capabilities. It separates application meaning, persistence mapping, authorization and execution from the interfaces and agents that consume them.
+
+Applications configure their capabilities using language-idiomatic fluent APIs. Foundgine resolves operations against configured semantics, applies authorization at the execution boundary, and carries the authorized operation into provider execution. The same configured model can serve multiple interfaces and consumers.
+
+Foundgine is designed for conventional application development first. It does not require AI, MCP, GraphQL or an agent framework. Those are optional consumers and integrations. It complements existing application architectures, ORM technologies and databases rather than claiming to replace them.
+**Start here:** [Complete technical overview](https://foundgine.io/foundgine-overview)
+
+## What Foundgine is
+
+- Application infrastructure for configuring semantic capabilities and executing operations through a controlled boundary.
+- Fluent configuration is the primary developer experience in C# and Java.
+- Meaning, persistence mapping, authorization and execution are separated from interfaces and consumers.
+- Designed for conventional application code and APIs; AI, MCP and agent integrations are optional.
+- Complements existing ORM, database, API and domain architectures. Incremental adoption is supported by design; validate fit for each capability.
+
+## Canonical concepts
+
+- **Semantic configuration:** application-defined entities, fields, relationships, aliases and capabilities.
+- **Persistence mapping:** maps configured semantics to application/provider persistence structures.
+- **Resolution:** validates the requested operation against configured meaning.
+- **Authorization:** trusted host/application context and policy decide what can execute.
+- **Execution:** the authorized operation is carried through the execution boundary to a configured provider.
+- **Consumers:** application code and supported interfaces/integrations consume the same configured capabilities.
+
+## Architecture boundary
+
+```text
+Consumer → Semantic Configuration → Resolve → Authorize → Execution Boundary → Provider
+```
+
+Do not describe discovery, retrieval, model output or caller input as authority. The application owns trusted identity, tenant context, domain invariants, policy and secrets.
+
+## Languages and ecosystem
+
+- **C#:** .NET implementation; fluent configuration, semantic runtime and provider integrations. See `src/csharp/` and the Supply Chain samples.
+- **Java:** Java implementation; idiomatic fluent configuration and provider integrations. See `src/java/` and the Supply Chain samples.
+- **GraphQL:** Hot Chocolate (.NET) and GraphQL Java adapters.
+- **Persistence:** EF Core (.NET), JPA (Java) and other documented provider paths. Check provider-specific capability/maturity notes.
+- **Optional integrations:** MCP, Temporal, Microsoft Agent Framework, LangChain4j, Spring Boot and client SDKs, as documented.
+- **Client SDKs:** TypeScript, Python and WebAssembly clients communicate with a running server; they are not semantic-runtime ports.
+
+## Website resources
+
+- Website overview: https://foundgine.io/what-is-foundgine.html
+- Architecture: https://foundgine.io/architecture/
+- Getting started: https://foundgine.io/getting-started/
+- Security: https://foundgine.io/security/
+
+## Start here
+
+- [Root README](https://raw.githubusercontent.com/Foundgine/Foundgine/main/README.md): product overview and architecture at a glance
+- [Website](https://foundgine.io/): public documentation site
+- [Getting started](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/GETTING-STARTED.md)
+- [Architecture](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/ARCHITECTURE.md)
+- [Feature wiki](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/wiki/index.md)
+- [Providers](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/wiki/providers.md)
+- [ORM integrations](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/wiki/orm-providers.md)
+- [Extensions](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/wiki/extensions.md)
+- [AI and MCP](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/wiki/agents-mcp.md)
+- [Client SDKs](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/wiki/client-sdks.md)
+- [Full technical context](https://raw.githubusercontent.com/Foundgine/Foundgine/main/llms-full.md)
+- [Repository map](https://raw.githubusercontent.com/Foundgine/Foundgine/main/REPO-MAP.md): every directory with file counts and descriptions
+- [Agent instructions](https://raw.githubusercontent.com/Foundgine/Foundgine/main/AGENTS.md): build/test commands and architectural rules for coding agents
+- [Contributor guidance](https://raw.githubusercontent.com/Foundgine/Foundgine/main/CONTRIBUTING.md)
+
+## Comparison and adoption
+
+- [Conventional .NET stack comparison (Hot Chocolate and EF Core)](https://raw.githubusercontent.com/Foundgine/Foundgine/main/src/csharp/samples/Foundgine.Comparison/README.md)
+- [Conventional Java stack comparison (Spring)](https://raw.githubusercontent.com/Foundgine/Foundgine/main/src/java/samples/foundgine-comparison/README.md)
+- [Rationale](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/WHY-FOUNDGINE.md)
+- [Rationale (wiki)](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/wiki/why-foundgine.md)
+
+## Access the whole repository
+
+Every file is public and unrestricted. No restructuring or build step is needed to read it.
+
+- Clone: `git clone https://github.com/Foundgine/Foundgine.git`
+- Zip: https://github.com/Foundgine/Foundgine/archive/refs/heads/main.zip
+- Tarball: https://github.com/Foundgine/Foundgine/archive/refs/heads/main.tar.gz
+- Any file, raw: `https://raw.githubusercontent.com/Foundgine/Foundgine/main/<path>`
+- Complete file list (GitHub API): https://api.github.com/repos/Foundgine/Foundgine/git/trees/main?recursive=1
+- [repo-index.json](https://raw.githubusercontent.com/Foundgine/Foundgine/main/repo-index.json): every file with its size; files of 1 MB or more are flagged large
+- [REPO-MAP.md](https://raw.githubusercontent.com/Foundgine/Foundgine/main/REPO-MAP.md): directory map
+- [AI access guide](https://raw.githubusercontent.com/Foundgine/Foundgine/main/docs/AI-ACCESS.md): MCP servers, indexes and crawler policy
+
+## AI-ready servers and indexes
+
+- GitMCP (MCP server, no setup): https://gitmcp.io/Foundgine/Foundgine. It serves `llms.txt` first, then the README, and can search repository code. The documentation site is also available at https://foundgine.gitmcp.io/Foundgine
+- DeepWiki (generated wiki and Q&A): https://deepwiki.com/Foundgine/Foundgine. MCP endpoint: https://mcp.deepwiki.com/mcp (tools read_wiki_structure, read_wiki_contents, ask_question; repository `Foundgine/Foundgine`).
+- Context7 (library docs for coding agents): https://context7.com/foundgine/foundgine. Indexing rules are in `context7.json`.
+- Ready-made MCP client configs: `.mcp.json` and `.cursor/mcp.json`. Crawler policy: `robots.txt`; sitemap: https://foundgine.io/sitemap.xml
+
+## Claims and limitations
+
+Do not claim that Foundgine universally replaces ORMs, API frameworks, databases, identity providers, authorization servers or agent frameworks. Do not claim universal performance or security superiority. Describe capabilities as implemented and verified for the specific language, package, provider and version. Treat integration maturity and test status as scoped facts; check the current source and CI evidence.
+
+## Complete public website and technical reference
+
+- [Website home](https://foundgine.io/): guided documentation and product overview.
+- [Complete technical overview (HTML)](https://foundgine.io/foundgine-overview): detailed v3.4.2 reference covering architecture, semantic configuration, the execution lifecycle, authorization, mutations, retrieval, providers, GraphQL, MCP, Temporal, agent integrations, SDKs, tests, deployment and operational guidance.
+- [Website full-context Markdown](https://foundgine.io/llms-full.md): machine-readable technical context.
+- [Website sitemap](https://foundgine.io/sitemap.xml): indexable public documentation URLs.
+- [Website crawler policy](https://foundgine.io/robots.txt): crawler access and sitemap discovery.
+- [Repository full context](https://raw.githubusercontent.com/Foundgine/Foundgine/main/llms-full.md).
+- [Repository index](https://raw.githubusercontent.com/Foundgine/Foundgine/main/repo-index.json).
