@@ -403,21 +403,23 @@ public sealed class IntentInjectionCorpusTests
     [Fact]
     public async Task Filtering_on_a_field_the_caller_cannot_read_does_not_leak_its_value()
     {
-        // WAREHOUSE_OPERATOR cannot read Supplier.RiskScore (the policy prunes it from results). If it could
-        // still *filter* on it, two probes would differ and the value could be recovered by bisection.
-        // Acceptable outcomes: the filter is refused, or it is ignored so both probes return the same rows.
-        // A difference is a real side channel.
-        var op = Caller("tenant-a", "warehouse_operator");
-        var everything = await Run(op,
-            WithFilter(Intent("Supplier", "Name"), FieldFilter("RiskScore", "Gt", JsonValue.Create(-1))));
-        var nothing = await Run(op,
-            WithFilter(Intent("Supplier", "Name"), FieldFilter("RiskScore", "Gt", JsonValue.Create(1_000_000_000))));
+        // WAREHOUSE_OPERATOR cannot read Supplier.RiskScore. If it could still *filter* on it, a hit and a miss
+        // would differ and the value could be recovered by guessing. C# read filters support Eq, Neq and In only,
+        // so the probes use Eq: an unsupported operator is refused by the parser and would prove nothing.
+        static JsonObject Probe(decimal score) =>
+            WithFilter(Intent("Supplier", "Name"), FieldFilter("RiskScore", "Eq", JsonValue.Create(score)));
 
-        AssertClassified("operator RiskScore Gt -1", everything);
-        AssertClassified("operator RiskScore Gt 1e9", nothing);
-        if (everything.Succeeded && nothing.Succeeded)
-            Assert.True(everything.Rows.Count == nothing.Rows.Count,
-                "Row count depends on a field this role may not read: filter side channel");
+        // Positive control: for a role that may read the field, the same probes really do differ.
+        var analyst = Caller("tenant-a", "analyst");
+        Assert.Single((await Run(analyst, Probe(0.87m))).Rows);
+        Assert.Empty((await Run(analyst, Probe(0.5m))).Rows);
+
+        var op = Caller("tenant-a", "warehouse_operator");
+        foreach (var score in new[] { 0.87m, 0.5m })
+        {
+            var outcome = await Run(op, Probe(score));
+            Assert.True(outcome.Status == 403, $"operator RiskScore Eq {score}: got {outcome.Status} {outcome.Message}");
+        }
     }
 
     [Fact]

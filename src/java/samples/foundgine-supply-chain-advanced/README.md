@@ -1,7 +1,5 @@
 # Foundgine Supply Chain — Advanced Sample (Java)
 
-**Replicate and scale out horizontally. The same business logic, with no impact on how it behaves.** See [Horizontal scaling with KEDA](#horizontal-scaling-with-keda) for what is replica-safe in this sample today.
-
 The Java counterpart to
 [`Foundgine.SupplyChain.Advanced`](../../../csharp/samples/Foundgine.SupplyChain.Advanced/README.md).
 It is the Java Advanced sample for the fluent-configured semantic model →
@@ -326,41 +324,3 @@ The runtime also exposes `IAuditCheckpointSigner` so production hosts can sign a
 ### Sample audit stream
 
 The Advanced sample shares one `HashChainedAuditLog` across read execution, mutation execution and the opaque-approval boundary. It records read success/failure/denial, mutation dry-run, approval, success/failure/denial, and facade-level invalid, cross-tenant and replayed approval attempts. The sample store is in-memory: it demonstrates event correlation and chain verification, not durable production retention. Hosts can replace the sink with a durable `IAuditLog` and externally anchor checkpoints with `IAuditCheckpointSigner`.
-
-## Horizontal scaling with KEDA
-
-This sample can run as many identical replicas, with [KEDA](https://keda.sh) adding and removing them as load changes. The business logic is the same in every replica; what differs is where state lives, so read this table first.
-
-| Part | Replica-safe as shipped? | Why |
-| ---- | ------------------------ | --- |
-| Semantic model, authorization | Yes | Built once at startup and immutable. |
-| Read intents (`/intent`, `/graphql`, MCP) | Yes, for the seeded demo data | `AdvancedMcpServer.main` seeds the same in-memory `SupplyChainData` in every replica. |
-| Mutations (`place_order`, `cancel_order`) | **No** with the in-memory path | State lives in each process. The PostgreSQL path (`PostgresSupplyChainStore`) takes `pg_advisory_xact_lock` on the idempotency key, so idempotent replays serialize across replicas, but `main` does not wire it in. |
-| Approvals (`approve` then `execute_approved`) | **No** | The demo keeps approvals in a bounded, ten-minute in-memory store per process. |
-
-**To scale writes safely:** Wire the PostgreSQL store into the server and replace the in-memory approval store with a durable, shared one before relying on more than one replica for writes.
-
-> **Status:** the manifests were validated as YAML only. They have **not** been applied to a cluster, and no autoscaled throughput or correctness result is published for this sample. The image names are placeholders.
-
-### Deploy
-
-```bash
-# 1. Install KEDA and metrics-server in your cluster (see keda.sh), then build and push the image:
-docker build -f samples/foundgine-supply-chain-advanced/Dockerfile -t <registry>/foundgine-supplychain-advanced-java:3.4.2 .   # run from src/java
-# 2. Put your image name in src/java/samples/foundgine-supply-chain-advanced/deploy/keda/deployment.yaml (placeholder: ghcr.io/example/foundgine-supplychain-advanced-java:3.4.2), then:
-kubectl apply -k src/java/samples/foundgine-supply-chain-advanced/deploy/keda
-kubectl get scaledobject,hpa,pods -l app=supplychain-advanced-java
-```
-
-What is in `src/java/samples/foundgine-supply-chain-advanced/deploy/keda`:
-
-- `deployment.yaml`: rolling updates with no unavailable pods, resource requests (the CPU trigger needs them), startup, readiness and liveness probes on `/health` (liveness and readiness; this server has no separate readiness endpoint), and a short `preStop` delay.
-- `service.yaml`: a ClusterIP Service. It sets `sessionAffinity: ClientIP` for 600 seconds as a **demo-only** mitigation for in-memory approvals. It is unreliable behind an ingress or NAT, so treat it as a stopgap, not a design.
-- `scaledobject.yaml`: two to ten replicas, scaling on average CPU utilization of 60%, with a five-minute scale-down window so it does not flap. A Prometheus request-rate trigger is included as a commented example.
-- `pdb.yaml`: keeps at least one pod available during node drains.
-
-The minimum is two replicas, not zero: this host is not designed for scale-to-zero, and cold starts would hit the first caller.
-
-### Check that it scales
-
-Send your own load to the Service (for example with `k6` or `hey`) and watch `kubectl get hpa -w`. Compare the same request against different replicas to confirm they agree, and expect writes to disagree until the state in the table above is shared.

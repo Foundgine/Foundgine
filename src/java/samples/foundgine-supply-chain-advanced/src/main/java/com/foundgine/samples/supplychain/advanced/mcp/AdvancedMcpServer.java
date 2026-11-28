@@ -288,13 +288,8 @@ public final class AdvancedMcpServer {
                         "tenant-a", Set.of(1, 2), Authorization.Role.SUPPLY_CHAIN_MANAGER, false);
         var facade = new AdvancedMcpFacade(data, auth);
 
-        // Defaults are unchanged for local runs. In a container or Kubernetes pod set
-        // FOUNDGINE_MCP_HOST=0.0.0.0 (and optionally FOUNDGINE_MCP_PORT) so probes and Services can reach it.
-        String host = System.getenv().getOrDefault("FOUNDGINE_MCP_HOST", DEFAULT_HOST);
-        int envPort = Integer.parseInt(
-                System.getenv().getOrDefault("FOUNDGINE_MCP_PORT", String.valueOf(DEFAULT_PORT)));
-        int port = args.length > 0 ? Integer.parseInt(args[0]) : envPort;
-        var server = new AdvancedMcpServer(facade, host, port);
+        int port = args.length > 0 ? Integer.parseInt(args[0]) : DEFAULT_PORT;
+        var server = new AdvancedMcpServer(facade, DEFAULT_HOST, port);
         server.start();
 
         System.out.println("Foundgine Advanced Supply Chain — HTTP, GraphQL and MCP server");

@@ -7,7 +7,7 @@
   <version>3.4.2</version>
   <name>Foundgine Providers</name>
   <description>Concrete Foundgine provider implementations, including Redis-backed shared state, Spring Boot auto-configuration, LangChain4j tools, storage providers and AI/MCP integrations. Spring Boot and LangChain4j APIs are optional dependencies; all integration classes ship in this single artifact.</description>
-  <url>https://github.com/CristianBarragan/Foundgine/foundgine-providers</url>
+  <url>https://github.com/Foundgine/Foundgine/foundgine-providers</url>
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
@@ -19,13 +19,13 @@
     <developer>
       <name>Foundgine</name>
       <organization>Foundgine</organization>
-      <organizationUrl>https://github.com/CristianBarragan/Foundgine</organizationUrl>
+      <organizationUrl>https://github.com/Foundgine/Foundgine</organizationUrl>
     </developer>
   </developers>
   <scm>
-    <connection>scm:git:https://github.com/CristianBarragan/Foundgine.git/foundgine-providers</connection>
-    <developerConnection>scm:git:ssh://git@github.com/CristianBarragan/Foundgine.git/foundgine-providers</developerConnection>
-    <url>https://github.com/CristianBarragan/Foundgine/foundgine-providers</url>
+    <connection>scm:git:https://github.com/Foundgine/Foundgine.git/foundgine-providers</connection>
+    <developerConnection>scm:git:ssh://git@github.com/Foundgine/Foundgine.git/foundgine-providers</developerConnection>
+    <url>https://github.com/Foundgine/Foundgine/foundgine-providers</url>
   </scm>
   <dependencies>
     <dependency>
@@ -100,14 +100,4 @@
       <optional>true</optional>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.sonatype.central</groupId>
-        <artifactId>central-publishing-maven-plugin</artifactId>
-        <version>0.8.0</version>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

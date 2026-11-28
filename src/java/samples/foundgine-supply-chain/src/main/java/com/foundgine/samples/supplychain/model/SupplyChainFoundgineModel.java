@@ -3,10 +3,7 @@ package com.foundgine.samples.supplychain.model;
 import com.foundgine.core.semantic.configuration.FoundgineModel;
 import com.foundgine.core.semantic.configuration.FoundgineModelRegistrar;
 
-/**
- * Single registration point for the starter's Foundgine model, used by both the application and the migrations CLI.
- * {@link #build()} yields the metadata registry.
- */
+/** Single registration point for the starter's Foundgine model; {@link #build()} yields the metadata registry. */
 public final class SupplyChainFoundgineModel extends FoundgineModel {
     @Override
     public void configure(FoundgineModelRegistrar model) {

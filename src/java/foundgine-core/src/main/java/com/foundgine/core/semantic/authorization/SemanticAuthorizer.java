@@ -17,7 +17,40 @@ public final class SemanticAuthorizer {
         this.policy = Objects.requireNonNull(policy);
     }
 
+    /**
+     * Authorizes a resolved graph for entities, fields and relationships only. It does NOT check the
+     * filter or ordering carried in {@code graph.options()}; they are copied through unchanged. Use
+     * {@link #authorize(SemanticContractSnapshot, SemanticGraph)} for requests that can carry filters
+     * or ordering.
+     */
     public SemanticGraph authorize(SemanticGraph graph) {
+        return authorizeGraph(graph);
+    }
+
+    /**
+     * Authorizes a resolved graph, including the filter and ordering in {@code graph.options()}.
+     * Filtering and ordering observe field values, so they need the same read access as selecting
+     * them; a query that references a field or relationship the caller cannot read is refused, never
+     * silently ignored.
+     */
+    public SemanticGraph authorize(SemanticContractSnapshot contract, SemanticGraph graph) {
+        Objects.requireNonNull(contract);
+        Objects.requireNonNull(graph);
+        if (graph.options() != null && !graph.nodes().isEmpty()) {
+            var root =
+                    graph.nodes().stream()
+                            .filter(node -> node.parentId() == null)
+                            .findFirst()
+                            .orElseThrow(
+                                    () ->
+                                            new IllegalStateException(
+                                                    "Semantic graph has query options but no root node."));
+            authorizeQueryOptions(contract, root.entityId(), graph.options());
+        }
+        return authorizeGraph(graph);
+    }
+
+    private SemanticGraph authorizeGraph(SemanticGraph graph) {
         Objects.requireNonNull(graph);
         if (graph.nodes().isEmpty()) return graph;
         var authorized = new SemanticGraph();
@@ -233,9 +266,14 @@ public final class SemanticAuthorizer {
     private void authorizeQueryOptions(SemanticContractSnapshot contract, SemanticReadNode n) {
         var options = n.queryOptions();
         if (options == null) return;
-        if (options.filter() != null) checkFilter(contract, n.entityId(), options.filter());
+        authorizeQueryOptions(contract, n.entityId(), options);
+    }
+
+    private void authorizeQueryOptions(
+            SemanticContractSnapshot contract, EntityId rootEntity, SemanticQueryOptions options) {
+        if (options.filter() != null) checkFilter(contract, rootEntity, options.filter());
         for (var term : options.effectiveOrder()) {
-            var entity = n.entityId();
+            var entity = rootEntity;
             for (var relationship : term.effectivePath())
                 entity = traverse(contract, entity, relationship);
             if (term.field() != null) requireField(entity, term.field());

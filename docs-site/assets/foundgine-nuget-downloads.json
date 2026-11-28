@@ -1,27 +1,27 @@
 {
   "schemaVersion": 1,
   "label": "NuGet Downloads",
-  "message": "10,917",
+  "message": "10,522",
   "color": "blue",
-  "generatedAt": "2026-11-27T21:24:34.9781318Z",
-  "totalDownloads": 10917,
+  "generatedAt": "2026-11-26T21:40:03.8675881Z",
+  "totalDownloads": 10522,
   "packageCount": 4,
   "packages": [
     {
       "id": "Foundgine.Core",
-      "downloads": 3158
+      "downloads": 3054
     },
     {
       "id": "Foundgine.Extensions",
-      "downloads": 2346
+      "downloads": 2257
     },
     {
       "id": "Foundgine.Providers",
-      "downloads": 2575
+      "downloads": 2460
     },
     {
       "id": "Foundgine.Runtime",
-      "downloads": 2838
+      "downloads": 2751
     }
   ]
 }

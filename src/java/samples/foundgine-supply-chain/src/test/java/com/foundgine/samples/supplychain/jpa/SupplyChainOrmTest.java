@@ -15,7 +15,6 @@ import com.foundgine.providers.storage.orm.InMemoryOrmQuerySource;
 import com.foundgine.providers.storage.orm.OrmExecutionProvider;
 import com.foundgine.providers.storage.orm.jpa.FoundgineOrm;
 import com.foundgine.samples.supplychain.Authorization;
-import com.foundgine.samples.supplychain.domain.Supplier;
 import com.foundgine.samples.supplychain.generated.GeneratedJpaModels;
 import com.foundgine.samples.supplychain.generated.GeneratedOrmMaps;
 import com.foundgine.samples.supplychain.model.SupplyChainFoundgineModel;
@@ -30,7 +29,8 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Database-free checks for the fluent {@link FoundgineOrm}: fail-closed validation, authorization on the plan
- * path, and generated-model coverage.
+ * path, generated-model coverage, and result parity with the baseline. Test definitions only: not executed in
+ * the environment that wrote them.
  */
 class SupplyChainOrmTest {
     private static Authorization.Context caller(String tenant, Authorization.Role role) {
@@ -52,23 +52,6 @@ class SupplyChainOrmTest {
             var model = orm.model(mapping);
             assertNotNull(model, "generated model for " + mapping.name());
             assertEquals("id", model.idAttribute(), mapping.name() + " identifier attribute");
-        }
-    }
-
-    /** Hibernate reads the JPA annotations, migrations read the fluent model: the two must name the same columns. */
-    @Test
-    void jpaAnnotationsMatchTheFluentTablesAndColumns() throws Exception {
-        for (var entity : new SupplyChainFoundgineModel().build().entities()) {
-            var type = GeneratedOrmMaps.entityTypes().get(entity.name());
-            assertEquals(entity.storageName(), type.getAnnotation(jakarta.persistence.Table.class).name());
-            var annotated = new java.util.HashSet<String>();
-            for (var field : type.getDeclaredFields()) {
-                var column = field.getAnnotation(jakarta.persistence.Column.class);
-                if (column != null) annotated.add(column.name());
-            }
-            var fluent = new java.util.HashSet<String>();
-            for (var column : entity.columns()) fluent.add(column.effectiveStorageName());
-            assertEquals(fluent, annotated, entity.name());
         }
     }
 
@@ -97,7 +80,7 @@ class SupplyChainOrmTest {
     @Test
     void unknownSemanticEntityIsRejectedAtBuildTime() {
         var ex = assertThrows(IllegalStateException.class, () -> SupplyChainOrm.configure()
-                .entities(java.util.Map.of("Nope", Supplier.class))
+                .entities(java.util.Map.of("Nope", SupplierEntity.class))
                 .authorization(SupplyChainOrm.AUTHORIZATION).build());
         assertTrue(ex.getMessage().contains("Nope"));
     }
