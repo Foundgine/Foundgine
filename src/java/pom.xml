@@ -42,7 +42,7 @@
 
     <jackson.version>2.18.11</jackson.version>
     <junit.version>5.11.4</junit.version>
-	<assertj.version>3.27.6</assertj.version>
+	<assertj.version>3.27.7</assertj.version>
     <postgresql.version>42.7.12</postgresql.version>
     <!-- Optional Redis/Valkey/Garnet client for the shared warrant replay store. Pinned deliberately; confirm it resolves from your repository. -->
     <lettuce.version>6.5.5.RELEASE</lettuce.version>
