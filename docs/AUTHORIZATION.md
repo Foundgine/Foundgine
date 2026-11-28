@@ -89,6 +89,8 @@ Mutation authorization checks:
 - field read permission for returned fields;
 - read permission for fields and relationships used by mutation filters.
 
+In both Java and C#, when authorizing a `SemanticOperation` (the engine path), or a resolved graph through the contract-aware overload (`authorize(contract, graph)` / `Authorize(contract, graph)`), read filters and ordering follow the same rule: a query that filters or orders on a field, relationship or entity the caller may not read is refused, because the shape of the result (row count, order) would otherwise reveal the hidden values. The older graph overload without a contract (`authorize(graph)` / `Authorize(graph)`) checks entities, fields and relationships only and copies the filter and ordering through unchanged; the engines do not use it, but it is public API, so prefer the contract-aware overload.
+
 `MutationPlanner` remains structural. `MutationAuthorizer` applies the
 semantic policy after planning and before provider compilation.
 

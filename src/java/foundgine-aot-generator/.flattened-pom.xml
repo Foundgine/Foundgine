@@ -7,7 +7,7 @@
   <version>3.4.2</version>
   <name>Foundgine AOT Generator</name>
   <description>Java implementation of Foundgine, aligned with the current C# source packages.</description>
-  <url>https://github.com/CristianBarragan/Foundgine/foundgine-aot-generator</url>
+  <url>https://github.com/Foundgine/Foundgine/foundgine-aot-generator</url>
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
@@ -19,13 +19,13 @@
     <developer>
       <name>Foundgine</name>
       <organization>Foundgine</organization>
-      <organizationUrl>https://github.com/CristianBarragan/Foundgine</organizationUrl>
+      <organizationUrl>https://github.com/Foundgine/Foundgine</organizationUrl>
     </developer>
   </developers>
   <scm>
-    <connection>scm:git:https://github.com/CristianBarragan/Foundgine.git/foundgine-aot-generator</connection>
-    <developerConnection>scm:git:ssh://git@github.com/CristianBarragan/Foundgine.git/foundgine-aot-generator</developerConnection>
-    <url>https://github.com/CristianBarragan/Foundgine/foundgine-aot-generator</url>
+    <connection>scm:git:https://github.com/Foundgine/Foundgine.git/foundgine-aot-generator</connection>
+    <developerConnection>scm:git:ssh://git@github.com/Foundgine/Foundgine.git/foundgine-aot-generator</developerConnection>
+    <url>https://github.com/Foundgine/Foundgine/foundgine-aot-generator</url>
   </scm>
   <dependencies>
     <dependency>
@@ -41,14 +41,4 @@
       <scope>compile</scope>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.sonatype.central</groupId>
-        <artifactId>central-publishing-maven-plugin</artifactId>
-        <version>0.8.0</version>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

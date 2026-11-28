@@ -1,9 +1,10 @@
 package com.foundgine.samples.supplychain;
 
 import com.foundgine.core.semantic.query.SemanticSortDirection;
+import com.foundgine.runtime.*;
 import com.foundgine.samples.supplychain.application.SupplyChainCrud;
 import com.foundgine.samples.supplychain.application.SupplyChainReader;
-import com.foundgine.samples.supplychain.domain.Supplier;
+import com.foundgine.samples.supplychain.domain.Domain.Supplier;
 import com.foundgine.samples.supplychain.jpa.SupplyChainJpa;
 
 import java.math.BigDecimal;
@@ -12,7 +13,9 @@ import java.util.Set;
 
 public final class Main {
     public static void main(String[] args) {
+        FoundgineOptions options = new FoundgineOptions();
         System.out.println("Foundgine Supply Chain Java sample");
+        System.out.println("Runtime configured: " + options);
 
         // Start the database first (docker compose up -d). SupplyChainJpa applies the Flyway migrations on start
         // (SUPPLYCHAIN_MIGRATE_ON_START) and the demo rows (SUPPLYCHAIN_SEED_DEMO).
@@ -21,9 +24,9 @@ public final class Main {
             // Semantic read written with method references; tenant isolation comes from the policy, not this filter.
             var reader = new SupplyChainReader(jpa.orm().reader(em), manager);
             var suppliers = reader.from(Supplier.class)
-                    .eq(Supplier::getCountry, "US")
-                    .select(Supplier::getId, Supplier::getName, Supplier::getCountry, Supplier::getRiskScore)
-                    .orderBy(Supplier::getName, SemanticSortDirection.ASC)
+                    .eq(Supplier::country, "US")
+                    .select(Supplier::id, Supplier::name, Supplier::country, Supplier::riskScore)
+                    .orderBy(Supplier::name, SemanticSortDirection.ASC)
                     .rows();
             System.out.println("tenant-a US suppliers: " + suppliers.size());
             suppliers.forEach(r -> System.out.println("  " + r.values()));

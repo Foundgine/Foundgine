@@ -418,3 +418,7 @@ durability, not automatic failover durability: production failover guarantees re
 synchronous-standby policy, and fencing/promotion procedures that prevent promotion of a lagging replica. Redis and
 PostgreSQL must be independent failure domains. If the anchor is unavailable or Redis is behind the durable mark,
 warrant authorization fails closed.
+
+## Security testing
+
+What is tested in CI, AI-agent testing (Strix and PentAGI), known limitations and approved public wording are in [SECURITY-TESTING.md](SECURITY-TESTING.md). To report a vulnerability, see the repository-root `SECURITY.md`.

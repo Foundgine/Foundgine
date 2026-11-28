@@ -4,19 +4,18 @@
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width,initial-scale=1" name="viewport" />
-    <title>Foundgine — The same rules. Applied every time.</title>
-    <meta content="#0a1020" name="theme-color" />
+    <title>Foundgine — Semantic and Execution Boundary for Applications</title>
     <meta
-      content="Foundgine is one shared checkpoint for your apps, APIs, GraphQL, workflows and AI assistants: the same meaning, validation and permissions on every request. A toolkit for .NET and Java."
+      content="Foundgine provides configurable semantic and execution boundaries for application capabilities, separating meaning, persistence mapping, authorization and execution from consumers. AI and MCP are optional integrations."
       name="description"
     />
     <link href="https://foundgine.io/" rel="canonical" />
     <meta
-      content="Foundgine — The same rules. Applied every time."
+      content="Foundgine — Semantic and Execution Boundary for Applications"
       property="og:title"
     />
     <meta
-      content="Foundgine is one shared checkpoint for your apps, APIs, GraphQL, workflows and AI assistants: the same meaning, validation and permissions on every request. A toolkit for .NET and Java."
+      content="Foundgine provides configurable semantic and execution boundaries for application capabilities, separating meaning, persistence mapping, authorization and execution from consumers. AI and MCP are optional integrations."
       property="og:description"
     />
     <meta content="website" property="og:type" />
@@ -30,11 +29,11 @@
     <meta content="320" property="og:image:height" />
     <meta content="summary_large_image" name="twitter:card" />
     <meta
-      content="Foundgine — The same rules. Applied every time."
+      content="Foundgine — Semantic and Execution Boundary for Applications"
       name="twitter:title"
     />
     <meta
-      content="Foundgine is one shared checkpoint for your apps, APIs, GraphQL, workflows and AI assistants: the same meaning, validation and permissions on every request. A toolkit for .NET and Java."
+      content="Foundgine provides configurable semantic and execution boundaries for application capabilities, separating meaning, persistence mapping, authorization and execution from consumers. AI and MCP are optional integrations."
       name="twitter:description"
     />
     <meta
@@ -47,14 +46,15 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap"
       rel="stylesheet"
     />
+    <link href="/assets/favicon.svg" rel="icon" type="image/svg+xml" />
     <link href="/assets/style.css" rel="stylesheet" />
     <link href="/assets/foundgine-theme.css" rel="stylesheet" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "TechArticle",
-        "headline": "Foundgine — The same rules. Applied every time.",
-        "description": "Foundgine is one shared checkpoint for your apps, APIs, GraphQL, workflows and AI assistants: the same meaning, validation and permissions on every request. A toolkit for .NET and Java.",
+        "headline": "Foundgine — Semantic and Execution Boundary for Applications",
+        "description": "Foundgine provides configurable semantic and execution boundaries for application capabilities, separating meaning, persistence mapping, authorization and execution from consumers. AI and MCP are optional integrations.",
         "url": "https://foundgine.io/",
         "author": { "@type": "Organization", "name": "Foundgine" }
       }
@@ -78,10 +78,6 @@
       }
     </script>
     <link href="/assets/site-chrome.css" rel="stylesheet" />
-      <link href="/assets/favicon.svg" rel="icon" type="image/svg+xml" />
-    <link href="/favicon.ico" rel="icon" sizes="48x48" />
-    <link href="/assets/favicon-32.png" rel="icon" sizes="32x32" type="image/png" />
-    <link href="/apple-touch-icon.png" rel="apple-touch-icon" />
   </head>
   <body class="fx-home">
     <a class="skip-link" href="#content">Skip to content</a>
@@ -109,8 +105,8 @@
                 <ul class="ovm-list" id="ovm-5" hidden><li><a href="/foundgine-overview#orm-sql">ORM, SQL &amp; AOT</a></li><li><a href="/foundgine-overview#extensions">GraphQL, Keycloak &amp; Temporal</a></li><li><a href="/foundgine-overview#custom-providers-spi">Custom Provider SPI</a></li><li><a href="/foundgine-overview#graphql-internals">GraphQL &amp; Federation</a></li><li><a href="/foundgine-overview#graphql-executors-deep">GraphQL Boundary Executors</a></li><li><a href="/foundgine-overview#aot-generator-internals">AOT Compiler Diagnostics</a></li><li><a href="/foundgine-overview#read-your-writes-consistency">Read-Your-Writes WAL Routing</a></li><li><a href="/foundgine-overview#custom-storage-provider-spi">Custom Storage Provider SPI</a></li><li><a href="/foundgine-overview#graphql-schema-stitching">GraphQL Federation Roots</a></li><li><a href="/foundgine-overview#ddl-migrations">Database Schema &amp; DDL</a></li></ul>
                 <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-6">AI agents, MCP &amp; SDKs <span>6</span></button>
                 <ul class="ovm-list" id="ovm-6" hidden><li><a href="/foundgine-overview#agents-sdks">Agents, MCP &amp; SDKs</a></li><li><a href="/foundgine-overview#mcp-protocol-spec">MCP 2025-06-18 Spec</a></li><li><a href="/foundgine-overview#ai-discovery-spec">AI Discovery Artifacts</a></li><li><a href="/foundgine-overview#agent-loop-walkthrough">Agent Tool &amp; Clarify Loop</a></li><li><a href="/foundgine-overview#sdk-wire-framing">Multi-Language SDK Wire</a></li><li><a href="/foundgine-overview#mcp-resources-prompts">Custom MCP Resources &amp; Prompts</a></li></ul>
-                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-7">Operations &amp; scale <span>19</span></button>
-                <ul class="ovm-list" id="ovm-7" hidden><li><a href="/foundgine-overview#deployments-wire">Topologies &amp; Wire</a></li><li><a href="/foundgine-overview#keda-horizontal-scaling">KEDA Horizontal Scaling</a></li><li><a href="/foundgine-overview#events-observability">Events, Outbox &amp; Telemetry</a></li><li><a href="/foundgine-overview#config-errors">Config &amp; Error Catalog</a></li><li><a href="/foundgine-overview#performance-tuning">Performance &amp; Caching</a></li><li><a href="/foundgine-overview#prod-ops-runbook">Production Ops &amp; Probes</a></li><li><a href="/foundgine-overview#multi-tenancy-models">Multi-Tenancy Models</a></li><li><a href="/foundgine-overview#env-diagnostics-cheatsheet">Env Vars &amp; Ports</a></li><li><a href="/foundgine-overview#incident-forensics-runbook">Incident &amp; Forensics Runbook</a></li><li><a href="/foundgine-overview#multi-region-dr">Multi-Region &amp; DR</a></li><li><a href="/foundgine-overview#runtime-footprint-profiles">Runtime Footprint Profiles</a></li><li><a href="/foundgine-overview#rfc9457-problem-details">RFC 9457 Problem Details</a></li><li><a href="/foundgine-overview#federated-service-mesh">Multi-Service Federation</a></li><li><a href="/foundgine-overview#capacity-sizing-slos">Capacity Sizing &amp; SLOs</a></li><li><a href="/foundgine-overview#diagnostic-decision-tree">Diagnostic Decision Tree</a></li><li><a href="/foundgine-overview#otel-semantic-conventions">OpenTelemetry Conventions</a></li><li><a href="/foundgine-overview#soft-delete-retention">Soft-Delete &amp; GDPR Erasure</a></li><li><a href="/foundgine-overview#active-active-conflict-resolution">Active-Active Merge Rules</a></li><li><a href="/foundgine-overview#db-index-tuning-guide">PostgreSQL Index Tuning Guide</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-7">Operations &amp; scale <span>18</span></button>
+                <ul class="ovm-list" id="ovm-7" hidden><li><a href="/foundgine-overview#deployments-wire">Topologies &amp; Wire</a></li><li><a href="/foundgine-overview#events-observability">Events, Outbox &amp; Telemetry</a></li><li><a href="/foundgine-overview#config-errors">Config &amp; Error Catalog</a></li><li><a href="/foundgine-overview#performance-tuning">Performance &amp; Caching</a></li><li><a href="/foundgine-overview#prod-ops-runbook">Production Ops &amp; Probes</a></li><li><a href="/foundgine-overview#multi-tenancy-models">Multi-Tenancy Models</a></li><li><a href="/foundgine-overview#env-diagnostics-cheatsheet">Env Vars &amp; Ports</a></li><li><a href="/foundgine-overview#incident-forensics-runbook">Incident &amp; Forensics Runbook</a></li><li><a href="/foundgine-overview#multi-region-dr">Multi-Region &amp; DR</a></li><li><a href="/foundgine-overview#runtime-footprint-profiles">Runtime Footprint Profiles</a></li><li><a href="/foundgine-overview#rfc9457-problem-details">RFC 9457 Problem Details</a></li><li><a href="/foundgine-overview#federated-service-mesh">Multi-Service Federation</a></li><li><a href="/foundgine-overview#capacity-sizing-slos">Capacity Sizing &amp; SLOs</a></li><li><a href="/foundgine-overview#diagnostic-decision-tree">Diagnostic Decision Tree</a></li><li><a href="/foundgine-overview#otel-semantic-conventions">OpenTelemetry Conventions</a></li><li><a href="/foundgine-overview#soft-delete-retention">Soft-Delete &amp; GDPR Erasure</a></li><li><a href="/foundgine-overview#active-active-conflict-resolution">Active-Active Merge Rules</a></li><li><a href="/foundgine-overview#db-index-tuning-guide">PostgreSQL Index Tuning Guide</a></li></ul>
                 <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-8">Testing, evidence &amp; release <span>11</span></button>
                 <ul class="ovm-list" id="ovm-8" hidden><li><a href="/foundgine-overview#evidence">Benchmarks &amp; Packages</a></li><li><a href="/foundgine-overview#benchmark-data">Full Metrics &amp; Attack Matrix</a></li><li><a href="/foundgine-overview#compliance-threat-model">Compliance &amp; Threat Model</a></li><li><a href="/foundgine-overview#build-release-playbook">Build &amp; Release Playbook</a></li><li><a href="/foundgine-overview#deterministic-testing-harness">Chaos &amp; Clock Harness</a></li><li><a href="/foundgine-overview#repo-verification-matrix">Monorepo Quality Gates</a></li><li><a href="/foundgine-overview#testcontainers-integration">Testcontainers CI Harness</a></li><li><a href="/foundgine-overview#release-checklist-matrix">Release Verification Gates</a></li><li><a href="/foundgine-overview#production-signoff-matrix">Production Sign-Off Matrix</a></li><li><a href="/foundgine-overview#ci-smoke-script">Unified CI Release Gate</a></li><li><a href="/foundgine-overview#compliance-framework-mapping">Compliance Control Map</a></li></ul>
                 <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-9">Reference <span>16</span></button>
@@ -143,6 +139,7 @@
               <a href="/samples/">All samples</a>
               <a href="/samples/semantic/">Semantic execution</a>
               <a href="/samples/pentest/">Security PenTest</a>
+              <a href="/#security-testing">Adversarial test suites</a>
               <a href="/case-studies/supply-chain/">Supply Chain case study</a>
             </div>
           </div>
@@ -157,7 +154,6 @@
               <a href="/agent-benchmark/run-5/">Run 5 · TransferFunds</a>
               <a href="/agent-benchmark/run-5b/">Run 5b · Individual vs batch</a>
               <a href="/agent-benchmark/supply-chain/">Supply Chain E2E</a>
-              <a href="/verified/">Verified claims</a>
               <a href="/performance/">Performance reports</a>
             </div>
           </div>
@@ -166,187 +162,38 @@
       </div>
     </header>
     <main id="content">
-      <section class="fx-hero fx-hero-simple" aria-labelledby="hero-title">
+      <section class="fx-hero" aria-labelledby="hero-title">
         <div class="fx-wrap">
           <div class="fx-hero-head">
-            <p class="fx-version">v3.4.2 &middot; .NET 10 &amp; Java 27</p>
-            <h1 id="hero-title">The same rules. Applied every time.</h1>
-            <p class="fx-lede">Whether a request comes from an app, an API, GraphQL, a workflow or an AI assistant, Foundgine applies the same meaning, validation and permissions before anything happens. It is a toolkit for .NET and Java developers, and it scales out and replicates without compromising permissions.</p>
+            <h1 id="hero-title">From intent to authorized execution.</h1>
+            <p class="fx-lede">Semantic execution for .NET and Java applications and AI agents. Callers describe what they want; your application decides what exists and what is allowed.</p>
             <div class="fx-cta">
-              <a class="fx-btn primary" href="/getting-started/">Get started</a>
-              <a class="fx-btn ghost" href="/foundgine-overview">Read the technical overview</a>
+              <a class="fx-btn primary" href="/foundgine-overview">Read the technical overview</a>
+              <a class="fx-btn ghost" href="/getting-started/">Get started</a>
               <a class="fx-btn ghost" href="/walkthrough/">See the walkthrough</a>
               <a class="fx-btn ghost" href="https://github.com/Foundgine/Foundgine" rel="noopener">View on GitHub</a>
             </div>
+            <p class="fx-version">v3.4.2 &middot; .NET 10 &amp; Java 27</p>
           </div>
-        </div>
-      </section>
 
-      <section class="fx-section alt" id="why-foundgine">
-        <div class="fx-wrap">
-          <h2 id="the-story">Define once. Check every request. Keep your stack.</h2>
-          <p class="fx-intro">Your customer system (CRM), business system (ERP), app connections (APIs), databases and AI assistants should not each have their own copy of what things mean, what is valid and who is allowed to do what. Foundgine is one shared checkpoint, which you set up, between the things your application can do and everything that asks it to do them.</p>
-          <div class="fx-docs fx-story">
-            <section>
-              <h3>Say what things mean once.</h3>
-              <p>Describe your business things (customers, orders), their details, how they connect and what can be done with them. That single description is the source for everything else.</p>
-            </section>
-            <section>
-              <h3>One definition, the same result everywhere.</h3>
-              <p>Your apps, APIs, GraphQL, workflows and AI tools all read that one description. None of them keeps its own copy of what is valid or who is allowed to do what, so they cannot drift apart.</p>
-            </section>
-            <section>
-              <h3>Every request goes through the same checks, whichever door it uses.</h3>
-              <p>App code, HTTP, GraphQL, MCP, agent tools and workflow steps all call the same engine. There is no shortcut for internal tools or AI agents, and nothing runs until the request has been checked.</p>
-            </section>
-            <section>
-              <h3>An AI asking is never the same as an AI being allowed.</h3>
-              <p>Your application still decides who someone is and what they may do. AI assistants (through MCP) face exactly the same rules as every other client.</p>
-            </section>
-            <section>
-              <h3>Keep what you already have.</h3>
-              <p>Keep your apps, databases, data tools (EF Core or JPA), sign-in system and workflow tools. Foundgine connects to a specific database or tool only at the final step, so you can start small and add more over time.</p>
-            </section>
-            <section>
-              <h3>Plug in your clients. The rules do not change.</h3>
-              <p>MCP, GraphQL, HTTP, Temporal workflows and SDKs for TypeScript, Python and WebAssembly all reach the same checkpoint, so a client has nothing to re-implement. Another technology connects through a small adapter.</p>
-            </section>
-          </div>
-          <div class="fx-measure">
-            <p><strong>Is it worth it for your business? Measure it.</strong> Try Foundgine on one small but realistic project. Compare before and after: work done more than once, effort needed to make changes, how well security is tested, and running costs. Foundgine does not promise a set percentage of savings for everyone.</p>
-            <p><a href="/verified/">Every claim above, with its proof</a> &middot; <a href="https://github.com/Foundgine/Foundgine/blob/main/docs/wiki/why-foundgine.md">Business and architecture case</a> &middot; <a href="https://github.com/Foundgine/Foundgine/blob/main/docs/PRODUCT-POSITIONING-AND-COMMERCIAL-STRATEGY.md">Commercial strategy and measurement model</a></p>
-          </div>
-        </div>
-      </section>
-
-      <section class="fx-section dark" id="model-once" aria-labelledby="model-once-title">
-        <div class="fx-wrap">
-          <h2 id="model-once-title">Model your business once. Grow without rewriting it.</h2>
-          <p class="fx-intro">Set up your business things (called entities) and how they connect. That becomes the lasting foundation you build on.</p>
-          <p class="fx-chain"><span>Customer</span> &rarr; <span>Order</span> &rarr; <span>Product</span> &rarr; <span>Supplier <small>also called &ldquo;Vendor&rdquo; or &ldquo;Seller&rdquo;</small></span></p>
-          <div class="fx-pillars">
-            <div><h3>Connections work for you.</h3><p>Once relationships and their links are set up, requests can follow them from one business thing to another, without new code for each route. Permissions still apply. Supported kinds of requests depend on the data connector.</p></div>
-            <div><h3>It speaks business, not database.</h3><p>Foundgine is domain-driven: you describe business ideas with business names and aliases (other names for the same thing). Table and column names are storage details, kept in separate settings. You don&rsquo;t have to design around your database tables.</p></div>
-            <div><h3>The foundation stays. You add to it.</h3><p>Add policies and permissions, or another way to connect (such as GraphQL or MCP), without rewriting your business logic. A new kind of connection needs an adapter, a small bridge to Foundgine.</p></div>
-            <div><h3>Not tied to one kind of storage.</h3><p>Use the included options, such as SQL, EF Core or JPA/Hibernate. For other storage, such as a document database or an internal service, developers can build a connector (called a provider). Your business ideas stay the same.</p></div>
-          </div>
-          <p class="fx-note">When your business itself changes, such as a new entity or rule, you update that part. The foundation does not need to be rebuilt.</p>
-        </div>
-      </section>
-
-      <section class="fx-section" id="problem" aria-labelledby="problem-title">
-        <div class="fx-wrap">
-          <h2 id="problem-title">The problem: one rule, copied many times.</h2>
-          <p class="fx-intro">Say your company has a simple rule: <strong>&ldquo;Sam can approve payments up to $10,000.&rdquo;</strong> Now the limit drops to $5,000.</p>
-          <div class="fx-compare">
-            <div class="bad">
-              <h3>Without a shared checkpoint</h3>
-              <ul>
-                <li><span>Website</span><b>$5,000 (updated)</b></li>
-                <li><span>Mobile app</span><b>$5,000 (updated)</b></li>
-                <li><span>AI assistant</span><b>$10,000 (forgotten!)</b></li>
-              </ul>
-              <p>Each one has its own copy of the rule. Miss one, and the AI assistant can still approve $8,000 for Sam.</p>
-            </div>
-            <div class="good">
-              <h3>With Foundgine</h3>
-              <ul>
-                <li><span>Website</span><b>asks the checkpoint</b></li>
-                <li><span>Mobile app</span><b>asks the checkpoint</b></li>
-                <li><span>AI assistant</span><b>asks the checkpoint</b></li>
-              </ul>
-              <p>All three use the same rule: $5,000. Change it in one place, and Sam&rsquo;s $8,000 payment is refused through all of them.</p>
-            </div>
-          </div>
-          <p class="fx-note">A made-up example. It works when each of these sends its requests through Foundgine and the rule is kept in that shared path. Anything that goes around Foundgine is not checked by it.</p>
-        </div>
-      </section>
-
-      <section class="fx-section alt" id="architecture" aria-labelledby="how-title">
-        <div class="fx-wrap">
-          <h2 id="how-title">How Foundgine solves it: five steps.</h2>
-          <p class="fx-intro" id="one-lifecycle-many-callers">A request can come from a person using your app, another system or an AI assistant. Through Foundgine, each one follows the same path.</p>
-          <ol class="fx-steps">
-            <li><strong>Ask</strong><span>Someone says what they want. They don&rsquo;t need to know how your database works.</span></li>
-            <li><strong>Understand</strong><span>Foundgine matches the request to things you have described. If two matches are equally likely, it asks which one instead of guessing.</span></li>
-            <li class="gate"><strong>Check</strong><span>Your application&rsquo;s rules say yes or no. If the answer is no, it stops here.</span></li>
-            <li><strong>Plan</strong><span>If allowed, Foundgine works out the steps needed for the request.</span></li>
-            <li><strong>Do</strong><span>Your existing tools carry out the plan, and there is a record to check.</span></li>
-          </ol>
-          <p class="fx-links"><a class="fx-plain-link" href="/how-it-works/index.html">See how a request moves</a> &middot; <a class="fx-plain-link" href="/architecture/index.html">Technical design for developers</a></p>
-        </div>
-      </section>
-
-      <section class="fx-section" id="scale-out" aria-labelledby="scale-out-title">
-        <div class="fx-wrap">
-          <h2 id="scale-out-title">Scale out with KEDA. Your business logic does not change.</h2>
-          <p class="fx-intro">Foundgine is built so you can run many identical copies (replicas) of your application. Add copies when traffic rises and remove them when it falls. Every copy applies the same meaning, validation and permissions, so scaling is a deployment decision, not a rewrite.</p>
-          <div class="fx-pillars fx-scale-cards">
-            <div><h3>Every replica behaves the same.</h3><p>Your business description is frozen when the application starts and is never changed afterwards, so each copy reads the same definition. The permission checks keep no per-user memory inside the process.</p></div>
-            <div><h3>Shared checks stay shared.</h3><p>One-time-use approvals (warrants), instant revocation and MCP sessions can be kept in a shared store (Redis, Valkey or Garnet, anchored in PostgreSQL), so a request is checked the same way whichever copy receives it. If that shared state cannot be confirmed, the check fails closed.</p></div>
-            <div><h3>Background work is safe to multiply.</h3><p>Outbox workers claim work with row locking (<code>FOR UPDATE SKIP LOCKED</code>) and use idempotency keys, so adding workers does not double-process an event. Workflows run on Temporal, which you scale separately.</p></div>
-            <div><h3>KEDA decides how many copies.</h3><p>KEDA is a Kubernetes event-driven autoscaler. Point it at the signal that matters to you, such as request rate, CPU, or outbox backlog, and it adds or removes replicas of your Foundgine-based service.</p></div>
-          </div>
-          <details class="fx-tech fx-scale-example"><summary>Example: scale an API on request rate and an outbox worker on backlog (for developers)</summary><pre><code>apiVersion: keda.sh/v1alpha1
-kind: ScaledObject
-metadata:
-  name: orders-api
-spec:
-  scaleTargetRef:
-    name: orders-api            # your Deployment that hosts Foundgine
-  minReplicaCount: 2            # keep at least two for availability
-  maxReplicaCount: 20
-  cooldownPeriod: 300
-  triggers:
-    - type: prometheus
-      metadata:
-        serverAddress: http://prometheus.monitoring:9090
-        query: sum(rate(http_server_requests_total{app="orders-api"}[1m]))
-        threshold: "100"        # target requests per second, per replica
----
-apiVersion: keda.sh/v1alpha1
-kind: ScaledObject
-metadata:
-  name: outbox-worker
-spec:
-  scaleTargetRef:
-    name: outbox-worker
-  minReplicaCount: 1
-  maxReplicaCount: 10
-  triggers:
-    - type: postgresql
-      metadata:
-        connectionFromEnv: PG_CONN
-        query: "SELECT count(*) FROM foundgine_outbox WHERE published_at IS NULL"
-        targetQueryValue: "500"
-</code></pre></details>
-          <p class="fx-note">The manifests above are a starting point, not a benchmarked result. Metric names, thresholds and the outbox column are examples: adjust them to your cluster and schema. Foundgine does not publish a throughput figure for autoscaled deployments; measure your own workload, as the <a href="/agent-benchmark/run-2/">scalability run</a> shows that speed depends on the workload. Shared state (Redis, PostgreSQL, Temporal) must be sized for the replica count you allow.</p>
-          <p class="fx-links"><a class="fx-plain-link" href="/foundgine-overview#deployments-wire">Deployment topologies</a> &middot; <a class="fx-plain-link" href="/foundgine-overview#redis-lua-internals">Shared replay and revocation across replicas</a> &middot; <a class="fx-plain-link" href="/foundgine-overview#capacity-sizing-slos">Capacity sizing</a></p>
-        </div>
-      </section>
-
-      <section class="fx-section dark fx-try" id="try-it" aria-labelledby="try-title">
-        <div class="fx-wrap">
-          <h2 id="try-title">See it work.</h2>
-          <p class="fx-intro">Pick an example, then click each step.</p>
           <div class="fx-demo" id="fx-demo">
             <div class="fx-demo-bar">
-              <span class="fx-demo-title">Follow one request (made-up example)</span>
+              <span class="fx-demo-title">One request through the boundary (illustrative payloads)</span>
               <div class="fx-cases" role="tablist" aria-label="Choose a request">
-                <button class="fx-case" role="tab" type="button" data-case="allow" aria-selected="true">Allowed</button>
-                <button class="fx-case" role="tab" type="button" data-case="deny" aria-selected="false">Refused</button>
+                <button class="fx-case" role="tab" type="button" data-case="allow" aria-selected="true">Allowed read</button>
+                <button class="fx-case" role="tab" type="button" data-case="deny" aria-selected="false">Refused mutation</button>
               </div>
             </div>
             <div class="fx-ask">
               <span class="fx-ask-text"></span>
               <small class="fx-who"></small>
             </div>
-            <ol class="fx-rail" aria-label="Request steps">
-              <li><button type="button" data-step="0"><span class="fx-dot">1</span><span class="fx-step-name">Ask</span></button></li>
-              <li><button type="button" data-step="1"><span class="fx-dot">2</span><span class="fx-step-name">Understand</span></button></li>
-              <li><button type="button" data-step="2"><span class="fx-dot">3</span><span class="fx-step-name">Check</span></button></li>
+            <ol class="fx-rail" aria-label="Request lifecycle">
+              <li><button type="button" data-step="0"><span class="fx-dot">1</span><span class="fx-step-name">Intent</span></button></li>
+              <li><button type="button" data-step="1"><span class="fx-dot">2</span><span class="fx-step-name">Resolution</span></button></li>
+              <li><button type="button" data-step="2"><span class="fx-dot">3</span><span class="fx-step-name">Authorization</span></button></li>
               <li><button type="button" data-step="3"><span class="fx-dot">4</span><span class="fx-step-name">Plan</span></button></li>
-              <li><button type="button" data-step="4"><span class="fx-dot">5</span><span class="fx-step-name">Do</span></button></li>
+              <li><button type="button" data-step="4"><span class="fx-dot">5</span><span class="fx-step-name">Execution</span></button></li>
             </ol>
             <div class="fx-detail" aria-live="polite">
               <div class="fx-detail-text">
@@ -354,77 +201,20 @@ spec:
                 <p class="fx-body"></p>
                 <span class="fx-verdict"></span>
               </div>
-              <details class="fx-tech"><summary>Show technical data (for developers)</summary><pre><code></code></pre></details>
+              <pre><code></code></pre>
             </div>
             <div class="fx-demo-foot">
-              <span>Click a step to learn more.</span>
+              <span>Select a stage to inspect it.</span>
               <button type="button" class="fx-replay">Replay</button>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="fx-section" id="ai-agents">
-        <div class="fx-wrap">
-          <h2>AI can ask. It can&rsquo;t give itself permission.</h2>
-          <p class="fx-intro">AI assistants (often called &ldquo;agents&rdquo;) can use your application through Foundgine without being handed control of your database. Using AI is optional.</p>
-          <div class="fx-agent">
-            <div class="open">
-              <h3>What the AI can do</h3>
-              <ul>
-                <li>See the actions your application makes available.</li>
-                <li>Ask for something in a clear, structured form.</li>
-                <li>Be asked to choose when a request has two equally good matches.</li>
-              </ul>
-            </div>
-            <div class="closed">
-              <h3>What your application controls</h3>
-              <ul>
-                <li>Who the user is and which organisation they belong to.</li>
-                <li>What is allowed, checked again for every action.</li>
-                <li>How the work is planned, checked and carried out.</li>
-              </ul>
-            </div>
-          </div>
-          <p class="fx-links"><a class="fx-btn primary" href="/ai-agents/index.html">Read the AI agent guide</a></p>
-        </div>
-      </section>
-
-      <section class="fx-section alt" id="integrations">
-        <div class="fx-wrap">
-          <h2>Works with tools you may already use.</h2>
-          <p class="fx-intro">Add only the connections you need.</p>
-          <div class="fx-integrations">
-            <div><h3>.NET</h3><p>For apps built with .NET, installed as NuGet packages.</p></div>
-            <div><h3>Java</h3><p>For Java apps, with Spring Boot and LangChain4j connections.</p></div>
-            <div><h3>EF Core</h3><p>Keep using your .NET data setup.</p></div>
-            <div><h3>JPA / Hibernate</h3><p>Keep using your Java data setup.</p></div>
-            <div><h3>MCP</h3><p>A common way for AI assistants to use your app&rsquo;s actions.</p></div>
-            <div><h3>GraphQL</h3><p>Lets apps ask for exactly the data they need.</p></div>
-            <div><h3>Temporal</h3><p>For long, multi-step jobs that need retries, approvals or undo steps.</p></div>
-            <div><h3>Keycloak</h3><p>A sign-in system that helps confirm who someone is.</p></div>
-          </div>
-          <p class="fx-links"><a class="fx-plain-link" href="/packages/index.html">Choose packages</a> &middot; <a class="fx-plain-link" href="https://github.com/Foundgine/Foundgine/blob/main/docs/wiki/extensions.md">Extensions reference</a> &middot; <a class="fx-plain-link" href="/spec-form/index.html">App generator</a></p>
-        </div>
-      </section>
-
-      <section class="fx-section" id="evidence">
-        <div class="fx-wrap">
-          <h2>Check the test results.</h2>
-          <p class="fx-intro">We publish tests of whether requests give correct results, how long they take and whether forbidden actions are refused. Each result applies only to the setup that was tested.</p>
-          <div class="fx-evidence">
-            <a href="/agent-benchmark/index.html"><strong>AI assistant tests, runs 1&ndash;5</strong><span>From a small customer task to a tightly protected money transfer.</span></a>
-            <a href="/agent-benchmark/supply-chain/index.html"><strong>Supply chain test</strong><span>A repeatable test that mixes valid, invalid and forbidden actions.</span></a>
-            <a href="/performance/index.html"><strong>Speed reports</strong><span>Application and database timings, including an early supply chain comparison.</span></a>
-          </div>
-          <div class="fx-caveat"><p><strong>About speed:</strong> Foundgine is not always faster. In an early C# supply chain test, a plain Hot Chocolate + EF Core setup handled more requests where both gave valid results. That test is not strong enough to count as an official speed claim.</p></div>
-        </div>
-      </section>
-
       <section class="fx-feature" id="technical-overview" aria-labelledby="technical-overview-title">
         <div class="fx-wrap"><div class="fx-feature-card">
           <div>
-            <h2 id="technical-overview-title">For developers: the full technical overview</h2>
+            <h2 id="technical-overview-title">The complete technical overview</h2>
             <p>Architecture and developer reference for v3.4.2, covering .NET 10 and Java 27 on one searchable page.</p>
             <a class="fx-btn primary" href="/foundgine-overview">Open the technical overview →</a>
           </div>
@@ -441,10 +231,173 @@ spec:
         </div></div>
       </section>
 
+      <section class="fx-section" id="why-foundgine">
+        <div class="fx-wrap">
+          <h2 id="one-consistent-execution-boundary">One consistent way to execute across your systems.</h2>
+          <p class="fx-intro">CRM, ERP, APIs, databases and AI agents should not each grow their own version of business meaning, validation and authorization. Foundgine is the configurable semantic and execution boundary between application capabilities and the interfaces that consume them.</p>
+          <div class="fx-docs">
+            <section>
+              <h3 id="callers-express-intent">Define meaning once.</h3>
+              <p>Configure entities, fields, relationships and capabilities, then reuse them across application code, APIs, GraphQL and optional MCP callers.</p>
+            </section>
+            <section>
+              <h3 id="the-application-stays-in-control">Keep authority in the application.</h3>
+              <p>Identity and policy stay with the host. Foundgine resolves and authorizes every operation before physical execution; an AI-generated request is never permission by itself.</p>
+            </section>
+            <section>
+              <h3 id="providers-execute-the-result">Keep your existing stack.</h3>
+              <p>Retain your domain applications, databases, EF Core or JPA, identity provider and workflow engine. Planning stays provider-independent until the execution boundary, so adoption can be incremental.</p>
+            </section>
+          </div>
+          <p style="margin-top:2rem;max-width:68ch">The business case is measurable: compare duplicated implementation, change effort, security-test coverage and operating cost before and after a representative pilot. Foundgine does not promise a universal percentage.
+            <a href="https://github.com/Foundgine/Foundgine/blob/main/docs/wiki/why-foundgine.md">Business and architecture case</a> &middot;
+            <a href="https://github.com/Foundgine/Foundgine/blob/main/docs/PRODUCT-POSITIONING-AND-COMMERCIAL-STRATEGY.md">Commercial strategy and measurement model</a></p>
+        </div>
+      </section>
+
+      <section class="fx-section alt" id="architecture">
+        <div class="fx-wrap fx-split">
+          <div>
+            <h2 id="one-lifecycle-many-callers">One lifecycle, many callers.</h2>
+            <p class="fx-intro" style="margin-bottom:0">Application code, JSON, GraphQL, MCP and AI tools enter the same execution path. Retrieval can discover candidates, but it never becomes an authorization path.</p>
+            <ul class="fx-layers">
+              <li><strong>Domain and semantic metadata</strong><span>What exists, what it means, and which capabilities are exposed.</span></li>
+              <li class="gate"><strong>Authorization</strong><span>Decided by the host&rsquo;s identity and policy, before any plan.</span></li>
+              <li><strong>Plan and ExecutionIR</strong><span>Provider-independent, with security provenance preserved through rewrites.</span></li>
+              <li><strong>Providers and persistence</strong><span>SQL, InMemory, EF Core and JPA/Hibernate do the physical work.</span></li>
+            </ul>
+            <p style="margin-top:1.4rem"><a class="fx-plain-link" href="/architecture/index.html">Explore the architecture</a> &middot; <a class="fx-plain-link" href="/how-it-works/index.html">See how a request moves</a></p>
+          </div>
+          <figure class="fx-figure">
+            <img alt="Foundgine canonical architecture from caller and intent through semantic modeling, retrieval, resolution, authorization, plan binding, execution IR, provider execution and evidence." src="/assets/canonical-architecture.svg" />
+          </figure>
+        </div>
+      </section>
+
+      <section class="fx-section dark" id="ai-agents">
+        <div class="fx-wrap">
+          <h2>Open intent without open authority.</h2>
+          <p class="fx-intro">Foundgine gives AI agents a controlled capability surface without giving the model database authority. MCP is optional; the same boundary serves every other caller.</p>
+          <div class="fx-agent">
+            <div class="open">
+              <h3>What the agent can do</h3>
+              <ul>
+                <li>Discover the capabilities the application exposes.</li>
+                <li>Express a request as structured intent.</li>
+                <li>Be asked to choose when candidates tie, instead of guessing.</li>
+              </ul>
+            </div>
+            <div class="closed">
+              <h3>What stays with the application</h3>
+              <ul>
+                <li>Authentication, actor identity and tenant context.</li>
+                <li>Authorization, re-evaluated for every actual operation.</li>
+                <li>Planning, validation and physical execution.</li>
+              </ul>
+            </div>
+          </div>
+          <p style="margin-top:1.8rem"><a class="fx-btn primary" href="/ai-agents/index.html">Read the AI agent guide</a></p>
+        </div>
+      </section>
+
+      <section class="fx-section" id="integrations">
+        <div class="fx-wrap">
+          <h2>Fits the stack you already run.</h2>
+          <p class="fx-intro">Integrations are adapters, not a second semantic engine. Install only what you use.</p>
+          <div class="fx-integrations">
+            <div><h3>.NET</h3><p>Core, providers and extensions as NuGet packages.</p></div>
+            <div><h3>Java</h3><p>Matching modules, plus Spring Boot and LangChain4j adapters.</p></div>
+            <div><h3>EF Core</h3><p>Run authorized plans through your existing .NET model.</p></div>
+            <div><h3>JPA / Hibernate</h3><p>The same boundary over Java persistence.</p></div>
+            <div><h3>MCP</h3><p>Expose capabilities to agents, with sessions and approval tokens.</p></div>
+            <div><h3>GraphQL</h3><p>Hot Chocolate adapter and a bearer-authenticated HTTP endpoint.</p></div>
+            <div><h3>Temporal</h3><p>Durable multi-step processes with retries, timers, approvals and undo steps.</p></div>
+            <div><h3>Keycloak</h3><p>Turn a login into trusted identity and short-lived signed warrants.</p></div>
+          </div>
+          <p style="margin-top:1.6rem"><a class="fx-plain-link" href="/packages/index.html">Choose packages</a> &middot; <a class="fx-plain-link" href="https://github.com/Foundgine/Foundgine/blob/main/docs/wiki/extensions.md">Extensions reference</a> &middot; <a class="fx-plain-link" href="/spec-form/index.html">App generator</a></p>
+        </div>
+      </section>
+
+      <section class="fx-section alt" id="evidence">
+        <div class="fx-wrap">
+          <h2>Evidence, scoped to the workload.</h2>
+          <p class="fx-intro">Published runs test the execution boundary: correctness, tool calls, timing and denied operations. Read each page for its fixture and date before comparing.</p>
+          <div class="fx-evidence">
+            <a href="/agent-benchmark/index.html"><strong>Agent benchmark, runs 1&ndash;5</strong><span>From a small customer workflow to a high-assurance TransferFunds mutation, all over the same MCP protocol.</span></a>
+            <a href="/agent-benchmark/supply-chain/index.html"><strong>Supply Chain E2E</strong><span>A reproducible, seeded PostgreSQL workload that mixes valid, invalid and unauthorized operations.</span></a>
+            <a href="/performance/index.html"><strong>Performance reports</strong><span>CoffeeBeanery API and database reports, and the preliminary SupplyChain ORM comparison.</span></a>
+          </div>
+          <div class="fx-caveat"><p><strong>Read this before comparing speed.</strong> In the preliminary C# SupplyChain run, the plain Hot Chocolate + EF Core baseline had higher throughput than Foundgine where both arms were valid. That run is not claim-grade, so it is not a published performance claim. Raw benchmark datasets are linked from the evidence pages rather than reproduced here.</p></div>
+        </div>
+      </section>
+
+      <section class="fx-section fx-testing" id="security-testing" aria-labelledby="security-testing-title">
+        <div class="fx-wrap">
+          <h2 id="security-testing-title">Tests that attack the boundary.</h2>
+          <p class="fx-intro">Adversarial suites and runnable harnesses, in both .NET and Java, check that denied requests stay denied and that protected data does not change. Counts are test methods in the repository.</p>
+
+          <h3 class="fx-testing-sub">Penetration test suites</h3>
+          <div class="fx-suites">
+            <article class="fx-suite">
+              <h4>Intent red team <span class="fx-status ok">Runs in CI</span></h4>
+              <p>A low-privilege caller tries to infer hidden data through filters and ordering, confuse the parser, read internals from errors, spoof identity headers and see another caller&rsquo;s results under concurrency.</p>
+              <p class="fx-suite-meta">13 tests in each language. <a href="https://github.com/Foundgine/Foundgine/blob/main/src/csharp/samples/Foundgine.SupplyChain.Advanced/Semantic/Tests/IntentRedTeamPenetrationTests.cs">.NET</a> <a href="https://github.com/Foundgine/Foundgine/blob/main/src/java/samples/foundgine-supply-chain-advanced/src/test/java/com/foundgine/samples/supplychain/advanced/IntentRedTeamPenetrationTest.java">Java</a></p>
+            </article>
+            <article class="fx-suite">
+              <h4>Injection corpus <span class="fx-status ok">Runs in CI</span></h4>
+              <p>One shared set of hostile payloads is sent through the value, name and identity slots of an intent, so both languages face the same inputs.</p>
+              <p class="fx-suite-meta">13 tests in each language. <a href="https://github.com/Foundgine/Foundgine/blob/main/src/csharp/samples/Foundgine.SupplyChain.Advanced/Semantic/Tests/IntentInjectionCorpusTests.cs">.NET</a> <a href="https://github.com/Foundgine/Foundgine/blob/main/src/java/samples/foundgine-supply-chain-advanced/src/test/java/com/foundgine/samples/supplychain/advanced/IntentInjectionCorpusTest.java">Java</a></p>
+            </article>
+            <article class="fx-suite">
+              <h4>Semantic boundary suites <span class="fx-status ok">Runs in CI</span></h4>
+              <p>Authorization escalation, tenant bypass, plan tampering, warrant replay, parser limits, secret leakage and provider conformance, each in its own test class.</p>
+              <p class="fx-suite-meta">59 .NET tests, 63 Java tests. <a href="https://github.com/Foundgine/Foundgine/tree/main/src/csharp/tests/Foundgine.Security.Tests/Penetration">.NET</a> <a href="https://github.com/Foundgine/Foundgine/tree/main/src/java/foundgine-core/src/test/java/com/foundgine/core/security/penetration">Java</a></p>
+            </article>
+            <article class="fx-suite">
+              <h4>MCP and GraphQL over HTTP <span class="fx-status ok">Runs in CI</span></h4>
+              <p>Adversarial requests go through both transports to a seeded PostgreSQL database: cross-tenant reads, restricted fields, claim injection and writes the caller may not make.</p>
+              <p class="fx-suite-meta">21 .NET tests. <a href="/samples/pentest/index.html">PenTest sample</a> <a href="https://github.com/Foundgine/Foundgine/tree/main/src/csharp/benchmarks/AgentEndToEnd/Fixtures/SupplyChain.PenTest">Source</a></p>
+            </article>
+            <article class="fx-suite">
+              <h4>Merge gates <span class="fx-status ok">Runs in CI</span></h4>
+              <p>Every suite above is a separate CI job. A single gate job fails the build if any of its jobs fails.</p>
+              <p class="fx-suite-meta">.NET: six jobs feed <code>security-penetration-gate</code>. Java: four feed <code>java-security-penetration-gate</code>. <a href="https://github.com/Foundgine/Foundgine/blob/main/.github/workflows/csharp-build.yml">.NET</a> <a href="https://github.com/Foundgine/Foundgine/blob/main/.github/workflows/java-build.yml">Java</a></p>
+            </article>
+            <article class="fx-suite">
+              <h4>Live scanners <span class="fx-status sched">Weekly</span></h4>
+              <p>ZAP baseline and MCP protocol fuzzing run against the running .NET sample. Findings are informational and do not fail the build.</p>
+              <p class="fx-suite-meta">nmap and ZAP scripts also ship for both languages. <a href="https://github.com/Foundgine/Foundgine/blob/main/.github/workflows/security.yml">Workflow</a> <a href="https://github.com/Foundgine/Foundgine/tree/main/src/java/security/pentest">Java scripts</a></p>
+            </article>
+          </div>
+
+          <h3 class="fx-testing-sub">Harnesses you can run</h3>
+          <div class="fx-suites">
+            <article class="fx-suite">
+              <h4>Java red-team harness <span class="fx-status local">Run locally</span></h4>
+              <p>Four executable checks on the warrant model: replay, time validity, constraint attenuation and unknown invariants.</p>
+              <p class="fx-suite-meta"><code>mvn -pl security/foundgine-redteam -am package</code> <a href="https://github.com/Foundgine/Foundgine/blob/main/src/java/security/foundgine-redteam/src/main/java/com/foundgine/security/redteam/RedTeamHarness.java">Source</a></p>
+            </article>
+            <article class="fx-suite">
+              <h4>.NET AI red-team agent <span class="fx-status local">Run locally</span></h4>
+              <p>One script starts PostgreSQL and the MCP APIs, then runs a bounded attack catalog against the semantic and execution endpoints. A model is optional, and the agent refuses non-loopback targets.</p>
+              <p class="fx-suite-meta"><code>Run-Security.ps1</code> <a href="https://github.com/Foundgine/Foundgine/blob/main/src/csharp/security/Foundgine.RedTeam/README.md">README</a></p>
+            </article>
+            <article class="fx-suite">
+              <h4>Strix and PentAGI agents <span class="fx-status pending">No runs recorded yet</span></h4>
+              <p>Two open-source AI pentest agents, pointed at the HTTP surface of both samples with identical scope. The harness is in place; results will be published once runs are triaged.</p>
+              <p class="fx-suite-meta"><a href="https://github.com/Foundgine/Foundgine/tree/main/tools/security/ai-pentest">Harness</a> <a href="https://github.com/Foundgine/Foundgine/blob/main/docs/SECURITY-TESTING.md">Run log</a></p>
+            </article>
+          </div>
+          <p class="fx-testing-more">Also in the overview: the <a href="/foundgine-overview#deterministic-testing-harness">chaos and clock harness</a> and the <a href="/foundgine-overview#testcontainers-integration">Testcontainers CI harness</a>.</p>
+
+          <div class="fx-caveat"><p><strong>What this does and does not show.</strong> The red-team and injection suites run in-process against in-memory data, not HTTP or SQL. The HTTP suites use local containers with synthetic data. These are regression tests, not an independent penetration test or audit, and none has been done. <a href="https://github.com/Foundgine/Foundgine/blob/main/tools/security/intent-boundary/README.md">What is covered</a></p></div>
+        </div>
+      </section>
+
       <section class="fx-section" id="docs">
         <div class="fx-wrap">
-          <h2 id="read-only-what-you-need">Developer guides: read only what you need.</h2>
-          <p class="fx-intro">Each page is short and links to more detail.</p>
+          <h2 id="read-only-what-you-need">Read only what you need.</h2>
+          <p class="fx-intro">This site is the guided path. Each page is short and points to a deeper page or repository document.</p>
           <div class="fx-docs">
             <section><h3>Understand</h3><ul>
               <li><a href="#why-foundgine">Why Foundgine?</a></li>
@@ -464,7 +417,7 @@ spec:
               <li class="deeper"><a href="https://github.com/Foundgine/Foundgine/blob/main/docs/AUTHORIZATION.md">Authorization</a> <a href="https://github.com/Foundgine/Foundgine/blob/main/docs/SECURITY.md">Security model</a></li></ul></section>
             <section><h3>Prove</h3><ul>
               <li><a href="/samples/index.html">Samples</a></li>
-              <li class="deeper"><a href="/performance/index.html">Benchmark evidence</a> <a href="/agent-benchmark/supply-chain/index.html">Supply Chain E2E</a> <a href="/samples/pentest/index.html">PenTest</a> <a href="/case-studies/supply-chain/index.html">Supply Chain case study</a></li></ul></section>
+              <li class="deeper"><a href="/performance/index.html">Benchmark evidence</a> <a href="/agent-benchmark/supply-chain/index.html">Supply Chain E2E</a> <a href="/#security-testing">Security test suites</a> <a href="/samples/pentest/index.html">PenTest</a> <a href="/case-studies/supply-chain/index.html">Supply Chain case study</a></li></ul></section>
           </div>
           <div class="fx-topicmap" id="overview-topics">
             <h3>Technical overview by topic</h3>
@@ -477,7 +430,7 @@ spec:
               <details><summary>Security &amp; identity <span>12</span></summary><ul><li class="topic"><a href="/foundgine-overview#security">Security &amp; Warrants</a></li><li class="topic"><a href="/foundgine-overview#kms-key-rotation">KMS &amp; Key Rotation</a></li><li class="topic"><a href="/foundgine-overview#keycloak-oidc-internals">Keycloak OIDC &amp; RFC 8693</a></li><li class="topic"><a href="/foundgine-overview#security-supply-chain">Security &amp; Supply Chain</a></li><li class="topic"><a href="/foundgine-overview#redis-lua-internals">Redis Lua &amp; Anchor Script</a></li><li class="topic"><a href="/foundgine-overview#audit-verification">Audit Receipt Verification</a></li><li class="topic"><a href="/foundgine-overview#field-masking-redaction">Field Masking &amp; Redaction</a></li><li class="topic"><a href="/foundgine-overview#policy-combinator-algebra">Policy Combinator Algebra</a></li><li class="topic"><a href="/foundgine-overview#cryptographic-agility-kms">KMS Rotation &amp; Encryption</a></li><li class="topic"><a href="/foundgine-overview#spiffe-mtls-mesh">mTLS &amp; SPIFFE Identity</a></li><li class="topic"><a href="/foundgine-overview#attachment-blob-governance">Binary Attachment Governance</a></li><li class="topic"><a href="/foundgine-overview#rate-limiting-quotas">Rate Limiting &amp; Quotas</a></li></ul></details>
               <details><summary>Providers &amp; integrations <span>10</span></summary><ul><li class="topic"><a href="/foundgine-overview#orm-sql">ORM, SQL &amp; AOT</a></li><li class="topic"><a href="/foundgine-overview#extensions">GraphQL, Keycloak &amp; Temporal</a></li><li class="topic"><a href="/foundgine-overview#custom-providers-spi">Custom Provider SPI</a></li><li class="topic"><a href="/foundgine-overview#graphql-internals">GraphQL &amp; Federation</a></li><li class="topic"><a href="/foundgine-overview#graphql-executors-deep">GraphQL Boundary Executors</a></li><li class="topic"><a href="/foundgine-overview#aot-generator-internals">AOT Compiler Diagnostics</a></li><li class="topic"><a href="/foundgine-overview#read-your-writes-consistency">Read-Your-Writes WAL Routing</a></li><li class="topic"><a href="/foundgine-overview#custom-storage-provider-spi">Custom Storage Provider SPI</a></li><li class="topic"><a href="/foundgine-overview#graphql-schema-stitching">GraphQL Federation Roots</a></li><li class="topic"><a href="/foundgine-overview#ddl-migrations">Database Schema &amp; DDL</a></li></ul></details>
               <details><summary>AI agents, MCP &amp; SDKs <span>6</span></summary><ul><li class="topic"><a href="/foundgine-overview#agents-sdks">Agents, MCP &amp; SDKs</a></li><li class="topic"><a href="/foundgine-overview#mcp-protocol-spec">MCP 2025-06-18 Spec</a></li><li class="topic"><a href="/foundgine-overview#ai-discovery-spec">AI Discovery Artifacts</a></li><li class="topic"><a href="/foundgine-overview#agent-loop-walkthrough">Agent Tool &amp; Clarify Loop</a></li><li class="topic"><a href="/foundgine-overview#sdk-wire-framing">Multi-Language SDK Wire</a></li><li class="topic"><a href="/foundgine-overview#mcp-resources-prompts">Custom MCP Resources &amp; Prompts</a></li></ul></details>
-              <details><summary>Operations &amp; scale <span>19</span></summary><ul><li class="topic"><a href="/foundgine-overview#deployments-wire">Topologies &amp; Wire</a></li><li class="topic"><a href="/foundgine-overview#keda-horizontal-scaling">KEDA Horizontal Scaling</a></li><li class="topic"><a href="/foundgine-overview#events-observability">Events, Outbox &amp; Telemetry</a></li><li class="topic"><a href="/foundgine-overview#config-errors">Config &amp; Error Catalog</a></li><li class="topic"><a href="/foundgine-overview#performance-tuning">Performance &amp; Caching</a></li><li class="topic"><a href="/foundgine-overview#prod-ops-runbook">Production Ops &amp; Probes</a></li><li class="topic"><a href="/foundgine-overview#multi-tenancy-models">Multi-Tenancy Models</a></li><li class="topic"><a href="/foundgine-overview#env-diagnostics-cheatsheet">Env Vars &amp; Ports</a></li><li class="topic"><a href="/foundgine-overview#incident-forensics-runbook">Incident &amp; Forensics Runbook</a></li><li class="topic"><a href="/foundgine-overview#multi-region-dr">Multi-Region &amp; DR</a></li><li class="topic"><a href="/foundgine-overview#runtime-footprint-profiles">Runtime Footprint Profiles</a></li><li class="topic"><a href="/foundgine-overview#rfc9457-problem-details">RFC 9457 Problem Details</a></li><li class="topic"><a href="/foundgine-overview#federated-service-mesh">Multi-Service Federation</a></li><li class="topic"><a href="/foundgine-overview#capacity-sizing-slos">Capacity Sizing &amp; SLOs</a></li><li class="topic"><a href="/foundgine-overview#diagnostic-decision-tree">Diagnostic Decision Tree</a></li><li class="topic"><a href="/foundgine-overview#otel-semantic-conventions">OpenTelemetry Conventions</a></li><li class="topic"><a href="/foundgine-overview#soft-delete-retention">Soft-Delete &amp; GDPR Erasure</a></li><li class="topic"><a href="/foundgine-overview#active-active-conflict-resolution">Active-Active Merge Rules</a></li><li class="topic"><a href="/foundgine-overview#db-index-tuning-guide">PostgreSQL Index Tuning Guide</a></li></ul></details>
+              <details><summary>Operations &amp; scale <span>18</span></summary><ul><li class="topic"><a href="/foundgine-overview#deployments-wire">Topologies &amp; Wire</a></li><li class="topic"><a href="/foundgine-overview#events-observability">Events, Outbox &amp; Telemetry</a></li><li class="topic"><a href="/foundgine-overview#config-errors">Config &amp; Error Catalog</a></li><li class="topic"><a href="/foundgine-overview#performance-tuning">Performance &amp; Caching</a></li><li class="topic"><a href="/foundgine-overview#prod-ops-runbook">Production Ops &amp; Probes</a></li><li class="topic"><a href="/foundgine-overview#multi-tenancy-models">Multi-Tenancy Models</a></li><li class="topic"><a href="/foundgine-overview#env-diagnostics-cheatsheet">Env Vars &amp; Ports</a></li><li class="topic"><a href="/foundgine-overview#incident-forensics-runbook">Incident &amp; Forensics Runbook</a></li><li class="topic"><a href="/foundgine-overview#multi-region-dr">Multi-Region &amp; DR</a></li><li class="topic"><a href="/foundgine-overview#runtime-footprint-profiles">Runtime Footprint Profiles</a></li><li class="topic"><a href="/foundgine-overview#rfc9457-problem-details">RFC 9457 Problem Details</a></li><li class="topic"><a href="/foundgine-overview#federated-service-mesh">Multi-Service Federation</a></li><li class="topic"><a href="/foundgine-overview#capacity-sizing-slos">Capacity Sizing &amp; SLOs</a></li><li class="topic"><a href="/foundgine-overview#diagnostic-decision-tree">Diagnostic Decision Tree</a></li><li class="topic"><a href="/foundgine-overview#otel-semantic-conventions">OpenTelemetry Conventions</a></li><li class="topic"><a href="/foundgine-overview#soft-delete-retention">Soft-Delete &amp; GDPR Erasure</a></li><li class="topic"><a href="/foundgine-overview#active-active-conflict-resolution">Active-Active Merge Rules</a></li><li class="topic"><a href="/foundgine-overview#db-index-tuning-guide">PostgreSQL Index Tuning Guide</a></li></ul></details>
               <details><summary>Testing, evidence &amp; release <span>11</span></summary><ul><li class="topic"><a href="/foundgine-overview#evidence">Benchmarks &amp; Packages</a></li><li class="topic"><a href="/foundgine-overview#benchmark-data">Full Metrics &amp; Attack Matrix</a></li><li class="topic"><a href="/foundgine-overview#compliance-threat-model">Compliance &amp; Threat Model</a></li><li class="topic"><a href="/foundgine-overview#build-release-playbook">Build &amp; Release Playbook</a></li><li class="topic"><a href="/foundgine-overview#deterministic-testing-harness">Chaos &amp; Clock Harness</a></li><li class="topic"><a href="/foundgine-overview#repo-verification-matrix">Monorepo Quality Gates</a></li><li class="topic"><a href="/foundgine-overview#testcontainers-integration">Testcontainers CI Harness</a></li><li class="topic"><a href="/foundgine-overview#release-checklist-matrix">Release Verification Gates</a></li><li class="topic"><a href="/foundgine-overview#production-signoff-matrix">Production Sign-Off Matrix</a></li><li class="topic"><a href="/foundgine-overview#ci-smoke-script">Unified CI Release Gate</a></li><li class="topic"><a href="/foundgine-overview#compliance-framework-mapping">Compliance Control Map</a></li></ul></details>
               <details><summary>Reference <span>16</span></summary><ul><li class="topic"><a href="/foundgine-overview#repo-tree">Repo Tree &amp; Classes</a></li><li class="topic"><a href="/foundgine-overview#interactive-explorer">Interactive IR Inspector</a></li><li class="topic"><a href="/foundgine-overview#api-parity-matrix">.NET / Java API Parity</a></li><li class="topic"><a href="/foundgine-overview#ses-standard">SES Standard (001–025)</a></li><li class="topic"><a href="/foundgine-overview#sample-walkthroughs">Samples &amp; E2E Runners</a></li><li class="topic"><a href="/foundgine-overview#version-history">Architecture History</a></li><li class="topic"><a href="/foundgine-overview#full-stack-recipe">Full-Stack Wiring Recipe</a></li><li class="topic"><a href="/foundgine-overview#code-cookbook">Complete Code Cookbook</a></li><li class="topic"><a href="/foundgine-overview#package-topology-deep">Granular Module Topology</a></li><li class="topic"><a href="/foundgine-overview#java-advanced-reactor">Java AOT &amp; Docker Setup</a></li><li class="topic"><a href="/foundgine-overview#control-plane-parity">ControlPlane (.NET vs Java)</a></li><li class="topic"><a href="/foundgine-overview#cross-ref-index">Invariant Cross-Reference</a></li><li class="topic"><a href="/foundgine-overview#ecosystem-packages-index">Package Registry Index</a></li><li class="topic"><a href="/foundgine-overview#di-lifetimes-reference">DI Lifetimes &amp; Safety</a></li><li class="topic"><a href="/foundgine-overview#contract-evolution">Contract Evolution Playbook</a></li><li class="topic"><a href="/foundgine-overview#adr-catalog">Architecture Decision Records</a></li></ul></details>
             </div>
@@ -487,7 +440,7 @@ spec:
 
       <section class="fx-section dark fx-closing" id="walkthrough">
         <div class="fx-wrap">
-          <blockquote id="show-me-overdue-purchase-orders-from-our-top-supplier-in-texas">People and AI say what they want. Your application decides what is allowed. Foundgine carries out only what passes the check.</blockquote>
+          <blockquote id="show-me-overdue-purchase-orders-from-our-top-supplier-in-texas">Callers describe what they want. The application defines what exists and what is allowed. Foundgine determines how the authorized meaning executes.</blockquote>
           <div class="fx-cta">
             <a class="fx-btn primary" href="/getting-started/index.html">Get started</a>
             <a class="fx-btn ghost" href="/walkthrough/index.html">Open the full walkthrough</a>
@@ -495,24 +448,15 @@ spec:
         </div>
       </section>
     </main>
-    <!-- fx:footer -->
     <footer class="site-footer">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <a class="brand" href="/"><svg aria-hidden="true" class="brand-mark" width="20" height="20" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M6 6v20M6 6h8M6 26h8"/></g><circle cx="24" cy="16" r="4.5" fill="currentColor"/></svg>Foundgine</a>
-          <p class="footer-tag">The same rules. Applied every time.</p>
-          <p>One shared checkpoint for your apps, APIs, databases and AI assistants.</p>
-        </div>
-        <nav class="footer-grid" aria-label="Footer">
-          <div><h2>Learn</h2><a href="/what-is-foundgine">What is Foundgine</a><a href="/getting-started/">Getting started</a><a href="/how-it-works/">How it works</a><a href="/walkthrough/">Walkthrough</a></div>
-          <div><h2>Build</h2><a href="/ai-agents/">AI agents</a><a href="/security/">Security</a><a href="/samples/">Samples</a><a href="/spec-form/">App generator</a></div>
-          <div><h2>Reference</h2><a href="/foundgine-overview">Technical overview</a><a href="/architecture/">Architecture</a><a href="/packages/">Packages</a><a href="/llms.txt">llms.txt</a></div>
-          <div><h2>Evidence</h2><a href="/agent-benchmark/">Benchmarks</a><a href="/performance/">Performance</a><a href="/verified/">Verified claims</a><a href="https://github.com/Foundgine/Foundgine">GitHub ↗</a></div>
-        </nav>
-      </div>
+      <nav class="footer-grid" aria-label="Footer">
+        <div><h2>Reference</h2><a href="/foundgine-overview">Technical overview</a><a href="/architecture/">Architecture</a><a href="/packages/">Packages</a><a href="/llms.txt">llms.txt</a></div>
+        <div><h2>Learn</h2><a href="/what-is-foundgine">What is Foundgine</a><a href="/getting-started/">Getting started</a><a href="/how-it-works/">How it works</a><a href="/walkthrough/">Walkthrough</a></div>
+        <div><h2>Build</h2><a href="/ai-agents/">AI agents</a><a href="/security/">Security</a><a href="/samples/">Samples</a><a href="/spec-form/">App generator</a></div>
+        <div><h2>Project</h2><a href="/agent-benchmark/">Benchmarks</a><a href="/performance/">Performance</a><a href="https://github.com/Foundgine/Foundgine">GitHub ↗</a></div>
+      </nav>
       <div class="footer-meta">Foundgine 3.4.2 · .NET 10 &amp; Java 27 · Apache-2.0</div>
     </footer>
-    <!-- /fx:footer -->
     <script src="/assets/site-nav.js" defer></script>
     <script>
 (() => {
@@ -522,24 +466,24 @@ spec:
   const scenarios = {
     allow: {
       ask: "Show me overdue purchase orders from our top supplier in Texas.",
-      who: "Made-up example · a signed-in buyer",
+      who: "Illustrative request · authenticated procurement user",
       stages: [
-        ["Someone asks", "They ask in business terms. They send no database code, table names or database passwords.", "Request received", '{\n  "intent": "list_overdue_purchase_orders",\n  "filters": { "region": "Texas", "status": "overdue" }\n}'],
-        ["The words are understood", "Foundgine matches words like purchase order and supplier to things you have described. Finding them does not give permission to see them.", "Request understood", '{\n  "entity": "PurchaseOrder",\n  "relationship": "Supplier",\n  "filters": ["dueDate < today", "supplier.region = Texas"]\n}'],
-        ["Your rules are checked", "Your application checks who is asking, which organisation they belong to and what they may see.", "Allowed", '{\n  "actor": "procurement-user",\n  "policy": "purchase-orders.read",\n  "decision": "allow"\n}'],
-        ["A plan is made", "Foundgine makes a plan for the allowed request and keeps the permission details with it.", "Plan checked", '{\n  "operation": "Read",\n  "root": "PurchaseOrder",\n  "joins": ["Supplier"],\n  "authorization": "preserved"\n}'],
-        ["The work is done", "Your data tool runs the plan, returns the results and leaves a record to check.", "Results returned", '{\n  "provider": "configured persistence provider",\n  "result": "overdue purchase orders",\n  "evidence": "execution recorded"\n}']
+        ["The caller sends intent, not SQL", "The caller describes a business request. It does not provide SQL, table names or database credentials.", "Intent accepted", '{\n  "intent": "list_overdue_purchase_orders",\n  "filters": { "region": "Texas", "status": "overdue" }\n}'],
+        ["Meaning is resolved", "Configured semantic metadata resolves business terms to known entities, fields and relationships. Candidate retrieval does not grant permission.", "Meaning resolved", '{\n  "entity": "PurchaseOrder",\n  "relationship": "Supplier",\n  "filters": ["dueDate < today", "supplier.region = Texas"]\n}'],
+        ["The host authorizes the operation", "The host evaluates the authenticated actor, tenant context and applicable policy before a plan is created.", "Authorized", '{\n  "actor": "procurement-user",\n  "policy": "purchase-orders.read",\n  "decision": "allow"\n}'],
+        ["A provider-independent plan is bound", "Foundgine binds the authorized semantic operation into a provider-independent plan while preserving security provenance.", "Plan validated", '{\n  "operation": "Read",\n  "root": "PurchaseOrder",\n  "joins": ["Supplier"],\n  "authorization": "preserved"\n}'],
+        ["The provider executes", "The selected provider executes the validated plan against the application's persistence model and returns evidence.", "Read completed", '{\n  "provider": "configured persistence provider",\n  "result": "overdue purchase orders",\n  "evidence": "execution recorded"\n}']
       ]
     },
     deny: {
-      ask: "Approve a payment that is over my limit.",
-      who: "Made-up example · a signed-in finance worker",
+      ask: "Approve a payment above my permitted transaction limit.",
+      who: "Illustrative request · authenticated finance user",
       stages: [
-        ["Someone asks for a change", "Asking to change something does not mean it is allowed. This request follows the same path.", "Request received", '{\n  "intent": "approve_payment",\n  "paymentId": "PAY-1042"\n}'],
-        ["The action is understood", "Foundgine matches the request to the payment approval action and the details it needs.", "Request understood", '{\n  "capability": "Payment.approve",\n  "amount": 125000,\n  "currency": "USD"\n}'],
-        ["Your rules say no", "The payment is above this person's limit, so your application refuses it.", "Refused", '{\n  "policy": "payment.approval.limit",\n  "decision": "deny",\n  "reason": "amount exceeds actor limit"\n}'],
-        ["No plan is made", "A refused request never gets a plan that can run.", "Stopped", '{\n  "plan": null,\n  "authorization": "denied",\n  "execution": "not started"\n}'],
-        ["Nothing changes", "The change is never sent to the data tool. The refusal can be recorded.", "Nothing changed", '{\n  "providerCalls": 0,\n  "stateChanged": false,\n  "evidence": "denial recorded"\n}']
+        ["The caller sends a mutation intent", "Describing a mutation does not authorize it. The request enters the same controlled execution boundary.", "Intent accepted", '{\n  "intent": "approve_payment",\n  "paymentId": "PAY-1042"\n}'],
+        ["The capability is resolved", "The request resolves to the configured payment capability and its required inputs.", "Capability resolved", '{\n  "capability": "Payment.approve",\n  "amount": 125000,\n  "currency": "USD"\n}'],
+        ["The host denies the operation", "The host evaluates the actor's permissions and transaction limit. Policy denies this operation before planning.", "Denied by policy", '{\n  "policy": "payment.approval.limit",\n  "decision": "deny",\n  "reason": "amount exceeds actor limit"\n}'],
+        ["No executable plan is issued", "A denied request never becomes an executable plan. Planning cannot bypass the policy decision.", "Execution blocked", '{\n  "plan": null,\n  "authorization": "denied",\n  "execution": "not started"\n}'],
+        ["The database is untouched", "The mutation is not sent to the persistence provider. The denial can be recorded as security evidence.", "Mutation refused", '{\n  "providerCalls": 0,\n  "stateChanged": false,\n  "evidence": "denial recorded"\n}']
       ]
     }
   };

@@ -6,7 +6,7 @@
   <artifactId>foundgine-benchmark-java-foundgine</artifactId>
   <version>3.4.2</version>
   <description>Java implementation of Foundgine, aligned with the current C# source packages.</description>
-  <url>https://github.com/CristianBarragan/Foundgine/benchmarks/supply-chain/foundgine-benchmark-java-foundgine</url>
+  <url>https://github.com/Foundgine/Foundgine/benchmarks/supply-chain/foundgine-benchmark-java-foundgine</url>
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
@@ -18,13 +18,13 @@
     <developer>
       <name>Foundgine</name>
       <organization>Foundgine</organization>
-      <organizationUrl>https://github.com/CristianBarragan/Foundgine</organizationUrl>
+      <organizationUrl>https://github.com/Foundgine/Foundgine</organizationUrl>
     </developer>
   </developers>
   <scm>
-    <connection>scm:git:https://github.com/CristianBarragan/Foundgine.git/benchmarks/supply-chain/foundgine-benchmark-java-foundgine</connection>
-    <developerConnection>scm:git:ssh://git@github.com/CristianBarragan/Foundgine.git/benchmarks/supply-chain/foundgine-benchmark-java-foundgine</developerConnection>
-    <url>https://github.com/CristianBarragan/Foundgine/benchmarks/supply-chain/foundgine-benchmark-java-foundgine</url>
+    <connection>scm:git:https://github.com/Foundgine/Foundgine.git/benchmarks/supply-chain/foundgine-benchmark-java-foundgine</connection>
+    <developerConnection>scm:git:ssh://git@github.com/Foundgine/Foundgine.git/benchmarks/supply-chain/foundgine-benchmark-java-foundgine</developerConnection>
+    <url>https://github.com/Foundgine/Foundgine/benchmarks/supply-chain/foundgine-benchmark-java-foundgine</url>
   </scm>
   <dependencies>
     <dependency>
@@ -100,14 +100,4 @@
       <scope>compile</scope>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.sonatype.central</groupId>
-        <artifactId>central-publishing-maven-plugin</artifactId>
-        <version>0.8.0</version>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
 </project>
