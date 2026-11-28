@@ -14,7 +14,7 @@
   <properties>
     <!-- UNVERIFIED pin: confirm against the Spring Boot line your Java 27 build targets. -->
     <spring-boot.version>4.0.7</spring-boot.version>
-	<assertj.version>3.27.6</assertj.version>
+	<assertj.version>3.27.7</assertj.version>
     <!-- UNVERIFIED pin: the Spring Framework line that Boot 4.0.x manages. -->
     <spring-framework.version>7.0.8</spring-framework.version>
   </properties>
