@@ -1,6 +1,6 @@
 # Claims audit
 
-What the Foundgine website says, where it is enforced and how it is tested. Version 3.4.2, checked 27 November 2026.
+What the Foundgine website says, where it is enforced and how it is tested. Version 3.4.3. Claims last checked 27 November 2026 against 3.4.2.
 
 > How this was checked: by reading the code paths listed here in the 3.4.2 source on 27 November 2026. The listed tests are part of the repository. Run them in your own pipeline for your build before relying on a claim in production.
 
@@ -133,9 +133,9 @@ The site promises no percentage of savings. It gives you a way to measure work d
 
 Benchmark pages report what was measured in those runs. They are not a forecast for your system.
 
-## Foundgine 3.4.2, .NET 10 and Java 27.
+## Foundgine 3.4.3, .NET 10 and Java 27.
 
-Version 3.4.2 is set in the .NET build, the Java build, and the TypeScript, Python and WebAssembly packages. .NET projects target net10.0 and the Java build compiles for release 27.
+Version 3.4.3 is set in the .NET build, the Java build, and the TypeScript, Python and WebAssembly packages. .NET projects target net10.0 and the Java build compiles for release 27.
 
 **Enforced in**
 
@@ -144,7 +144,7 @@ Version 3.4.2 is set in the .NET build, the Java build, and the TypeScript, Pyth
 - [`src/typescript/package.json`](../src/typescript/package.json): version
 - [`src/python/pyproject.toml`](../src/python/pyproject.toml): version
 - [`src/wasm/package.json`](../src/wasm/package.json): version
-- [`CHANGELOG.md`](../CHANGELOG.md): 3.4.2 entry
+- [`CHANGELOG.md`](../CHANGELOG.md): 3.4.3 entry
 
 **Scope**
 

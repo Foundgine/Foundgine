@@ -24,7 +24,7 @@ import sys
 from pathlib import Path
 
 SITE = Path(__file__).resolve().parent.parent / "docs-site"
-VERSION = "3.4.2"
+VERSION = "3.4.3"
 TAGLINE = "The same rules. Applied every time."
 SUBTAG = "One shared checkpoint for your apps, APIs, databases and AI assistants."
 

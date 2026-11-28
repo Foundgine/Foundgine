@@ -6,7 +6,7 @@ This page is an implementation inventory checked against the supplied `Foundgine
 
 | Runtime | Value found in source | Evidence |
 |---|---|---|
-| Foundgine release line | `3.4.2` | `Directory.Build.props` `VersionPrefix` and `src/java/pom.xml` `<revision>` |
+| Foundgine release line | `3.4.3` | `Directory.Build.props` `VersionPrefix` and `src/java/pom.xml` `<revision>` |
 | .NET | `net10.0` | C# project files, including `Foundgine.Core.csproj` |
 | Java | `27` | `src/java/pom.xml` `maven.compiler.release` |
 
@@ -49,9 +49,9 @@ The parent Maven reactor includes additional source modules, but the Java publis
 
 | SDK | Package metadata in source | Documented boundary |
 |---|---|---|
-| TypeScript | `src/typescript/package.json` — `@foundgine/typescript`, `3.4.2` | HTTP/MCP and Temporal workflow transport client; not the C#/Java semantic runtime. |
-| Python | `src/python/pyproject.toml` — `foundgine`, `3.4.2` | Async and synchronous HTTP/MCP and Temporal workflow transport client; not the C#/Java semantic runtime. |
-| Rust / WebAssembly | `src/wasm/package.json` — `@foundgine/wasm`, `3.4.2`; Rust crate under `src/wasm/Cargo.toml` | Sans-I/O transport core with host-injected fetch; not the C#/Java semantic runtime. |
+| TypeScript | `src/typescript/package.json` — `@foundgine/typescript`, `3.4.3` | HTTP/MCP and Temporal workflow transport client; not the C#/Java semantic runtime. |
+| Python | `src/python/pyproject.toml` — `foundgine`, `3.4.3` | Async and synchronous HTTP/MCP and Temporal workflow transport client; not the C#/Java semantic runtime. |
+| Rust / WebAssembly | `src/wasm/package.json` — `@foundgine/wasm`, `3.4.3`; Rust crate under `src/wasm/Cargo.toml` | Sans-I/O transport core with host-injected fetch; not the C#/Java semantic runtime. |
 
 See [Client SDKs](wiki/client-sdks.md) for the combined overview. The SDK READMEs record their own test coverage and remaining limitations. The current README status sections identify remaining gaps, including live-server integration and runtime-specific coverage. Package metadata and a passing unit suite do not establish compatibility with every browser/runtime or a successful live-server integration.
 

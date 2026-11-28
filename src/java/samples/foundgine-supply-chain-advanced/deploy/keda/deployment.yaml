@@ -20,7 +20,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: app
-          image: ghcr.io/example/foundgine-supplychain-advanced-java:3.4.2
+          image: ghcr.io/example/foundgine-supplychain-advanced-java:3.4.3
           ports:
             - {name: http, containerPort: 4783}
           env:

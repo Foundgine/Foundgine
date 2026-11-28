@@ -1,5 +1,5 @@
 # Advanced Java sample: HTTP / GraphQL / MCP server (AdvancedMcpServer). Build context is src/java:
-#   docker build -f samples/foundgine-supply-chain-advanced/Dockerfile -t foundgine-supplychain-advanced-java:3.4.2 .
+#   docker build -f samples/foundgine-supply-chain-advanced/Dockerfile -t foundgine-supplychain-advanced-java:3.4.3 .
 FROM maven:3.10.0-eclipse-temurin-27 AS build
 WORKDIR /workspace
 COPY . .

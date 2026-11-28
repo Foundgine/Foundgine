@@ -21,8 +21,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 GH = "https://github.com/Foundgine/Foundgine/blob/main/"
-VERSION = "3.4.2"
+VERSION = "3.4.3"
 CHECKED = "27 November 2026"
+CHECKED_VERSION = "3.4.2"  # source version the claims were last read against
 
 CS = "src/csharp/"
 JV = "src/java/"
@@ -154,7 +155,7 @@ CLAIMS = [
 ]
 
 CAVEAT = ("How this was checked: by reading the code paths listed here in the "
-          f"{VERSION} source on {CHECKED}. The listed tests are part of the repository. "
+          f"{CHECKED_VERSION} source on {CHECKED}. The listed tests are part of the repository. "
           "Run them in your own pipeline for your build before relying on a claim in production.")
 
 

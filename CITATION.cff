@@ -3,7 +3,7 @@ message: "If you use Foundgine, please cite it using these metadata."
 title: "Foundgine"
 abstract: "Configurable semantic and execution boundary for application capabilities in .NET 10 and Java 27. Separates application meaning, persistence mapping, authorization and execution from the interfaces and agents that consume them."
 type: software
-version: "3.4.2"
+version: "3.4.3"
 license: Apache-2.0
 authors:
   - name: "Foundgine"

@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Foundgine (v3.4.2) — Complete Technical Overview, Architecture &amp; Developer Reference (.NET 10 &amp; Java 27)</title>
+  <title>Foundgine (v3.4.3) — Complete Technical Overview, Architecture &amp; Developer Reference (.NET 10 &amp; Java 27)</title>
   <meta
     name="description"
-    content="Complete technical reference for Foundgine v3.4.2: configurable semantic and execution boundary for .NET 10 and Java 27 separating domain meaning, persistence mapping, warrant-based authorization, lexical grounding, and execution from GraphQL, MCP, Temporal, and AI agents."
+    content="Complete technical reference for Foundgine v3.4.3: configurable semantic and execution boundary for .NET 10 and Java 27 separating domain meaning, persistence mapping, warrant-based authorization, lexical grounding, and execution from GraphQL, MCP, Temporal, and AI agents."
   />
   <meta
     name="keywords"
@@ -21,10 +21,10 @@
   <meta name="publisher" content="Foundgine" />
   <meta name="application-name" content="Foundgine" />
   <meta name="theme-color" content="#2557d6" />
-  <meta name="DC.title" content="Foundgine (v3.4.2) — Complete Semantic &amp; Execution Boundary Reference" />
+  <meta name="DC.title" content="Foundgine (v3.4.3) — Complete Semantic &amp; Execution Boundary Reference" />
   <meta name="DC.creator" content="Foundgine" />
   <meta name="DC.subject" content="Semantic Execution Boundary, .NET 10, Java 27, GraphQL, Model Context Protocol, Warrant Authorization" />
-  <meta name="DC.date" content="2026-11-26" />
+  <meta name="DC.date" content="2026-11-29" />
   <meta name="DC.rights" content="Apache-2.0" />
 
   <!-- AI & Agent Machine-Readable Discovery Links -->
@@ -40,7 +40,7 @@
   <!-- Open Graph / Social -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Foundgine" />
-  <meta property="og:title" content="Foundgine (v3.4.2) — Complete Semantic &amp; Execution Boundary Reference" />
+  <meta property="og:title" content="Foundgine (v3.4.3) — Complete Semantic &amp; Execution Boundary Reference" />
   <meta
     property="og:description"
     content="Configure domain meaning, persistence mapping, and warrant-enforced authorization once; execute safely across GraphQL, MCP, Temporal, agent frameworks, and application code."
@@ -50,7 +50,7 @@
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Foundgine (v3.4.2) — Complete Semantic &amp; Execution Boundary Reference" />
+  <meta name="twitter:title" content="Foundgine (v3.4.3) — Complete Semantic &amp; Execution Boundary Reference" />
   <meta
     name="twitter:description"
     content="Configure domain meaning, persistence mapping, and warrant-enforced authorization once; execute safely across GraphQL, MCP, Temporal, agent frameworks, and application code."
@@ -66,7 +66,7 @@
         "@type": "SoftwareSourceCode",
         "@id": "https://github.com/Foundgine/Foundgine#software",
         "name": "Foundgine",
-        "version": "3.4.2",
+        "version": "3.4.3",
         "description": "Configurable semantic and execution boundary for application capabilities in .NET 10 and Java 27. Separates application meaning, persistence mapping, authorization, lexical grounding, and provider execution from GraphQL, MCP, Temporal, and AI agent consumers.",
         "codeRepository": "https://github.com/Foundgine/Foundgine",
         "programmingLanguage": ["C#", "Java", "TypeScript", "Python", "Rust (WebAssembly client)"],
@@ -80,9 +80,9 @@
       },
       {
         "@type": "TechArticle",
-        "headline": "Foundgine (v3.4.2) Complete Architecture, Security, Providers, SDKs, and Benchmark Reference",
+        "headline": "Foundgine (v3.4.3) Complete Architecture, Security, Providers, SDKs, and Benchmark Reference",
         "description": "Complete canonical reference covering Foundgine's 12-stage semantic execution lifecycle, plan binding, cryptographic warrant security, lexical grounding, fluent configuration, ORM/SQL providers, extensions, MCP tools, client SDKs, and benchmark evidence.",
-        "dateModified": "2026-11-26",
+        "dateModified": "2026-11-29",
         "author": { "@type": "Organization", "name": "Foundgine" },
         "mainEntity": { "@id": "https://github.com/Foundgine/Foundgine#software" }
       },
@@ -98,7 +98,7 @@
           {
             "@type": "ListItem",
             "position": 2,
-            "name": "Complete Technical Overview & Reference (v3.4.2)",
+            "name": "Complete Technical Overview & Reference (v3.4.3)",
             "item": "https://foundgine.io/foundgine-overview"
           }
         ]
@@ -2432,7 +2432,7 @@ var response = await agent.RunAsync("Which purchase orders are overdue?", sessio
             <div class="code-head"><span>Java 27 — LangChain4j Tool Map &amp; Spring Boot Auto-Configuration</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
             <pre><code>// 1. LangChain4j AiServices integration (io.github.cristianbarragan:foundgine-providers)
 FoundgineMcpServer server = FoundgineMcpServer.builder()
-        .serverInfo("foundgine", "3.4.2")
+        .serverInfo("foundgine", "3.4.3")
         .withReadTools(tools)
         .build();
 
@@ -2516,7 +2516,7 @@ const rows = await client.execute("foundgine_query_semantic", {
       <section id="repo-tree">
         <h2>Repository Tree &amp; Class Reference (XML Doc &amp; Javadoc Summaries)</h2>
         <p>
-          Complete directory map of <code>Foundgine/Foundgine</code> (<code>v3.4.2</code>) annotated with the canonical XML documentation (<code>&lt;summary&gt;</code>) and Javadoc descriptions from each assembly, package, and primary class/interface. Use the filter bar below to search by class name, namespace, file path, or responsibility.
+          Complete directory map of <code>Foundgine/Foundgine</code> (<code>v3.4.3</code>) annotated with the canonical XML documentation (<code>&lt;summary&gt;</code>) and Javadoc descriptions from each assembly, package, and primary class/interface. Use the filter bar below to search by class name, namespace, file path, or responsibility.
         </p>
 
         <div class="tree-controls">
@@ -3013,7 +3013,7 @@ const rows = await client.execute("foundgine_query_semantic", {
             <thead>
               <tr>
                 <th>Capability</th>
-                <th>Foundgine (v3.4.2)</th>
+                <th>Foundgine (v3.4.3)</th>
                 <th>Direct MCP / Tool Wrappers</th>
                 <th>Semantic Kernel / LangChain</th>
                 <th>Plain GraphQL + ORM</th>
@@ -3140,33 +3140,33 @@ Accept: application/json, text/event-stream
         <div id="wire-pkg" class="tab-panel" data-tab-group="wire-tabs">
           <div class="grid-2">
             <div class="code-wrap">
-              <div class="code-head"><span>.NET 10 CLI — NuGet Package Installation (v3.4.2)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
-              <pre><code>dotnet add package Foundgine.Core --version 3.4.2
-dotnet add package Foundgine.Runtime --version 3.4.2
-dotnet add package Foundgine.Providers --version 3.4.2
-dotnet add package Foundgine.Extensions --version 3.4.2</code></pre>
+              <div class="code-head"><span>.NET 10 CLI — NuGet Package Installation (v3.4.3)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+              <pre><code>dotnet add package Foundgine.Core --version 3.4.3
+dotnet add package Foundgine.Runtime --version 3.4.3
+dotnet add package Foundgine.Providers --version 3.4.3
+dotnet add package Foundgine.Extensions --version 3.4.3</code></pre>
             </div>
             <div class="code-wrap">
-              <div class="code-head"><span>Java 27 — Maven pom.xml Dependencies (v3.4.2)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+              <div class="code-head"><span>Java 27 — Maven pom.xml Dependencies (v3.4.3)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
               <pre><code>&lt;dependency&gt;
   &lt;groupId&gt;io.github.cristianbarragan&lt;/groupId&gt;
   &lt;artifactId&gt;foundgine-core&lt;/artifactId&gt;
-  &lt;version&gt;3.4.2&lt;/version&gt;
+  &lt;version&gt;3.4.3&lt;/version&gt;
 &lt;/dependency&gt;
 &lt;dependency&gt;
   &lt;groupId&gt;io.github.cristianbarragan&lt;/groupId&gt;
   &lt;artifactId&gt;foundgine-runtime&lt;/artifactId&gt;
-  &lt;version&gt;3.4.2&lt;/version&gt;
+  &lt;version&gt;3.4.3&lt;/version&gt;
 &lt;/dependency&gt;
 &lt;dependency&gt;
   &lt;groupId&gt;io.github.cristianbarragan&lt;/groupId&gt;
   &lt;artifactId&gt;foundgine-providers&lt;/artifactId&gt;
-  &lt;version&gt;3.4.2&lt;/version&gt;
+  &lt;version&gt;3.4.3&lt;/version&gt;
 &lt;/dependency&gt;
 &lt;dependency&gt;
   &lt;groupId&gt;io.github.cristianbarragan&lt;/groupId&gt;
   &lt;artifactId&gt;foundgine-extensions&lt;/artifactId&gt;
-  &lt;version&gt;3.4.2&lt;/version&gt;
+  &lt;version&gt;3.4.3&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
             </div>
           </div>
@@ -3521,7 +3521,7 @@ builder.Services.AddSingleton&lt;IFoundgineGatewayApprovalStore&gt;(sp =&gt;
           </div>
         </div>
 
-        <h3>4. Primary Package Artifacts (v3.4.2)</h3>
+        <h3>4. Primary Package Artifacts (v3.4.3)</h3>
         <div class="grid-2">
           <div class="card">
             <h3>.NET 10 (NuGet)</h3>
@@ -4423,7 +4423,7 @@ pwsh ./merge-supply-chain-pentest-report.ps1</code></pre>
                 <td>Stabilized 1.0 contracts and expanded lexical grounding diagnostics, ambiguity resolution UX, and cross-surface coverage.</td>
               </tr>
               <tr>
-                <td><strong>v3.3.5 – v3.4.2 (Current)</strong></td>
+                <td><strong>v3.3.5 – v3.4.3 (Current)</strong></td>
                 <td>Full dual-runtime parity across <strong>.NET 10</strong> and <strong>Java 27</strong>, SES-018 AOT metadata parity, SES-025 provider execution fidelity, MCP <code>2025-06-18</code> Streamable HTTP, and unified <code>Runtime/ControlPlane</code> authority/recovery consolidation.</td>
               </tr>
             </tbody>
@@ -4584,7 +4584,7 @@ pwsh ./merge-supply-chain-pentest-report.ps1</code></pre>
       <section id="build-release-playbook">
         <h2>Build, Packaging, Container Hardening &amp; Release Verification</h2>
         <p>
-          Reproducible build and verification commands across all five language ecosystems in the Foundgine monorepo (<code>v3.4.2</code>):
+          Reproducible build and verification commands across all five language ecosystems in the Foundgine monorepo (<code>v3.4.3</code>):
         </p>
 
         <div class="grid-2">
@@ -5061,12 +5061,12 @@ public sealed class TenantIsolationPenTest
   &lt;dependency&gt;
     &lt;groupId&gt;io.github.cristianbarragan&lt;/groupId&gt;
     &lt;artifactId&gt;foundgine-core&lt;/artifactId&gt;
-    &lt;version&gt;3.4.2&lt;/version&gt;
+    &lt;version&gt;3.4.3&lt;/version&gt;
   &lt;/dependency&gt;
   &lt;dependency&gt;
     &lt;groupId&gt;io.github.cristianbarragan&lt;/groupId&gt;
     &lt;artifactId&gt;foundgine-runtime&lt;/artifactId&gt;
-    &lt;version&gt;3.4.2&lt;/version&gt;
+    &lt;version&gt;3.4.3&lt;/version&gt;
   &lt;/dependency&gt;
   &lt;dependency&gt;
     &lt;groupId&gt;org.postgresql&lt;/groupId&gt;
@@ -5085,7 +5085,7 @@ public sealed class TenantIsolationPenTest
           &lt;path&gt;
             &lt;groupId&gt;io.github.cristianbarragan&lt;/groupId&gt;
             &lt;artifactId&gt;foundgine-aot-generator&lt;/artifactId&gt;
-            &lt;version&gt;3.4.2&lt;/version&gt;
+            &lt;version&gt;3.4.3&lt;/version&gt;
           &lt;/path&gt;
         &lt;/annotationProcessorPaths&gt;
         &lt;compilerArgs&gt;
@@ -5627,7 +5627,7 @@ public static bool VerifyReceiptIntegrity(
 
       <!-- 54. COMPLETE MULTI-ECOSYSTEM PACKAGE & ARTIFACT DIRECTORY -->
       <section id="ecosystem-packages-index">
-        <h2>Complete Multi-Ecosystem Package &amp; Artifact Directory (v3.4.2)</h2>
+        <h2>Complete Multi-Ecosystem Package &amp; Artifact Directory (v3.4.3)</h2>
         <div class="table-wrap">
           <table>
             <thead>
@@ -6297,7 +6297,7 @@ ORDER BY "TotalRevenue" DESC, o.status ASC;</code></pre>
 
       <!-- 72. RELEASE VERIFICATION & MULTI-REGISTRY PUBLISHING CHECKLIST -->
       <section id="release-checklist-matrix">
-        <h2>Release Verification &amp; Multi-Registry Publishing Checklist (v3.4.2)</h2>
+        <h2>Release Verification &amp; Multi-Registry Publishing Checklist (v3.4.3)</h2>
         <div class="table-wrap">
           <table>
             <thead>
@@ -6955,7 +6955,7 @@ cargo test --manifest-path src/wasm/Cargo.toml
 # 4. Validate Documentation Sitemap XML &amp; Robots.txt Integrity
 xmllint --noout docs-site/sitemap.xml
 grep -q "Sitemap: https://cristianbarragan.github.io/foundgine/sitemap.xml" docs-site/robots.txt
-echo "All Foundgine v3.4.2 release gates passed."</code></pre>
+echo "All Foundgine v3.4.3 release gates passed."</code></pre>
         </div>
       </section>
 
@@ -7294,7 +7294,7 @@ CREATE INDEX CONCURRENTLY ix_foundgine_outbox_ready
             <h3>Documentation Pages</h3>
             <ul>
               <li><a href="https://foundgine.io/">Documentation Portal Home</a></li>
-              <li><a href="https://foundgine.io/foundgine-overview">Complete Technical Overview (v3.4.2)</a></li>
+              <li><a href="https://foundgine.io/foundgine-overview">Complete Technical Overview (v3.4.3)</a></li>
               <li><a href="https://foundgine.io/sitemap.xml">XML Sitemap (<code>sitemap.xml</code>)</a></li>
               <li><a href="https://foundgine.io/robots.txt">Crawler Directives (<code>robots.txt</code>)</a></li>
             </ul>
@@ -7331,7 +7331,7 @@ CREATE INDEX CONCURRENTLY ix_foundgine_outbox_ready
         <div><h2>Build</h2><a href="/ai-agents/">AI agents</a><a href="/security/">Security</a><a href="/samples/">Samples</a><a href="/spec-form/">App generator</a></div>
         <div><h2>Project</h2><a href="/agent-benchmark/">Benchmarks</a><a href="/performance/">Performance</a><a href="https://github.com/Foundgine/Foundgine">GitHub ↗</a></div>
       </nav>
-      <div class="footer-meta">Foundgine 3.4.2 · .NET 10 &amp; Java 27 · Apache-2.0</div>
+      <div class="footer-meta">Foundgine 3.4.3 · .NET 10 &amp; Java 27 · Apache-2.0</div>
     </footer>
 
   <script>

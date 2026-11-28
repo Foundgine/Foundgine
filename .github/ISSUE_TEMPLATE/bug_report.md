@@ -4,7 +4,7 @@ about: Something does not work as documented
 labels: bug
 ---
 
-**Version and language** (for example 3.4.2, .NET 10 / Java 27 / TypeScript / Python / WASM):
+**Version and language** (for example 3.4.3, .NET 10 / Java 27 / TypeScript / Python / WASM):
 
 **What happened:**
 
