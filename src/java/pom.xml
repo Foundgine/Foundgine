@@ -80,6 +80,8 @@
          build-time-only processor so Maven resolves it without Maven Central. -->
     <module>benchmarks/supply-chain/spring-baseline</module>
     <module>benchmarks/supply-chain/foundgine</module>
+    <!-- High-assurance PostgreSQL parity tests (security tests must be built so the sweep runs them). -->
+    <module>benchmarks/foundgine-agent</module>
     <module>samples/foundgine-supply-chain</module>
     <module>samples/foundgine-supply-chain-advanced</module>
     <module>samples/foundgine-comparison/foundgine-shop</module>

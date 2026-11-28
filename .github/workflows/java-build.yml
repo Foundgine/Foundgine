@@ -481,6 +481,62 @@ jobs:
   # ------------------------------------------------------------
   # 2d. Penetration gate (aggregates every penetration job)
   # ------------------------------------------------------------
+  # ------------------------------------------------------------
+  # 2e. Live MCP protocol fuzz against the running Java MCP server
+  # ------------------------------------------------------------
+  java-security-live-mcp-fuzz:
+    name: Java Security — live MCP protocol fuzz
+    runs-on: ubuntu-latest
+    needs: java-build
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Java 27
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+          cache-dependency-path: 'src/java/**/pom.xml'
+
+      - name: Build the Advanced sample and its dependencies
+        run: |
+          set -euo pipefail
+          mvn -f src/java/pom.xml --batch-mode --no-transfer-progress -q \
+            -Dgpg.skip=true -DskipTests \
+            -pl samples/foundgine-supply-chain-advanced -am install
+
+      - name: Start the MCP server
+        run: |
+          set -euo pipefail
+          mvn -f src/java/samples/foundgine-supply-chain-advanced/pom.xml --batch-mode --no-transfer-progress -q \
+            exec:java -Dexec.mainClass=com.foundgine.samples.supplychain.advanced.mcp.AdvancedMcpServer \
+            > mcp-server.log 2>&1 &
+          echo $! > mcp-server.pid
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:4783/health >/dev/null; then echo "MCP server ready"; exit 0; fi
+            sleep 2
+          done
+          echo "::error::The Java MCP server did not become ready."
+          cat mcp-server.log || true
+          exit 1
+
+      - name: MCP protocol fuzz (malformed and authority-injection corpus)
+        env:
+          FOUNDGINE_TARGET_URL: http://localhost:4783/mcp
+        run: bash src/java/security/pentest/mcp-protocol-fuzz.sh
+
+      - name: Server log
+        if: always()
+        run: cat mcp-server.log || true
+
+      - name: Stop the MCP server
+        if: always()
+        run: kill "$(cat mcp-server.pid)" 2>/dev/null || true
+
   java-security-penetration-gate:
     name: java-security-penetration-gate
     if: always()
@@ -489,6 +545,8 @@ jobs:
       - java-security-adversarial
       - java-security-penetration
       - java-security-intent-redteam
+      - java-security-live-mcp-fuzz
+      - java-postgres-e2e
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -512,7 +570,7 @@ jobs:
   # 3. PostgreSQL / Docker integration and E2E tests
   # ------------------------------------------------------------
   java-postgres-e2e:
-    name: Java PostgreSQL E2E Tests
+    name: Java Sweep — PostgreSQL, Redis and every security test
     runs-on: ubuntu-latest
     needs: java-build
     timeout-minutes: 45
@@ -552,7 +610,51 @@ jobs:
           set -euo pipefail
           docker pull postgres:17
 
+      # Without these services the PostgreSQL and Redis tests (several are security tests) skip
+      # themselves, so the job would be green while proving nothing.
+      - name: Start PostgreSQL 17 and Redis 7
+        env:
+          POSTGRES_HOST_PORT: "55437"
+          REDIS_HOST_PORT: "56382"
+        run: |
+          set -euo pipefail
+          docker compose -p foundgine-java-pg -f docker-compose.postgres.yml up -d --wait postgres
+          docker compose -p foundgine-java-redis -f docker-compose.redis.yml up -d --wait redis
+
+      # AdvancedPostgres16SchemaIntegrationTest asserts a 16.x server, so it needs its own
+      # PostgreSQL 16 instance; the compose service above is PostgreSQL 17 (pgvector).
+      - name: Start PostgreSQL 16
+        run: |
+          set -euo pipefail
+          docker run -d --name foundgine-java-pg16 \
+            -e POSTGRES_DB=foundgine_e2e \
+            -e POSTGRES_USER=foundgine \
+            -e POSTGRES_PASSWORD=foundgine \
+            -p 55438:5432 \
+            --health-cmd "pg_isready -U foundgine -d foundgine_e2e" \
+            --health-interval 2s --health-timeout 5s --health-retries 30 \
+            postgres:16
+          for i in $(seq 1 60); do
+            status="$(docker inspect -f '{{.State.Health.Status}}' foundgine-java-pg16)"
+            [[ "$status" == "healthy" ]] && break
+            sleep 2
+          done
+          [[ "$status" == "healthy" ]] || { docker logs foundgine-java-pg16; echo "::error::PostgreSQL 16 did not become healthy."; exit 1; }
+
       - name: Run PostgreSQL integration and E2E tests
+        env:
+          FOUNDGINE_POSTGRES_CONNECTION_STRING: jdbc:postgresql://localhost:55437/foundgine_e2e?user=foundgine&password=foundgine
+          FOUNDGINE_TEST_PG_URL: jdbc:postgresql://localhost:55437/foundgine_e2e?user=foundgine&password=foundgine
+          FOUNDGINE_JDBC_URL: jdbc:postgresql://localhost:55437/foundgine_e2e
+          FOUNDGINE_JDBC_USER: foundgine
+          FOUNDGINE_JDBC_PASSWORD: foundgine
+          FOUNDGINE_JPA_POSTGRES_URL: jdbc:postgresql://localhost:55437/foundgine_e2e
+          FOUNDGINE_JPA_POSTGRES_USER: foundgine
+          FOUNDGINE_JPA_POSTGRES_PASSWORD: foundgine
+          FOUNDGINE_POSTGRES16_JDBC_URL: jdbc:postgresql://localhost:55438/foundgine_e2e
+          FOUNDGINE_POSTGRES16_USER: foundgine
+          FOUNDGINE_POSTGRES16_PASSWORD: foundgine
+          FOUNDGINE_REDIS: 127.0.0.1:56382
         run: |
           set -euo pipefail
           CANONICAL="$(mvn -f src/java/pom.xml --batch-mode --no-transfer-progress -q -N help:evaluate -Dexpression=revision -DforceStdout)"
@@ -580,6 +682,17 @@ jobs:
             src/java/**/target/failsafe-reports/**
           if-no-files-found: ignore
           retention-days: 14
+
+      - name: Stop PostgreSQL and Redis
+        if: always()
+        run: |
+          docker compose -p foundgine-java-pg -f docker-compose.postgres.yml down --volumes --remove-orphans || true
+          docker compose -p foundgine-java-redis -f docker-compose.redis.yml down --volumes --remove-orphans || true
+          docker rm -f foundgine-java-pg16 || true
+
+      - name: Verify no security test was skipped or left unrun
+        if: always()
+        run: python3 tools/ci/verify_security_tests.py --language java --reports src/java
 
   # ------------------------------------------------------------
   # 4. Publish Java libraries to Maven Central

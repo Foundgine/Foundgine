@@ -1,0 +1,397 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width,initial-scale=1" name="viewport" />
+    <title>Start small: the smallest Foundgine sample in C# and Java</title>
+    <meta
+      content="How Foundgine configuration works, why it matters, how AOT generation, EF Core and JPA plug in, and the simplest semantic setup, shown on the smallest C# and Java samples."
+      name="description"
+    />
+    <link href="https://foundgine.io/samples/start-small/" rel="canonical" />
+    <meta content="Start small: the smallest Foundgine sample in C# and Java" property="og:title" />
+    <meta
+      content="How Foundgine configuration works, why it matters, how AOT generation, EF Core and JPA plug in, and the simplest semantic setup, shown on the smallest C# and Java samples."
+      property="og:description"
+    />
+    <meta content="website" property="og:type" />
+    <meta
+      content="https://foundgine.io/samples/start-small/"
+      property="og:url"
+    />
+    <meta content="Foundgine" property="og:site_name" />
+    <meta
+      content="https://foundgine.io/Foundgine.webp"
+      property="og:image"
+    />
+    <meta content="1280" property="og:image:width" />
+    <meta content="320" property="og:image:height" />
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta content="Start small: the smallest Foundgine sample in C# and Java" name="twitter:title" />
+    <meta
+      content="How Foundgine configuration works, why it matters, how AOT generation, EF Core and JPA plug in, and the simplest semantic setup, shown on the smallest C# and Java samples."
+      name="twitter:description"
+    />
+    <meta
+      content="https://foundgine.io/Foundgine.webp"
+      name="twitter:image"
+    />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link href="/assets/favicon.svg" rel="icon" type="image/svg+xml" />
+    <link href="/assets/style.css" rel="stylesheet" />
+    <link href="/assets/foundgine-theme.css" rel="stylesheet" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "Start small: the smallest Foundgine sample in C# and Java",
+        "description": "How Foundgine configuration works, why it matters, how AOT generation, EF Core and JPA plug in, and the simplest semantic setup, shown on the smallest C# and Java samples.",
+        "url": "https://foundgine.io/samples/start-small/",
+        "author": { "@type": "Organization", "name": "Foundgine" }
+      }
+    </script>
+      <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <link rel="alternate" type="text/plain" href="https://foundgine.io/llms.txt" title="llms.txt" />
+    <link rel="alternate" type="text/markdown" href="https://foundgine.io/llms-full.md" title="llms-full.md" />
+    <link rel="code-repository" href="https://github.com/Foundgine/Foundgine" />
+    <link href="/assets/site-chrome.css" rel="stylesheet" />
+  <link href="/assets/code-tabs.css" rel="stylesheet" />
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to content</a>
+    <header class="site-header">
+      <div class="site-header-inner">
+        <a class="brand" href="/"><svg aria-hidden="true" class="brand-mark" width="20" height="20" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M6 6v20M6 6h8M6 26h8"/></g><circle cx="24" cy="16" r="4.5" fill="currentColor"/></svg>Foundgine</a>
+        <button class="nav-toggle" type="button" aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation"><span></span><span></span><span></span></button>
+        <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
+          <div class="nav-item has-submenu ov-item">
+            <div class="ov-split"><a class="nav-feature" href="/foundgine-overview">Technical overview</a><button class="submenu-toggle" type="button" aria-controls="submenu-overview" aria-expanded="false" aria-label="Show technical overview topics"><svg aria-hidden="true" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+            <div class="submenu ovm" id="submenu-overview">
+              <a class="ovm-all" href="/foundgine-overview">Open the full technical overview →</a>
+              <div class="ovm-groups">
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-0">Start here <span>6</span></button>
+                <ul class="ovm-list" id="ovm-0" hidden><li><a href="/foundgine-overview#overview">Overview &amp; 12-Stage Rail</a></li><li><a href="/foundgine-overview#lifecycle">Lifecycle &amp; Architecture</a></li><li><a href="/foundgine-overview#application-categories">Application Categories</a></li><li><a href="/foundgine-overview#developer-quickstart-checklist">15-Minute Quickstart</a></li><li><a href="/foundgine-overview#adoption-faq">Adoption, FAQ &amp; Sitemap</a></li><li><a href="/foundgine-overview#vocabulary-glossary">Normative Glossary</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-1">Modeling &amp; queries <span>13</span></button>
+                <ul class="ovm-list" id="ovm-1" hidden><li><a href="/foundgine-overview#modeling">Fluent Model &amp; Queries</a></li><li><a href="/foundgine-overview#type-system-spec">Canonical Type System</a></li><li><a href="/foundgine-overview#graph-traversals-aggregates">Graph Traversals &amp; SQL</a></li><li><a href="/foundgine-overview#json-intent-ast">Canonical JSON Intent AST</a></li><li><a href="/foundgine-overview#value-converters-nulls">Value Converters &amp; Nulls</a></li><li><a href="/foundgine-overview#computed-fields-ast">Computed Virtual Fields</a></li><li><a href="/foundgine-overview#recursive-hierarchies">Recursive CTE Hierarchies</a></li><li><a href="/foundgine-overview#aggregations-grouping">Aggregations &amp; HAVING</a></li><li><a href="/foundgine-overview#keyset-cursor-internals">Keyset Cursor Internals</a></li><li><a href="/foundgine-overview#streaming-backpressure">Cursor Streaming &amp; Flow</a></li><li><a href="/foundgine-overview#domain-invariants-validation">Domain Invariants &amp; Hooks</a></li><li><a href="/foundgine-overview#query-optimizer-internals">Query Optimizer Passes</a></li><li><a href="/foundgine-overview#sql-dialect-matrix">SQL Dialect Matrix</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-2">Mutations &amp; workflows <span>7</span></button>
+                <ul class="ovm-list" id="ovm-2" hidden><li><a href="/foundgine-overview#mutations">Controlled Mutations</a></li><li><a href="/foundgine-overview#temporal-sagas">Temporal Sagas</a></li><li><a href="/foundgine-overview#mutation-graph-internals">Multi-Step Mutation DAGs</a></li><li><a href="/foundgine-overview#idempotency-exactly-once">Idempotency &amp; Retries</a></li><li><a href="/foundgine-overview#temporal-compensation-playbook">Temporal Saga Compensation</a></li><li><a href="/foundgine-overview#batch-mutation-pipelines">Batch &amp; Chunked Mutations</a></li><li><a href="/foundgine-overview#outbox-webhook-signing">Outbox &amp; Webhook Signing</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-3">Grounding &amp; retrieval <span>3</span></button>
+                <ul class="ovm-list" id="ovm-3" hidden><li><a href="/foundgine-overview#grounding">Lexical Grounding</a></li><li><a href="/foundgine-overview#hybrid-retrieval-deep">Hybrid Retrieval Fusion</a></li><li><a href="/foundgine-overview#cdc-cache-invalidation">CDC &amp; Retrieval Index Sync</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-4">Security &amp; identity <span>12</span></button>
+                <ul class="ovm-list" id="ovm-4" hidden><li><a href="/foundgine-overview#security">Security &amp; Warrants</a></li><li><a href="/foundgine-overview#kms-key-rotation">KMS &amp; Key Rotation</a></li><li><a href="/foundgine-overview#keycloak-oidc-internals">Keycloak OIDC &amp; RFC 8693</a></li><li><a href="/foundgine-overview#security-supply-chain">Security &amp; Supply Chain</a></li><li><a href="/foundgine-overview#redis-lua-internals">Redis Lua &amp; Anchor Script</a></li><li><a href="/foundgine-overview#audit-verification">Audit Receipt Verification</a></li><li><a href="/foundgine-overview#field-masking-redaction">Field Masking &amp; Redaction</a></li><li><a href="/foundgine-overview#policy-combinator-algebra">Policy Combinator Algebra</a></li><li><a href="/foundgine-overview#cryptographic-agility-kms">KMS Rotation &amp; Encryption</a></li><li><a href="/foundgine-overview#spiffe-mtls-mesh">mTLS &amp; SPIFFE Identity</a></li><li><a href="/foundgine-overview#attachment-blob-governance">Binary Attachment Governance</a></li><li><a href="/foundgine-overview#rate-limiting-quotas">Rate Limiting &amp; Quotas</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-5">Providers &amp; integrations <span>10</span></button>
+                <ul class="ovm-list" id="ovm-5" hidden><li><a href="/foundgine-overview#orm-sql">ORM, SQL &amp; AOT</a></li><li><a href="/foundgine-overview#extensions">GraphQL, Keycloak &amp; Temporal</a></li><li><a href="/foundgine-overview#custom-providers-spi">Custom Provider SPI</a></li><li><a href="/foundgine-overview#graphql-internals">GraphQL &amp; Federation</a></li><li><a href="/foundgine-overview#graphql-executors-deep">GraphQL Boundary Executors</a></li><li><a href="/foundgine-overview#aot-generator-internals">AOT Compiler Diagnostics</a></li><li><a href="/foundgine-overview#read-your-writes-consistency">Read-Your-Writes WAL Routing</a></li><li><a href="/foundgine-overview#custom-storage-provider-spi">Custom Storage Provider SPI</a></li><li><a href="/foundgine-overview#graphql-schema-stitching">GraphQL Federation Roots</a></li><li><a href="/foundgine-overview#ddl-migrations">Database Schema &amp; DDL</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-6">AI agents, MCP &amp; SDKs <span>6</span></button>
+                <ul class="ovm-list" id="ovm-6" hidden><li><a href="/foundgine-overview#agents-sdks">Agents, MCP &amp; SDKs</a></li><li><a href="/foundgine-overview#mcp-protocol-spec">MCP 2025-06-18 Spec</a></li><li><a href="/foundgine-overview#ai-discovery-spec">AI Discovery Artifacts</a></li><li><a href="/foundgine-overview#agent-loop-walkthrough">Agent Tool &amp; Clarify Loop</a></li><li><a href="/foundgine-overview#sdk-wire-framing">Multi-Language SDK Wire</a></li><li><a href="/foundgine-overview#mcp-resources-prompts">Custom MCP Resources &amp; Prompts</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-7">Operations &amp; scale <span>18</span></button>
+                <ul class="ovm-list" id="ovm-7" hidden><li><a href="/foundgine-overview#deployments-wire">Topologies &amp; Wire</a></li><li><a href="/foundgine-overview#events-observability">Events, Outbox &amp; Telemetry</a></li><li><a href="/foundgine-overview#config-errors">Config &amp; Error Catalog</a></li><li><a href="/foundgine-overview#performance-tuning">Performance &amp; Caching</a></li><li><a href="/foundgine-overview#prod-ops-runbook">Production Ops &amp; Probes</a></li><li><a href="/foundgine-overview#multi-tenancy-models">Multi-Tenancy Models</a></li><li><a href="/foundgine-overview#env-diagnostics-cheatsheet">Env Vars &amp; Ports</a></li><li><a href="/foundgine-overview#incident-forensics-runbook">Incident &amp; Forensics Runbook</a></li><li><a href="/foundgine-overview#multi-region-dr">Multi-Region &amp; DR</a></li><li><a href="/foundgine-overview#runtime-footprint-profiles">Runtime Footprint Profiles</a></li><li><a href="/foundgine-overview#rfc9457-problem-details">RFC 9457 Problem Details</a></li><li><a href="/foundgine-overview#federated-service-mesh">Multi-Service Federation</a></li><li><a href="/foundgine-overview#capacity-sizing-slos">Capacity Sizing &amp; SLOs</a></li><li><a href="/foundgine-overview#diagnostic-decision-tree">Diagnostic Decision Tree</a></li><li><a href="/foundgine-overview#otel-semantic-conventions">OpenTelemetry Conventions</a></li><li><a href="/foundgine-overview#soft-delete-retention">Soft-Delete &amp; GDPR Erasure</a></li><li><a href="/foundgine-overview#active-active-conflict-resolution">Active-Active Merge Rules</a></li><li><a href="/foundgine-overview#db-index-tuning-guide">PostgreSQL Index Tuning Guide</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-8">Testing, evidence &amp; release <span>11</span></button>
+                <ul class="ovm-list" id="ovm-8" hidden><li><a href="/foundgine-overview#evidence">Benchmarks &amp; Packages</a></li><li><a href="/foundgine-overview#benchmark-data">Full Metrics &amp; Attack Matrix</a></li><li><a href="/foundgine-overview#compliance-threat-model">Compliance &amp; Threat Model</a></li><li><a href="/foundgine-overview#build-release-playbook">Build &amp; Release Playbook</a></li><li><a href="/foundgine-overview#deterministic-testing-harness">Chaos &amp; Clock Harness</a></li><li><a href="/foundgine-overview#repo-verification-matrix">Monorepo Quality Gates</a></li><li><a href="/foundgine-overview#testcontainers-integration">Testcontainers CI Harness</a></li><li><a href="/foundgine-overview#release-checklist-matrix">Release Verification Gates</a></li><li><a href="/foundgine-overview#production-signoff-matrix">Production Sign-Off Matrix</a></li><li><a href="/foundgine-overview#ci-smoke-script">Unified CI Release Gate</a></li><li><a href="/foundgine-overview#compliance-framework-mapping">Compliance Control Map</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-9">Reference <span>16</span></button>
+                <ul class="ovm-list" id="ovm-9" hidden><li><a href="/foundgine-overview#repo-tree">Repo Tree &amp; Classes</a></li><li><a href="/foundgine-overview#interactive-explorer">Interactive IR Inspector</a></li><li><a href="/foundgine-overview#api-parity-matrix">.NET / Java API Parity</a></li><li><a href="/foundgine-overview#ses-standard">SES Standard (001–025)</a></li><li><a href="/foundgine-overview#sample-walkthroughs">Samples &amp; E2E Runners</a></li><li><a href="/foundgine-overview#version-history">Architecture History</a></li><li><a href="/foundgine-overview#full-stack-recipe">Full-Stack Wiring Recipe</a></li><li><a href="/foundgine-overview#code-cookbook">Complete Code Cookbook</a></li><li><a href="/foundgine-overview#package-topology-deep">Granular Module Topology</a></li><li><a href="/foundgine-overview#java-advanced-reactor">Java AOT &amp; Docker Setup</a></li><li><a href="/foundgine-overview#control-plane-parity">ControlPlane (.NET vs Java)</a></li><li><a href="/foundgine-overview#cross-ref-index">Invariant Cross-Reference</a></li><li><a href="/foundgine-overview#ecosystem-packages-index">Package Registry Index</a></li><li><a href="/foundgine-overview#di-lifetimes-reference">DI Lifetimes &amp; Safety</a></li><li><a href="/foundgine-overview#contract-evolution">Contract Evolution Playbook</a></li><li><a href="/foundgine-overview#adr-catalog">Architecture Decision Records</a></li></ul>
+              </div>
+            </div>
+          </div>
+          <div class="nav-item has-submenu">
+            <button class="submenu-toggle" type="button" aria-controls="submenu-learn" aria-expanded="false">Learn <svg aria-hidden="true" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="submenu" id="submenu-learn">
+              <a href="/what-is-foundgine">What is Foundgine<small>The problem and the boundary</small></a>
+              <a href="/getting-started/">Getting started<small>Run the starter sample</small></a>
+              <a href="/how-it-works/">How it works<small>How a request moves</small></a>
+              <a href="/walkthrough/">Walkthrough<small>One request, every layer</small></a>
+              <a href="/architecture/">Architecture<small>The canonical lifecycle</small></a>
+            </div>
+          </div>
+          <div class="nav-item has-submenu">
+            <button class="submenu-toggle" type="button" aria-controls="submenu-build" aria-expanded="false">Build <svg aria-hidden="true" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="submenu" id="submenu-build">
+              <a href="/ai-agents/">AI agents<small>Capabilities without authority</small></a>
+              <a href="/security/">Security<small>Fail-closed invariants</small></a>
+              <a href="/packages/">Packages<small>NuGet, Maven and client SDKs</small></a>
+              <a href="/spec-form/">App generator<small>Describe a domain, get a prompt</small></a>
+            </div>
+          </div>
+          <div class="nav-item has-submenu has-current">
+            <button class="submenu-toggle" type="button" aria-controls="submenu-samples" aria-expanded="false">Samples <svg aria-hidden="true" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="submenu" id="submenu-samples">
+              <a href="/samples/">All samples</a>
+              <a href="/samples/semantic/">Semantic execution</a>
+              <a href="/samples/pentest/" aria-current="page">Security PenTest</a>
+              <a href="/case-studies/supply-chain/">Supply Chain case study</a>
+            </div>
+          </div>
+          <div class="nav-item has-submenu">
+            <button class="submenu-toggle" type="button" aria-controls="submenu-evidence" aria-expanded="false">Evidence <svg aria-hidden="true" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="submenu align-right" id="submenu-evidence">
+              <a href="/agent-benchmark/">Agent benchmark explorer</a>
+              <a href="/agent-benchmark/run-1/">Run 1 · Baseline</a>
+              <a href="/agent-benchmark/run-2/">Run 2 · Scalability</a>
+              <a href="/agent-benchmark/run-3/">Run 3 · Efficiency</a>
+              <a href="/agent-benchmark/run-4/">Run 4 · Graph execution</a>
+              <a href="/agent-benchmark/run-5/">Run 5 · TransferFunds</a>
+              <a href="/agent-benchmark/run-5b/">Run 5b · Individual vs batch</a>
+              <a href="/agent-benchmark/supply-chain/">Supply Chain E2E</a>
+              <a href="/performance/">Performance reports</a>
+            </div>
+          </div>
+          <a class="nav-github" href="https://github.com/Foundgine/Foundgine" rel="noopener" target="_blank">GitHub ↗</a>
+        </nav>
+      </div>
+    </header>
+    <div class="page has-toc">
+      <main id="content" class="article">
+        <span class="eyebrow">Start here · smallest samples</span>
+        <h1>Start small</h1>
+        <p class="subtitle">
+          Two shop APIs, one in C# and one in Java, are the smallest Foundgine applications in the
+          repository. Read them to see what Foundgine is, why it exists and how it plugs into the
+          stack you already use.
+        </p>
+
+        <section>
+          <h2 id="what-why-how">What, why and how</h2>
+          <ul>
+            <li><strong>What:</strong> you declare your data once: what the models mean, how they relate, where they are stored and who may see which rows. Foundgine runs every request through that declaration.</li>
+            <li><strong>Why:</strong> the same rules apply on every protocol. A GraphQL call and an MCP call for an AI assistant cannot drift apart, because there is only one set of rules to maintain.</li>
+            <li><strong>How:</strong> a short configuration class, a provider for the ORM you already have (EF Core or JPA), one authorization policy and a token bridge. About 285 lines of C# or 544 lines of Java, tests excluded.</li>
+          </ul>
+          <p>
+            Read the sources: <a href="https://github.com/Foundgine/Foundgine/tree/main/src/csharp/samples/Foundgine.Comparison/Foundgine.Shop">C# Foundgine.Shop</a> and
+            <a href="https://github.com/Foundgine/Foundgine/tree/main/src/java/samples/foundgine-comparison/foundgine-shop">Java foundgine-shop</a>. Each has a conventional baseline next to it
+            (Hot Chocolate + EF Core, Spring) so you can compare the code.
+          </p>
+        </section>
+
+        <section>
+          <h2 id="configuration">How configuration works, and why it matters</h2>
+          <p>
+            All of Foundgine&rsquo;s configuration lives in one class, <code>ShopModel</code>. It states
+            three things and nothing else:
+          </p>
+          <ul>
+            <li><strong>Semantics:</strong> which models relate to which. <code>WithMany</code> also declares the inverse, so <code>Customer.Orders</code> and <code>Order.Customer</code> come from one line.</li>
+            <li><strong>Persistence:</strong> the real table and column names (<code>tbl_customer</code>, <code>cust_id</code>). Legacy schemas keep their names; the API does not inherit them.</li>
+            <li><strong>Mapping:</strong> how a model member maps to a storage member. In these samples each class is also its own storage type, so every member maps to the member of the same name.</li>
+          </ul>
+          <p><strong>Why it matters</strong></p>
+          <ul>
+            <li><strong>One place to read.</strong> Meaning, storage and relationships are not spread across resolvers, controllers and ORM mappings.</li>
+            <li><strong>Mistakes fail at startup.</strong> <code>Build()</code> validates the declaration and reports every problem at once, instead of the first request failing in production.</li>
+            <li><strong>Less to write.</strong> In C#, keys are the mapped <code>Id</code> members and foreign keys are found by name (<code>Order.CustomerId</code>), so there is no key or connection configuration. In Java, the foreign keys are stated once per relationship and serve both directions.</li>
+            <li><strong>Every protocol reads it.</strong> GraphQL and MCP use the same model, so adding a protocol adds no mapping code.</li>
+          </ul>
+          <div class="code-group"><h4>Configuration</h4><div class="code-tabs"><div class="code-tabs-bar" role="tablist" aria-label="Configuration language"><button role="tab" id="t20-csharp" aria-controls="p20-csharp" aria-selected="true" data-lang="csharp">C#</button><button role="tab" id="t20-java" aria-controls="p20-java" aria-selected="false" tabindex="-1" data-lang="java">Java</button></div><div class="code-panel" role="tabpanel" id="p20-csharp" aria-labelledby="t20-csharp" data-lang="csharp"><span class="code-label">ShopModel.cs (abbreviated)</span><pre><code>public sealed class ShopModel : FoundgineModel
+{
+    public override void Configure(FoundgineModelBuilder model)
+    {
+        // Semantics: relationships. WithMany also declares Customer.Orders.
+        model.Semantic&lt;Order&gt;(s =&gt;
+        {
+            s.HasRelationship(x =&gt; x.Customer).To&lt;Customer&gt;().WithMany(x =&gt; x.Orders);
+            s.HasRelationship(x =&gt; x.Lines).To&lt;OrderLine&gt;();
+        });
+
+        // Persistence: the legacy names.
+        model.Persistence&lt;Customer&gt;(p =&gt;
+        {
+            p.ToTable(&quot;tbl_customer&quot;);
+            p.Property(x =&gt; x.Id).HasColumnName(&quot;cust_id&quot;);
+            p.Property(x =&gt; x.Email).HasColumnName(&quot;email_addr&quot;);
+        });
+
+        // Mapping: model == storage type.
+        model.Configure&lt;IdentityEntityMap&lt;Customer&gt;&gt;();
+    }
+}</code></pre></div><div class="code-panel" role="tabpanel" id="p20-java" aria-labelledby="t20-java" data-lang="java"><span class="code-label">ShopModel.java (abbreviated)</span><pre><code>public final class ShopModel extends FoundgineModel {
+    @Override public void configure(FoundgineModelRegistrar model) {
+        model.configure(CustomerSemantics.class);
+        model.configure(CustomerTable.class);
+        model.configure(Maps.CustomerMap.class);
+        model.configure(Connections.class);
+    }
+
+    // Semantics: relationships. Customer.orders also defines Order.customer.
+    static final class CustomerSemantics extends FoundgineModelConfiguration&lt;Customer&gt; {
+        @Override public void configure(FoundgineModelBuilder&lt;Customer&gt; m) {
+            m.toEntity(&quot;Customer&quot;);
+            m.hasMany(&quot;orders&quot;, Order.class).withOne(&quot;customer&quot;);
+        }
+    }
+
+    // Persistence: the legacy names.
+    static final class CustomerTable extends FoundginePersistenceConfiguration&lt;Customer&gt; {
+        @Override public void configure(FoundginePersistenceBuilder&lt;Customer&gt; m) {
+            m.toTable(&quot;tbl_customer&quot;); m.hasKey(Customer::id);
+            m.property(Customer::id).hasColumnName(&quot;cust_id&quot;);
+        }
+    }
+
+    // Relationship -&gt; foreign key, one connection for both directions.
+    static final class Connections extends FoundgineConnectionConfiguration {
+        @Override public void configure(FoundgineConnectionBuilder c) {
+            c.hasRelationship(Customer.class, Order.class).using(Customer.class, Order.class)
+                    .hasForeignKey(Order::customerId).references(Customer::id);
+        }
+    }
+}</code></pre></div></div><p class="code-note">Sources: <a href="https://github.com/Foundgine/Foundgine/blob/main/src/csharp/samples/Foundgine.Comparison/Foundgine.Shop/Domain/ShopModel.cs">C#</a> · <a href="https://github.com/Foundgine/Foundgine/blob/main/src/java/samples/foundgine-comparison/foundgine-shop/src/main/java/com/foundgine/samples/comparison/shop/ShopModel.java">Java</a></p></div>
+        </section>
+
+        <section>
+          <h2 id="orm">Ready to plug into EF Core and JPA</h2>
+          <p>
+            Foundgine does not replace your ORM and does not generate or populate your entity
+            objects. EF Core or JPA stays the authority for schema, keys and the database. Foundgine
+            plans the query, applies authorization, and hands the ORM a query it already knows how to run.
+          </p>
+          <ul>
+            <li><strong>C# and EF Core:</strong> one registration line, <code>AddFoundgineEf(metadata, (_, o) =&gt; o.UseNpgsql(cs), o =&gt; o.UseEngineProvider())</code>. Your DbContext options stay yours.</li>
+            <li><strong>Java and JPA:</strong> you create the normal <code>EntityManagerFactory</code>, then give Foundgine <code>JpaOrmProvider.compiler(registry)</code> and <code>JpaOrmProvider.execution(registry, emf)</code>. Your <code>@Entity</code> classes keep their JPA annotations.</li>
+            <li><strong>No second ORM:</strong> reads go through the engine, so authorization cannot be skipped by calling the ORM facade directly.</li>
+          </ul>
+        <div class="code-group"><h4>Registration</h4><div class="code-tabs"><div class="code-tabs-bar" role="tablist" aria-label="Registration language"><button role="tab" id="t21-csharp" aria-controls="p21-csharp" aria-selected="true" data-lang="csharp">C#</button><button role="tab" id="t21-java" aria-controls="p21-java" aria-selected="false" tabindex="-1" data-lang="java">Java</button></div><div class="code-panel" role="tabpanel" id="p21-csharp" aria-labelledby="t21-csharp" data-lang="csharp"><span class="code-label">Program.cs</span><pre><code>// Your DbContext options stay yours; Foundgine plans, authorizes and hands EF Core the query.
+builder.Services.AddFoundgineEf(
+    metadata,
+    (_, o) =&gt; o.UseNpgsql(cs),
+    o =&gt; o.UseEngineProvider());</code></pre></div><div class="code-panel" role="tabpanel" id="p21-java" aria-labelledby="t21-java" data-lang="java"><span class="code-label">Main.java (abbreviated)</span><pre><code>// You create the normal JPA EntityManagerFactory; your @Entity classes keep their annotations.
+var emf = Persistence.createEntityManagerFactory(&quot;foundgine-shop&quot;, props);
+
+var orm = FoundgineOrm.&lt;Void&gt;configure()
+        .metadata(metadata)
+        .entities(GeneratedOrmMaps.entityTypes())          // generated at build time
+        .generatedModels(GeneratedJpaModels.create())      // generated at build time
+        .build();
+
+JpaOrmProvider.compiler(orm.registry());
+JpaOrmProvider.execution(orm.registry(), emf);</code></pre></div></div></div>
+        </section>
+
+        <section>
+          <h2 id="aot">Automatic AOT generation</h2>
+          <p>
+            Discovery work is moved from request time to build time, in both languages. The
+            generated code is plain source that you can read.
+          </p>
+          <ul>
+            <li><strong>Java:</strong> an annotation processor runs during compilation. It finds the classes marked <code>@FoundgineOrmEntity</code> and generates <code>GeneratedOrmMaps</code> and <code>GeneratedJpaModels</code>, which <code>Main</code> passes to the JPA provider. In the sample&rsquo;s <code>pom.xml</code> this is one <code>annotationProcessorPaths</code> entry and one package argument.</li>
+            <li><strong>C#:</strong> a Roslyn source generator, <code>Foundgine.Providers.Aot.Generator</code>, emits <code>GeneratedMetadata</code> from <code>[FoundgineModel]</code> and <code>[FoundgineConnection]</code> attributes. The Supply Chain starter references it as an analyzer. The smallest C# sample, <code>Foundgine.Shop</code>, declares its model fluently and does not use the generator.</li>
+          </ul>
+          <p>
+            <strong>Limits, stated plainly.</strong> The generators describe your model; they do not
+            create entities. The Java sample still needs the <code>@FoundgineOrmEntity</code> marker
+            on each JPA class, and a fully annotation-free registration path is not there yet. A
+            successful generator build is not proof that your application publishes as Native AOT:
+            check the publish output and trimming warnings in your own deployment.
+          </p>
+        <div class="code-group"><h4>Build-time generation</h4><div class="code-tabs"><div class="code-tabs-bar" role="tablist" aria-label="Build-time generation language"><button role="tab" id="t22-csharp" aria-controls="p22-csharp" aria-selected="true" data-lang="csharp">C#</button><button role="tab" id="t22-java" aria-controls="p22-java" aria-selected="false" tabindex="-1" data-lang="java">Java</button></div><div class="code-panel" role="tabpanel" id="p22-csharp" aria-labelledby="t22-csharp" data-lang="csharp"><span class="code-label">Foundgine.SupplyChain.csproj</span><pre><code>&lt;!-- Foundgine.SupplyChain starter: the Roslyn source generator runs as an analyzer. --&gt;
+&lt;ProjectReference Include=&quot;../../Foundgine.Providers.Aot.Generator/Foundgine.Providers.Aot.Generator.csproj&quot;
+                  OutputItemType=&quot;Analyzer&quot;
+                  ReferenceOutputAssembly=&quot;false&quot;
+                  PrivateAssets=&quot;all&quot; /&gt;</code></pre></div><div class="code-panel" role="tabpanel" id="p22-java" aria-labelledby="t22-java" data-lang="java"><span class="code-label">pom.xml and CustomerEntity.java</span><pre><code>&lt;!-- pom.xml: the annotation processor runs during compilation. --&gt;
+&lt;compilerArgs&gt;
+  &lt;arg&gt;-Afoundgine.generated.package=com.foundgine.samples.comparison.shop.generated&lt;/arg&gt;
+&lt;/compilerArgs&gt;
+&lt;annotationProcessorPaths&gt;
+  &lt;path&gt;
+    &lt;groupId&gt;io.github.cristianbarragan&lt;/groupId&gt;
+    &lt;artifactId&gt;foundgine-providers&lt;/artifactId&gt;
+    &lt;version&gt;${revision}&lt;/version&gt;
+  &lt;/path&gt;
+&lt;/annotationProcessorPaths&gt;
+
+// CustomerEntity.java: the discovery marker sits next to the normal JPA annotations.
+@FoundgineOrmEntity
+@Entity
+@Table(name = &quot;tbl_customer&quot;)
+public class CustomerEntity { ... }</code></pre></div></div></div>
+        </section>
+
+        <section>
+          <h2 id="semantic">The simplest semantic setup</h2>
+          <p>
+            &ldquo;Semantic&rdquo; here means the model describes meaning, not tables: <em>an Order has a
+            Customer and Lines; a Line has a Product</em>. Callers ask in those terms and Foundgine
+            turns the request into a checked plan. The simplest setup is three steps:
+          </p>
+          <ol>
+            <li><strong>Name the relationships</strong> in the model, as above.</li>
+            <li><strong>Write one row-level rule.</strong> In the shop: a customer sees only their own Customer row and their own Orders. Managers see everything.</li>
+            <li><strong>Bridge the token.</strong> The validated JWT becomes a short-lived signed warrant; the rule reads the customer id from that claim, never from request input.</li>
+          </ol>
+<div class="code-group"><h4>The rule</h4><div class="code-tabs"><div class="code-tabs-bar" role="tablist" aria-label="The rule language"><button role="tab" id="t23-csharp" aria-controls="p23-csharp" aria-selected="true" data-lang="csharp">C#</button><button role="tab" id="t23-java" aria-controls="p23-java" aria-selected="false" tabindex="-1" data-lang="java">Java</button></div><div class="code-panel" role="tabpanel" id="p23-csharp" aria-labelledby="t23-csharp" data-lang="csharp"><span class="code-label">Auth.cs (abbreviated)</span><pre><code>public AuthorizationPredicate? GetPredicate(EntityId entityId, AuthorizationOperation operation)
+{
+    // Only for customers, only for reads, only on Customer and Order.
+    var row = AuthorizationPredicate.Member(AuthorizationPredicate.ResourceParameter(&quot;resource&quot;), member);
+    return AuthorizationPredicate.Equal(row,
+        AuthorizationPredicate.Member(AuthorizationPredicate.ContextParameter(&quot;user&quot;), &quot;CustomerId&quot;));
+}</code></pre></div><div class="code-panel" role="tabpanel" id="p23-java" aria-labelledby="t23-java" data-lang="java"><span class="code-label">ShopPolicy.java (abbreviated)</span><pre><code>@Override
+public AuthorizationPredicate getPredicate(EntityId entity, AuthorizationOperation operation) {
+    // Only for customers, only for reads, only on Customer and Order.
+    var row = AuthorizationPredicate.member(AuthorizationPredicate.resourceParameter(&quot;resource&quot;), member);
+    return AuthorizationPredicate.equal(row,
+        AuthorizationPredicate.member(AuthorizationPredicate.contextParameter(&quot;user&quot;), &quot;customerId&quot;));
+}</code></pre></div></div></div>
+          <p><strong>Why it matters</strong></p>
+          <ul>
+            <li><strong>Stated once, enforced at every level.</strong> The planner applies the rule at the root and at each nested entity, so <code>customer &#123; orders &#123; lines &#125; &#125;</code> cannot leak another customer&rsquo;s rows.</li>
+            <li><strong>Fails closed.</strong> If the claim is missing, the rule matches no rows.</li>
+            <li><strong>Same rule on every protocol.</strong> In C#, MCP is opt-in (<code>Mcp:Enabled=true</code>) and reuses the model, the rule and the JWT bridge. The Java shop sample serves GraphQL only.</li>
+            <li><strong>Testable.</strong> The rule is checked by the adversarial suites described on the <a href="/security/">security page</a>.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 id="run">Run it</h2>
+          <p>Both samples start with one script.</p>
+          <div class="code-group"><h4>Commands</h4><div class="code-tabs"><div class="code-tabs-bar" role="tablist" aria-label="5. Run it language"><button role="tab" id="t30-csharp" aria-controls="p30-csharp" aria-selected="true" data-lang="csharp">C#</button><button role="tab" id="t30-java" aria-controls="p30-java" aria-selected="false" tabindex="-1" data-lang="java">Java</button></div><div class="code-panel" role="tabpanel" id="p30-csharp" aria-labelledby="t30-csharp" data-lang="csharp"><pre><code>cd src/csharp/samples/Foundgine.Comparison
+./run.sh                               # Postgres + Foundgine.Shop on :5001 (GraphQL and MCP)
+./run.sh parity                        # run both apps, diff their GraphQL answers, smoke-test MCP
+python3 tools/mint_token.py customer 1 # a token for your own requests</code></pre></div><div class="code-panel" role="tabpanel" id="p30-java" aria-labelledby="t30-java" data-lang="java"><pre><code>cd src/java/samples/foundgine-comparison
+./run.sh                               # Postgres, Foundgine :5001 and the Spring baseline :5002, then a parity diff
+./run.sh foundgine                     # Foundgine alone: exact row-level and denial checks against :5001</code></pre></div></div><p class="code-note">Needs Docker (PostgreSQL only). C#: .NET 10 SDK and python3. Java: JDK 21+ and Maven; the Java sample's own README says its runtime checks are not yet confirmed, so treat its output as a first run.</p></div>
+        </section>
+        <section>
+          <h2 id="next">What to read next</h2>
+          <ul>
+            <li><a href="/samples/semantic/">Semantic execution</a>: the Advanced sample, with deeper authorization.</li>
+            <li><a href="/samples/pentest/">Security PenTest</a>: attack the same boundary through MCP and GraphQL.</li>
+            <li><a href="/getting-started/">Getting started</a>.</li>
+          </ul>
+        </section>
+        <nav aria-label="Documentation navigation" class="page-nav">
+          <a class="page-nav-home" href="../../index.html">Documentation home</a>
+        </nav>
+      </main>
+      <aside aria-label="On this page" class="toc">
+        <div class="toc-label">On this page</div>
+        <ol>
+          <li class=""><a href="#what-why-how">What, why and how</a></li>
+          <li class=""><a href="#configuration">Configuration</a></li>
+          <li class=""><a href="#orm">EF Core and JPA</a></li>
+          <li class=""><a href="#aot">AOT generation</a></li>
+          <li class=""><a href="#semantic">Simplest semantic setup</a></li>
+          <li class=""><a href="#run">Run it</a></li>
+          <li class=""><a href="#next">What to read next</a></li>
+        </ol>
+        <div class="toc-return"><a href="../../index.html">↑ Documentation home</a></div>
+      </aside>
+    </div>
+    <footer class="site-footer">
+      <nav class="footer-grid" aria-label="Footer">
+        <div><h2>Reference</h2><a href="/foundgine-overview">Technical overview</a><a href="/architecture/">Architecture</a><a href="/packages/">Packages</a><a href="/llms.txt">llms.txt</a></div>
+        <div><h2>Learn</h2><a href="/what-is-foundgine">What is Foundgine</a><a href="/getting-started/">Getting started</a><a href="/how-it-works/">How it works</a><a href="/walkthrough/">Walkthrough</a></div>
+        <div><h2>Build</h2><a href="/ai-agents/">AI agents</a><a href="/security/">Security</a><a href="/samples/">Samples</a><a href="/spec-form/">App generator</a></div>
+        <div><h2>Project</h2><a href="/agent-benchmark/">Benchmarks</a><a href="/performance/">Performance</a><a href="https://github.com/Foundgine/Foundgine">GitHub ↗</a></div>
+      </nav>
+      <div class="footer-meta">Foundgine 3.4.2 · .NET 10 &amp; Java 27 · Apache-2.0</div>
+    </footer>
+    <script src="/assets/site-nav.js"></script>
+    <script src="/assets/toc.js"></script>
+      <script src="/assets/code-tabs.js" defer></script>
+  </body>
+</html>

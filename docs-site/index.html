@@ -82,6 +82,7 @@
     <link href="/favicon.ico" rel="icon" sizes="48x48" />
     <link href="/assets/favicon-32.png" rel="icon" sizes="32x32" type="image/png" />
     <link href="/apple-touch-icon.png" rel="apple-touch-icon" />
+  <link href="/assets/code-tabs.css" rel="stylesheet" />
   </head>
   <body class="fx-home">
     <a class="skip-link" href="#content">Skip to content</a>
@@ -177,6 +178,7 @@
               <a class="fx-btn primary" href="/getting-started/">Get started</a>
               <a class="fx-btn ghost" href="/foundgine-overview">Read the technical overview</a>
               <a class="fx-btn ghost" href="/walkthrough/">See the walkthrough</a>
+              <a class="fx-btn ghost jump" href="#start-small">See the smallest sample ↓</a>
               <a class="fx-btn ghost" href="https://github.com/Foundgine/Foundgine" rel="noopener">View on GitHub</a>
             </div>
           </div>
@@ -422,6 +424,119 @@ spec:
         </div>
       </section>
 
+      <section class="fx-section" id="start-small" aria-labelledby="start-small-title">
+        <div class="fx-wrap">
+          <h2 id="start-small-title">Start with the smallest sample.</h2>
+          <p class="fx-intro">One short configuration class, the ORM you already use, and one security rule that every protocol obeys. The smallest shop API is about 285 lines of C# or 544 lines of Java. Pick a language; every snippet below follows.</p>
+          <div class="code-group"><h4>1. Configuration: one class</h4><div class="code-tabs"><div class="code-tabs-bar" role="tablist" aria-label="1. Configuration: one class language"><button role="tab" id="t1-csharp" aria-controls="p1-csharp" aria-selected="true" data-lang="csharp">C#</button><button role="tab" id="t1-java" aria-controls="p1-java" aria-selected="false" tabindex="-1" data-lang="java">Java</button></div><div class="code-panel" role="tabpanel" id="p1-csharp" aria-labelledby="t1-csharp" data-lang="csharp"><span class="code-label">ShopModel.cs (abbreviated)</span><pre><code>public sealed class ShopModel : FoundgineModel
+{
+    public override void Configure(FoundgineModelBuilder model)
+    {
+        // Semantics: relationships. WithMany also declares Customer.Orders.
+        model.Semantic&lt;Order&gt;(s =&gt;
+        {
+            s.HasRelationship(x =&gt; x.Customer).To&lt;Customer&gt;().WithMany(x =&gt; x.Orders);
+            s.HasRelationship(x =&gt; x.Lines).To&lt;OrderLine&gt;();
+        });
+
+        // Persistence: the legacy names.
+        model.Persistence&lt;Customer&gt;(p =&gt;
+        {
+            p.ToTable(&quot;tbl_customer&quot;);
+            p.Property(x =&gt; x.Id).HasColumnName(&quot;cust_id&quot;);
+            p.Property(x =&gt; x.Email).HasColumnName(&quot;email_addr&quot;);
+        });
+
+        // Mapping: model == storage type.
+        model.Configure&lt;IdentityEntityMap&lt;Customer&gt;&gt;();
+    }
+}</code></pre></div><div class="code-panel" role="tabpanel" id="p1-java" aria-labelledby="t1-java" data-lang="java"><span class="code-label">ShopModel.java (abbreviated)</span><pre><code>public final class ShopModel extends FoundgineModel {
+    @Override public void configure(FoundgineModelRegistrar model) {
+        model.configure(CustomerSemantics.class);
+        model.configure(CustomerTable.class);
+        model.configure(Maps.CustomerMap.class);
+        model.configure(Connections.class);
+    }
+
+    // Semantics: relationships. Customer.orders also defines Order.customer.
+    static final class CustomerSemantics extends FoundgineModelConfiguration&lt;Customer&gt; {
+        @Override public void configure(FoundgineModelBuilder&lt;Customer&gt; m) {
+            m.toEntity(&quot;Customer&quot;);
+            m.hasMany(&quot;orders&quot;, Order.class).withOne(&quot;customer&quot;);
+        }
+    }
+
+    // Persistence: the legacy names.
+    static final class CustomerTable extends FoundginePersistenceConfiguration&lt;Customer&gt; {
+        @Override public void configure(FoundginePersistenceBuilder&lt;Customer&gt; m) {
+            m.toTable(&quot;tbl_customer&quot;); m.hasKey(Customer::id);
+            m.property(Customer::id).hasColumnName(&quot;cust_id&quot;);
+        }
+    }
+
+    // Relationship -&gt; foreign key, one connection for both directions.
+    static final class Connections extends FoundgineConnectionConfiguration {
+        @Override public void configure(FoundgineConnectionBuilder c) {
+            c.hasRelationship(Customer.class, Order.class).using(Customer.class, Order.class)
+                    .hasForeignKey(Order::customerId).references(Customer::id);
+        }
+    }
+}</code></pre></div></div><p class="code-note">Semantics, legacy names and mapping in one place, validated at startup.</p></div><div class="code-group"><h4>2. Plug into EF Core and JPA</h4><div class="code-tabs"><div class="code-tabs-bar" role="tablist" aria-label="2. Plug into EF Core and JPA language"><button role="tab" id="t2-csharp" aria-controls="p2-csharp" aria-selected="true" data-lang="csharp">C#</button><button role="tab" id="t2-java" aria-controls="p2-java" aria-selected="false" tabindex="-1" data-lang="java">Java</button></div><div class="code-panel" role="tabpanel" id="p2-csharp" aria-labelledby="t2-csharp" data-lang="csharp"><span class="code-label">Program.cs</span><pre><code>// Your DbContext options stay yours; Foundgine plans, authorizes and hands EF Core the query.
+builder.Services.AddFoundgineEf(
+    metadata,
+    (_, o) =&gt; o.UseNpgsql(cs),
+    o =&gt; o.UseEngineProvider());</code></pre></div><div class="code-panel" role="tabpanel" id="p2-java" aria-labelledby="t2-java" data-lang="java"><span class="code-label">Main.java (abbreviated)</span><pre><code>// You create the normal JPA EntityManagerFactory; your @Entity classes keep their annotations.
+var emf = Persistence.createEntityManagerFactory(&quot;foundgine-shop&quot;, props);
+
+var orm = FoundgineOrm.&lt;Void&gt;configure()
+        .metadata(metadata)
+        .entities(GeneratedOrmMaps.entityTypes())          // generated at build time
+        .generatedModels(GeneratedJpaModels.create())      // generated at build time
+        .build();
+
+JpaOrmProvider.compiler(orm.registry());
+JpaOrmProvider.execution(orm.registry(), emf);</code></pre></div></div><p class="code-note">EF Core and JPA stay the authority for schema and keys. Foundgine does not generate or populate your entities.</p></div><div class="code-group"><h4>3. Automatic AOT generation</h4><div class="code-tabs"><div class="code-tabs-bar" role="tablist" aria-label="3. Automatic AOT generation language"><button role="tab" id="t3-csharp" aria-controls="p3-csharp" aria-selected="true" data-lang="csharp">C#</button><button role="tab" id="t3-java" aria-controls="p3-java" aria-selected="false" tabindex="-1" data-lang="java">Java</button></div><div class="code-panel" role="tabpanel" id="p3-csharp" aria-labelledby="t3-csharp" data-lang="csharp"><span class="code-label">Foundgine.SupplyChain.csproj</span><pre><code>&lt;!-- Foundgine.SupplyChain starter: the Roslyn source generator runs as an analyzer. --&gt;
+&lt;ProjectReference Include=&quot;../../Foundgine.Providers.Aot.Generator/Foundgine.Providers.Aot.Generator.csproj&quot;
+                  OutputItemType=&quot;Analyzer&quot;
+                  ReferenceOutputAssembly=&quot;false&quot;
+                  PrivateAssets=&quot;all&quot; /&gt;</code></pre></div><div class="code-panel" role="tabpanel" id="p3-java" aria-labelledby="t3-java" data-lang="java"><span class="code-label">pom.xml and CustomerEntity.java</span><pre><code>&lt;!-- pom.xml: the annotation processor runs during compilation. --&gt;
+&lt;compilerArgs&gt;
+  &lt;arg&gt;-Afoundgine.generated.package=com.foundgine.samples.comparison.shop.generated&lt;/arg&gt;
+&lt;/compilerArgs&gt;
+&lt;annotationProcessorPaths&gt;
+  &lt;path&gt;
+    &lt;groupId&gt;io.github.cristianbarragan&lt;/groupId&gt;
+    &lt;artifactId&gt;foundgine-providers&lt;/artifactId&gt;
+    &lt;version&gt;${revision}&lt;/version&gt;
+  &lt;/path&gt;
+&lt;/annotationProcessorPaths&gt;
+
+// CustomerEntity.java: the discovery marker sits next to the normal JPA annotations.
+@FoundgineOrmEntity
+@Entity
+@Table(name = &quot;tbl_customer&quot;)
+public class CustomerEntity { ... }</code></pre></div></div><p class="code-note">The C# sample <code>Foundgine.Shop</code> declares its model fluently and does not use the generator. The Java sample still needs the marker on each JPA class. A generator build is not proof of Native AOT; check your own publish output.</p></div><div class="code-group"><h4>4. The simplest semantic rule</h4><div class="code-tabs"><div class="code-tabs-bar" role="tablist" aria-label="4. The simplest semantic rule language"><button role="tab" id="t4-csharp" aria-controls="p4-csharp" aria-selected="true" data-lang="csharp">C#</button><button role="tab" id="t4-java" aria-controls="p4-java" aria-selected="false" tabindex="-1" data-lang="java">Java</button></div><div class="code-panel" role="tabpanel" id="p4-csharp" aria-labelledby="t4-csharp" data-lang="csharp"><span class="code-label">Auth.cs (abbreviated)</span><pre><code>public AuthorizationPredicate? GetPredicate(EntityId entityId, AuthorizationOperation operation)
+{
+    // Only for customers, only for reads, only on Customer and Order.
+    var row = AuthorizationPredicate.Member(AuthorizationPredicate.ResourceParameter(&quot;resource&quot;), member);
+    return AuthorizationPredicate.Equal(row,
+        AuthorizationPredicate.Member(AuthorizationPredicate.ContextParameter(&quot;user&quot;), &quot;CustomerId&quot;));
+}</code></pre></div><div class="code-panel" role="tabpanel" id="p4-java" aria-labelledby="t4-java" data-lang="java"><span class="code-label">ShopPolicy.java (abbreviated)</span><pre><code>@Override
+public AuthorizationPredicate getPredicate(EntityId entity, AuthorizationOperation operation) {
+    // Only for customers, only for reads, only on Customer and Order.
+    var row = AuthorizationPredicate.member(AuthorizationPredicate.resourceParameter(&quot;resource&quot;), member);
+    return AuthorizationPredicate.equal(row,
+        AuthorizationPredicate.member(AuthorizationPredicate.contextParameter(&quot;user&quot;), &quot;customerId&quot;));
+}</code></pre></div></div><p class="code-note">One rule, applied by the planner at the root and at every nested entity, on every protocol. If the claim is missing, it matches no rows.</p></div><div class="code-group"><h4>5. Run it</h4><div class="code-tabs"><div class="code-tabs-bar" role="tablist" aria-label="5. Run it language"><button role="tab" id="t5-csharp" aria-controls="p5-csharp" aria-selected="true" data-lang="csharp">C#</button><button role="tab" id="t5-java" aria-controls="p5-java" aria-selected="false" tabindex="-1" data-lang="java">Java</button></div><div class="code-panel" role="tabpanel" id="p5-csharp" aria-labelledby="t5-csharp" data-lang="csharp"><pre><code>cd src/csharp/samples/Foundgine.Comparison
+./run.sh                               # Postgres + Foundgine.Shop on :5001 (GraphQL and MCP)
+./run.sh parity                        # run both apps, diff their GraphQL answers, smoke-test MCP
+python3 tools/mint_token.py customer 1 # a token for your own requests</code></pre></div><div class="code-panel" role="tabpanel" id="p5-java" aria-labelledby="t5-java" data-lang="java"><pre><code>cd src/java/samples/foundgine-comparison
+./run.sh                               # Postgres, Foundgine :5001 and the Spring baseline :5002, then a parity diff
+./run.sh foundgine                     # Foundgine alone: exact row-level and denial checks against :5001</code></pre></div></div><p class="code-note">Needs Docker (PostgreSQL only). C#: .NET 10 SDK and python3. Java: JDK 21+ and Maven; the Java sample's own README says its runtime checks are not yet confirmed, so treat its output as a first run.</p></div>
+          <p class="fx-links"><a class="fx-btn primary" href="/samples/start-small/">Read the full walkthrough</a> <a class="fx-btn ghost" href="https://github.com/Foundgine/Foundgine/tree/main/src/csharp/samples/Foundgine.Comparison">C# source</a> <a class="fx-btn ghost" href="https://github.com/Foundgine/Foundgine/tree/main/src/java/samples/foundgine-comparison">Java source</a></p>
+        </div>
+      </section>
+
       <section class="fx-section alt fx-testing" id="security-testing" aria-labelledby="security-testing-title">
         <div class="fx-wrap">
           <h2 id="security-testing-title">Tests that attack the boundary.</h2>
@@ -450,14 +565,24 @@ spec:
               <p class="fx-suite-meta">21 .NET tests. <a href="/samples/pentest/index.html">PenTest sample</a> <a href="https://github.com/Foundgine/Foundgine/tree/main/src/csharp/benchmarks/AgentEndToEnd/Fixtures/SupplyChain.PenTest">Source</a></p>
             </article>
             <article class="fx-suite">
-              <h4>Merge gates <span class="fx-status ok">Runs in CI</span></h4>
-              <p>Every suite above is a separate CI job. A single gate job fails the build if any of its jobs fails.</p>
-              <p class="fx-suite-meta">.NET: six jobs feed <code>security-penetration-gate</code>. Java: four feed <code>java-security-penetration-gate</code>. <a href="https://github.com/Foundgine/Foundgine/blob/main/.github/workflows/csharp-build.yml">.NET</a> <a href="https://github.com/Foundgine/Foundgine/blob/main/.github/workflows/java-build.yml">Java</a></p>
+              <h4>Skip guard <span class="fx-status ok">Runs in CI</span></h4>
+              <p>Some suites skip themselves when PostgreSQL or Redis is missing. A sweep job starts both, runs every test project, then a script fails the build if any security test was skipped or no job ran it.</p>
+              <p class="fx-suite-meta">Security test files are discovered from source, so a new one is covered the day it is committed. <a href="https://github.com/Foundgine/Foundgine/blob/main/tools/ci/verify_security_tests.py">Script</a></p>
             </article>
             <article class="fx-suite">
-              <h4>Live scanners <span class="fx-status sched">Weekly</span></h4>
-              <p>ZAP baseline and MCP protocol fuzzing run against the running .NET sample. Findings are informational and do not fail the build.</p>
-              <p class="fx-suite-meta">nmap and ZAP scripts also ship for both languages. <a href="https://github.com/Foundgine/Foundgine/blob/main/.github/workflows/security.yml">Workflow</a> <a href="https://github.com/Foundgine/Foundgine/tree/main/src/java/security/pentest">Java scripts</a></p>
+              <h4>Merge gates <span class="fx-status ok">Runs in CI</span></h4>
+              <p>Every suite above is a separate CI job. A gate job fails the build if any of its jobs fails, and publishing waits for it.</p>
+              <p class="fx-suite-meta">.NET: eight jobs feed <code>security-penetration-gate</code>, including the full sweep and a live MCP fuzz. Java: six feed <code>java-security-penetration-gate</code>, including live MCP fuzzing and the PostgreSQL and Redis sweep. <a href="https://github.com/Foundgine/Foundgine/blob/main/.github/workflows/csharp-build.yml">.NET</a> <a href="https://github.com/Foundgine/Foundgine/blob/main/.github/workflows/java-build.yml">Java</a></p>
+            </article>
+            <article class="fx-suite">
+              <h4>Live MCP fuzzing <span class="fx-status ok">Runs in CI</span></h4>
+              <p>Malformed JSON-RPC and identity-injection payloads are sent to the running MCP host, .NET and Java, on every build. A response that leaks a secret or returns authority-bearing data fails the job.</p>
+              <p class="fx-suite-meta"><a href="https://github.com/Foundgine/Foundgine/blob/main/src/csharp/security/pentest/mcp-protocol-fuzz.ps1">.NET script</a> <a href="https://github.com/Foundgine/Foundgine/blob/main/src/java/security/pentest/mcp-protocol-fuzz.sh">Java script</a></p>
+            </article>
+            <article class="fx-suite">
+              <h4>Scanners and AI agents <span class="fx-status sched">Weekly or manual</span></h4>
+              <p>ZAP baseline runs weekly against the .NET sample and its findings are informational. nmap and the Java ZAP script ship but are run by hand, and the Strix and PentAGI agents need your own LLM key. None of these is a merge gate.</p>
+              <p class="fx-suite-meta"><a href="https://github.com/Foundgine/Foundgine/blob/main/.github/workflows/security.yml">Workflow</a> <a href="https://github.com/Foundgine/Foundgine/tree/main/tools/security/ai-pentest">AI agents</a> <a href="https://github.com/Foundgine/Foundgine/tree/main/src/java/security/pentest">Java scripts</a></p>
             </article>
           </div>
 
@@ -633,5 +758,6 @@ spec:
   render();
 })();
 </script>
+      <script src="/assets/code-tabs.js" defer></script>
   </body>
 </html>
