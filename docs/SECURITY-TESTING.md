@@ -2,12 +2,38 @@
 
 ## What runs in CI today
 
-- Red-team and injection regression tests for the Advanced Supply Chain sample, in .NET and Java
-  (`tools/security/intent-boundary/README.md`).
-- Dependency audit and CodeQL (`.github/workflows/security.yml`, `codeql.yml`).
-- ZAP, nmap and protocol-fuzz scripts (`src/csharp/security/pentest`, `src/java/security/pentest`).
+Every security test runs on every build, and none can skip silently.
 
-The red-team and injection suites run in-process against in-memory data. They do not exercise HTTP or a database.
+- **.NET** (`.github/workflows/csharp-build.yml`): eight jobs feed `security-penetration-gate`: GraphQL and MCP
+  penetration tests over HTTP against seeded PostgreSQL, authorization penetration, adversarial, semantic boundary,
+  intent red team and injection corpus, the full security sweep, and live MCP protocol fuzzing.
+- **Java** (`.github/workflows/java-build.yml`): six jobs feed `java-security-penetration-gate`: semantic boundary,
+  adversarial, penetration, intent red team and injection corpus, live MCP protocol fuzzing, and the PostgreSQL + Redis sweep.
+- Dependency audit, SBOM and CodeQL (`security.yml`, `codeql.yml`).
+
+### The skip guard
+
+Several suites skip themselves when a service or opt-in variable is missing (`FOUNDGINE_POSTGRES_CONNECTION_STRING`,
+`FOUNDGINE_REDIS`, `FOUNDGINE_SUPPLYCHAIN_PENTEST`, and others). A skipped test reports as green, so a missing
+variable once hid real suites: the GraphQL/MCP PenTest cases, the PostgreSQL E2E and event-store tests, and the Java
+PostgreSQL and Redis tests.
+
+Two measures close that gap:
+
+1. The sweep jobs (`security-full-sweep`, `java-postgres-e2e`) start PostgreSQL and Redis, set every variable, and run
+   every test project.
+2. `tools/ci/verify_security_tests.py` then reads the TRX or JUnit reports. It discovers security tests from the
+   source (file, project or class name matching penetration, red team, adversarial, security, authorization, warrant,
+   replay, tamper, injection and similar) and fails the build when a security test was skipped, or when a security
+   test file was run by no job. It needs no hand-kept list, so a new security test is covered when it is committed.
+   A test that truly cannot run on a CI runner must be listed with a reason in `tools/ci/security-test-exemptions.txt`;
+   the file starts empty and every entry is printed in the log.
+
+Not in the merge gate: the ZAP baseline (weekly, informational), nmap and the Java ZAP script (run by hand), and the
+AI agents below (they need your own LLM key).
+
+The red-team and injection suites run in-process against in-memory data. The HTTP PenTest sample and the PostgreSQL
+sweeps cover the transport and database layers.
 
 ## AI-agent testing
 
@@ -45,6 +71,6 @@ not a finding until reproduced.
 
 ## Wording guidance
 
-Safe once CI passes: "Red-team and injection regression tests run in CI for .NET and Java."
+Safe once the new pipeline has run green: "Red-team and injection regression tests run in CI for .NET and Java, and the build fails if any security test is skipped."
 Safe after all four runs are recorded: "Additionally tested with the open-source Strix and PentAGI AI pentest agents
 against both samples; findings were triaged and fixed." If only some runs are done, name only those. Do not write "penetration tested", "audited" or "secure" without that qualification.

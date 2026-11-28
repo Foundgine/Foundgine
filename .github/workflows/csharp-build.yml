@@ -491,6 +491,9 @@ jobs:
               -c 'select version();'
 
       - name: Run PostgreSQL E2E
+        env:
+          FOUNDGINE_POSTGRES_CONNECTION_STRING: "Host=localhost;Port=55432;Database=foundgine_e2e;Username=foundgine;Password=foundgine"
+          FOUNDGINE_POSTGRES_CONNECTION: "Host=localhost;Port=55432;Database=foundgine_e2e;Username=foundgine;Password=foundgine"
         run: |
           dotnet test \
             src/csharp/tests/Foundgine.E2E.Tests/Foundgine.E2E.Tests.csproj \
@@ -500,6 +503,9 @@ jobs:
             --logger "console;verbosity=normal"
 
       - name: Run PostgreSQL Event Store
+        env:
+          FOUNDGINE_POSTGRES_CONNECTION_STRING: "Host=localhost;Port=55432;Database=foundgine_e2e;Username=foundgine;Password=foundgine"
+          FOUNDGINE_POSTGRES_CONNECTION: "Host=localhost;Port=55432;Database=foundgine_e2e;Username=foundgine;Password=foundgine"
         run: |
           dotnet test \
             src/csharp/tests/Foundgine.EventStore.Tests/Foundgine.EventStore.Tests.csproj \
@@ -1379,6 +1385,142 @@ jobs:
           sys.exit(1 if failed else 0)
           PY
 
+  # ============================================================
+  # Security sweep: every test project, with real PostgreSQL and Redis.
+  # Several security suites skip themselves when a service is missing. This job provides
+  # every service, runs everything, then tools/ci/verify_security_tests.py fails the build
+  # if any security test was skipped or no job ran it.
+  # ============================================================
+  security-full-sweep:
+    name: Security Sweep — all security tests, PostgreSQL + Redis
+    needs:
+      - build-pack
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      DOCKER_HOST: unix:///var/run/docker.sock
+      FOUNDGINE_POSTGRES_CONNECTION_STRING: Host=localhost;Port=55436;Database=foundgine_e2e;Username=foundgine;Password=foundgine
+      FOUNDGINE_POSTGRES_CONNECTION: Host=localhost;Port=55436;Database=foundgine_e2e;Username=foundgine;Password=foundgine
+      FOUNDGINE_REDIS: 127.0.0.1:56381
+      FOUNDGINE_SUPPLYCHAIN_PENTEST: "1"
+      SupplyChainConnectionString: Host=localhost;Port=4431;Database=foundgine_supply_chain_pentest;Username=benchmark;Password=benchmark
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Start PostgreSQL 17 and Redis 7
+        env:
+          POSTGRES_HOST_PORT: "55436"
+          REDIS_HOST_PORT: "56381"
+        run: |
+          set -euo pipefail
+          docker compose -p foundgine-sweep-pg -f docker-compose.postgres.yml up -d --wait postgres
+          docker compose -p foundgine-sweep-redis -f docker-compose.redis.yml up -d --wait redis
+
+      - name: Start and seed the SupplyChain pentest database
+        run: |
+          set -euo pipefail
+          fixture=src/csharp/benchmarks/AgentEndToEnd/Fixtures/SupplyChain.PenTest
+          docker compose -f "$fixture/docker-compose.yml" up -d --wait postgres
+          docker compose -f "$fixture/docker-compose.yml" run --rm seed
+
+      - name: Run every test project
+        shell: bash
+        run: |
+          set -uo pipefail
+          mapfile -t projects < <(find src/csharp -name '*.Tests.csproj' -not -path '*/bin/*' -not -path '*/obj/*' | sort)
+          if [[ "${#projects[@]}" -eq 0 ]]; then
+            echo "::error::No test projects were found."
+            exit 1
+          fi
+          status=0
+          for project in "${projects[@]}"; do
+            name="$(basename "$project" .csproj)"
+            echo "::group::dotnet test $project"
+            dotnet test "$project" \
+              --configuration Release \
+              --results-directory "artifacts/security-sweep/$name" \
+              --logger "trx;LogFileName=$name.trx" \
+              --logger "console;verbosity=minimal" || status=$?
+            echo "::endgroup::"
+          done
+          exit "$status"
+
+      - name: Teardown services
+        if: always()
+        run: |
+          fixture=src/csharp/benchmarks/AgentEndToEnd/Fixtures/SupplyChain.PenTest
+          docker compose -f "$fixture/docker-compose.yml" down --volumes --remove-orphans || true
+          docker compose -p foundgine-sweep-pg -f docker-compose.postgres.yml down --volumes --remove-orphans || true
+          docker compose -p foundgine-sweep-redis -f docker-compose.redis.yml down --volumes --remove-orphans || true
+
+      - name: Upload sweep evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: security-full-sweep-results
+          path: artifacts/security-sweep/**
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Verify no security test was skipped or left unrun
+        if: always()
+        run: python3 tools/ci/verify_security_tests.py --language dotnet --reports artifacts/security-sweep
+
+  # ============================================================
+  # Live protocol fuzzing of the running MCP host (was weekly only)
+  # ============================================================
+  security-live-mcp-fuzz:
+    name: Security — live MCP protocol fuzz
+    needs:
+      - build-pack
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Start the SupplyChain Advanced MCP host
+        run: |
+          cd src/csharp/samples/Foundgine.SupplyChain.Advanced
+          docker compose up -d --build
+
+      - name: Wait for readiness
+        shell: bash
+        run: |
+          set -euo pipefail
+          for i in $(seq 1 45); do
+            if curl -sf http://localhost:4422/health/ready; then echo "ready"; exit 0; fi
+            sleep 2
+          done
+          echo "::error::MCP host did not become ready." >&2
+          exit 1
+
+      - name: MCP protocol fuzz (malformed and authority-injection corpus)
+        shell: pwsh
+        env:
+          FOUNDGINE_TARGET_URL: http://localhost:4422/mcp
+        run: ./src/csharp/security/pentest/mcp-protocol-fuzz.ps1
+
+      - name: Container logs on failure
+        if: failure()
+        run: |
+          cd src/csharp/samples/Foundgine.SupplyChain.Advanced
+          docker compose logs --no-color
+
+      - name: Stop host
+        if: always()
+        run: |
+          cd src/csharp/samples/Foundgine.SupplyChain.Advanced
+          docker compose down --volumes --remove-orphans
+
   security-penetration-gate:
     name: security-penetration-gate
     if: always()
@@ -1389,6 +1531,8 @@ jobs:
       - security-semantic-penetration
       - security-penetration-mcp
       - security-penetration-intent
+      - security-full-sweep
+      - security-live-mcp-fuzz
     runs-on: ubuntu-latest
     timeout-minutes: 5
 

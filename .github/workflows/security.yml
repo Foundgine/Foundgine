@@ -139,7 +139,7 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
-      - name: Start PostgreSQL + SupplyChain API
+      - name: Start SupplyChain Advanced MCP host (stateless, no database)
         run: |
           cd src/csharp/samples/Foundgine.SupplyChain.Advanced
           docker compose up -d --build
