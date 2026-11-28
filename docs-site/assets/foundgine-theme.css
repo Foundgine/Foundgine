@@ -712,3 +712,78 @@ body.fx-home {
 .fx-scale-example { margin-top: 1.4rem; background: var(--deep); border: 1px solid var(--rim); border-radius: 12px; }
 .fx-scale-example pre { overflow-x: auto; max-width: 100%; }
 .fx-scale-cards > div { background: transparent; border-color: var(--line); }
+
+/* ---- Security testing section ------------------------------------------ */
+.fx-testing-sub {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  margin: 2.2rem 0 1rem;
+}
+.fx-suites {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.2rem;
+}
+.fx-suite {
+  padding: 1.3rem 1.4rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+}
+.fx-suite h4 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem 0.8rem;
+  margin: 0 0 0.6rem;
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+}
+.fx-suite p {
+  margin: 0 0 0.7rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+.fx-suite .fx-suite-meta {
+  margin: 0;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+.fx-suite .fx-suite-meta a {
+  margin-right: 0.7rem;
+}
+.fx-suite code {
+  font-size: 0.85em;
+  overflow-wrap: anywhere;
+}
+.fx-status {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  white-space: nowrap;
+}
+.fx-status.ok {
+  border-color: var(--signal);
+  color: var(--signal);
+}
+.fx-status.sched,
+.fx-status.local {
+  color: var(--muted);
+}
+.fx-status.pending {
+  border-color: var(--gate);
+  color: var(--gate);
+}
+.fx-testing-more {
+  margin: 1.6rem 0 1.4rem;
+}
+@media (max-width: 640px) {
+  .fx-suites { grid-template-columns: 1fr; }
+}

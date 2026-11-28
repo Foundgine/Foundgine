@@ -143,6 +143,7 @@
               <a href="/samples/">All samples</a>
               <a href="/samples/semantic/">Semantic execution</a>
               <a href="/samples/pentest/">Security PenTest</a>
+              <a href="/#security-testing">Adversarial test suites</a>
               <a href="/case-studies/supply-chain/">Supply Chain case study</a>
             </div>
           </div>
@@ -421,6 +422,69 @@ spec:
         </div>
       </section>
 
+      <section class="fx-section alt fx-testing" id="security-testing" aria-labelledby="security-testing-title">
+        <div class="fx-wrap">
+          <h2 id="security-testing-title">Tests that attack the boundary.</h2>
+          <p class="fx-intro">Adversarial suites and runnable harnesses, in both .NET and Java, check that denied requests stay denied and that protected data does not change. Counts are test methods in the repository.</p>
+
+          <h3 class="fx-testing-sub">Penetration test suites</h3>
+          <div class="fx-suites">
+            <article class="fx-suite">
+              <h4>Intent red team <span class="fx-status ok">Runs in CI</span></h4>
+              <p>A low-privilege caller tries to infer hidden data through filters and ordering, confuse the parser, read internals from errors, spoof identity headers and see another caller&rsquo;s results under concurrency.</p>
+              <p class="fx-suite-meta">13 tests in each language. <a href="https://github.com/Foundgine/Foundgine/blob/main/src/csharp/samples/Foundgine.SupplyChain.Advanced/Semantic/Tests/IntentRedTeamPenetrationTests.cs">.NET</a> <a href="https://github.com/Foundgine/Foundgine/blob/main/src/java/samples/foundgine-supply-chain-advanced/src/test/java/com/foundgine/samples/supplychain/advanced/IntentRedTeamPenetrationTest.java">Java</a></p>
+            </article>
+            <article class="fx-suite">
+              <h4>Injection corpus <span class="fx-status ok">Runs in CI</span></h4>
+              <p>One shared set of hostile payloads is sent through the value, name and identity slots of an intent, so both languages face the same inputs.</p>
+              <p class="fx-suite-meta">13 tests in each language. <a href="https://github.com/Foundgine/Foundgine/blob/main/src/csharp/samples/Foundgine.SupplyChain.Advanced/Semantic/Tests/IntentInjectionCorpusTests.cs">.NET</a> <a href="https://github.com/Foundgine/Foundgine/blob/main/src/java/samples/foundgine-supply-chain-advanced/src/test/java/com/foundgine/samples/supplychain/advanced/IntentInjectionCorpusTest.java">Java</a></p>
+            </article>
+            <article class="fx-suite">
+              <h4>Semantic boundary suites <span class="fx-status ok">Runs in CI</span></h4>
+              <p>Authorization escalation, tenant bypass, plan tampering, warrant replay, parser limits, secret leakage and provider conformance, each in its own test class.</p>
+              <p class="fx-suite-meta">59 .NET tests, 63 Java tests. <a href="https://github.com/Foundgine/Foundgine/tree/main/src/csharp/tests/Foundgine.Security.Tests/Penetration">.NET</a> <a href="https://github.com/Foundgine/Foundgine/tree/main/src/java/foundgine-core/src/test/java/com/foundgine/core/security/penetration">Java</a></p>
+            </article>
+            <article class="fx-suite">
+              <h4>MCP and GraphQL over HTTP <span class="fx-status ok">Runs in CI</span></h4>
+              <p>Adversarial requests go through both transports to a seeded PostgreSQL database: cross-tenant reads, restricted fields, claim injection and writes the caller may not make.</p>
+              <p class="fx-suite-meta">21 .NET tests. <a href="/samples/pentest/index.html">PenTest sample</a> <a href="https://github.com/Foundgine/Foundgine/tree/main/src/csharp/benchmarks/AgentEndToEnd/Fixtures/SupplyChain.PenTest">Source</a></p>
+            </article>
+            <article class="fx-suite">
+              <h4>Merge gates <span class="fx-status ok">Runs in CI</span></h4>
+              <p>Every suite above is a separate CI job. A single gate job fails the build if any of its jobs fails.</p>
+              <p class="fx-suite-meta">.NET: six jobs feed <code>security-penetration-gate</code>. Java: four feed <code>java-security-penetration-gate</code>. <a href="https://github.com/Foundgine/Foundgine/blob/main/.github/workflows/csharp-build.yml">.NET</a> <a href="https://github.com/Foundgine/Foundgine/blob/main/.github/workflows/java-build.yml">Java</a></p>
+            </article>
+            <article class="fx-suite">
+              <h4>Live scanners <span class="fx-status sched">Weekly</span></h4>
+              <p>ZAP baseline and MCP protocol fuzzing run against the running .NET sample. Findings are informational and do not fail the build.</p>
+              <p class="fx-suite-meta">nmap and ZAP scripts also ship for both languages. <a href="https://github.com/Foundgine/Foundgine/blob/main/.github/workflows/security.yml">Workflow</a> <a href="https://github.com/Foundgine/Foundgine/tree/main/src/java/security/pentest">Java scripts</a></p>
+            </article>
+          </div>
+
+          <h3 class="fx-testing-sub">Harnesses you can run</h3>
+          <div class="fx-suites">
+            <article class="fx-suite">
+              <h4>Java red-team harness <span class="fx-status local">Run locally</span></h4>
+              <p>Four executable checks on the warrant model: replay, time validity, constraint attenuation and unknown invariants.</p>
+              <p class="fx-suite-meta"><code>mvn -pl security/foundgine-redteam -am package</code> <a href="https://github.com/Foundgine/Foundgine/blob/main/src/java/security/foundgine-redteam/src/main/java/com/foundgine/security/redteam/RedTeamHarness.java">Source</a></p>
+            </article>
+            <article class="fx-suite">
+              <h4>.NET AI red-team agent <span class="fx-status local">Run locally</span></h4>
+              <p>One script starts PostgreSQL and the MCP APIs, then runs a bounded attack catalog against the semantic and execution endpoints. A model is optional, and the agent refuses non-loopback targets.</p>
+              <p class="fx-suite-meta"><code>Run-Security.ps1</code> <a href="https://github.com/Foundgine/Foundgine/blob/main/src/csharp/security/Foundgine.RedTeam/README.md">README</a></p>
+            </article>
+            <article class="fx-suite">
+              <h4>Strix and PentAGI agents <span class="fx-status pending">No runs recorded yet</span></h4>
+              <p>Two open-source AI pentest agents, pointed at the HTTP surface of both samples with identical scope. The harness is in place; results will be published once runs are triaged.</p>
+              <p class="fx-suite-meta"><a href="https://github.com/Foundgine/Foundgine/tree/main/tools/security/ai-pentest">Harness</a> <a href="https://github.com/Foundgine/Foundgine/blob/main/docs/SECURITY-TESTING.md">Run log</a></p>
+            </article>
+          </div>
+          <p class="fx-testing-more">Also in the overview: the <a href="/foundgine-overview#deterministic-testing-harness">chaos and clock harness</a> and the <a href="/foundgine-overview#testcontainers-integration">Testcontainers CI harness</a>.</p>
+
+          <div class="fx-caveat"><p><strong>What this does and does not show.</strong> The red-team and injection suites run in-process against in-memory data, not HTTP or SQL. The HTTP suites use local containers with synthetic data. These are regression tests, not an independent penetration test or audit, and none has been done. <a href="https://github.com/Foundgine/Foundgine/blob/main/tools/security/intent-boundary/README.md">What is covered</a></p></div>
+        </div>
+      </section>
+
       <section class="fx-feature" id="technical-overview" aria-labelledby="technical-overview-title">
         <div class="fx-wrap"><div class="fx-feature-card">
           <div>
@@ -464,7 +528,7 @@ spec:
               <li class="deeper"><a href="https://github.com/Foundgine/Foundgine/blob/main/docs/AUTHORIZATION.md">Authorization</a> <a href="https://github.com/Foundgine/Foundgine/blob/main/docs/SECURITY.md">Security model</a></li></ul></section>
             <section><h3>Prove</h3><ul>
               <li><a href="/samples/index.html">Samples</a></li>
-              <li class="deeper"><a href="/performance/index.html">Benchmark evidence</a> <a href="/agent-benchmark/supply-chain/index.html">Supply Chain E2E</a> <a href="/samples/pentest/index.html">PenTest</a> <a href="/case-studies/supply-chain/index.html">Supply Chain case study</a></li></ul></section>
+              <li class="deeper"><a href="/performance/index.html">Benchmark evidence</a> <a href="/agent-benchmark/supply-chain/index.html">Supply Chain E2E</a> <a href="/#security-testing">Security test suites</a> <a href="/samples/pentest/index.html">PenTest</a> <a href="/case-studies/supply-chain/index.html">Supply Chain case study</a></li></ul></section>
           </div>
           <div class="fx-topicmap" id="overview-topics">
             <h3>Technical overview by topic</h3>
