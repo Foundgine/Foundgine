@@ -94,7 +94,7 @@ The `rootEntity` and `selections` values above are placeholders; use the names r
 | Building a Node, Bun or browser app, or an agent in TypeScript | **TypeScript** |
 | Scripting, notebooks, data or ML pipelines, Python agents | **Python** (`FoundgineSyncClient` for scripts and Jupyter) |
 | Targeting browsers, Workers or Deno and want one audited core shared with native Rust | **WebAssembly** |
-| Writing server-side .NET or Java that hosts Foundgine | None of these. Use the .NET or Java packages ([package guide](../../docs-site/packages/index.md)) |
+| Writing server-side .NET or Java that hosts Foundgine | None of these. Use the .NET or Java packages ([package guide](../../docs-site/packages/index.html)) |
 
 ## Deliberate differences between the SDKs
 

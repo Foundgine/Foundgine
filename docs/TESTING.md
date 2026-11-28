@@ -18,7 +18,20 @@ cd src/java
 mvn -U test
 ```
 
-The .NET Redis and Microsoft Agent Framework adapter tests are part of the solution and reference the consolidated `Foundgine.Providers` project. The Java Spring Boot and LangChain4j adapter sources and tests are compiled as part of `foundgine-providers`; framework dependencies are optional. The latest reported Maven run had the Starter sample passing and the Advanced sample test phase failing; fixes are present but have not been rerun. The PostgreSQL 16 schema-parity test is also not executed by the current PostgreSQL 17 CI job. See [source coverage](SOURCE-COVERAGE.md) and the [Advanced schema audit](https://github.com/Foundgine/Foundgine/blob/main/src/java/samples/foundgine-supply-chain-advanced/ADVANCED-SCHEMA-AUDIT.md). These commands describe how to run the suites; they are not evidence that a run passed.
+The .NET Redis and Microsoft Agent Framework adapter tests are part of the solution and reference the consolidated `Foundgine.Providers` project. The Java Spring Boot and LangChain4j adapter sources and tests are compiled as part of `foundgine-providers`; framework dependencies are optional. The PostgreSQL 16 schema-parity test is also not executed by the current PostgreSQL 17 CI job. See [source coverage](SOURCE-COVERAGE.md) and the [Advanced schema audit](https://github.com/Foundgine/Foundgine/blob/main/src/java/samples/foundgine-supply-chain-advanced/ADVANCED-SCHEMA-AUDIT.md). These commands describe how to run the suites; they are not evidence that a run passed.
+
+## Verification
+
+Last full local run, 28 November 2026 (Windows, .NET 10.0.14, Java 27, PostgreSQL in Docker):
+
+| Area | Command | Result |
+|---|---|---|
+| .NET solution | `dotnet build Foundgine.sln` and `dotnet test Foundgine.sln` from `src/csharp` | Build succeeded; 2,185 tests, 0 failed, 2,068 passed, 117 skipped in the plain run |
+| .NET PostgreSQL end-to-end suites (the skipped tests above) | Same command with a PostgreSQL container up (`docker-compose.postgres.yml`) and `FOUNDGINE_POSTGRES_CONNECTION_STRING` set | Pass, including `PostgresMutationMarkerProviderE2ETests` |
+| Java reactor | `mvn -U clean verify -Dgpg.skip=true` from `src/java` | All 13 modules build and their tests pass (BUILD SUCCESS). Supply Chain Advanced sample: 443 tests run, 0 failures, 0 errors, 1 skipped |
+
+The 117 skipped tests are the opt-in PostgreSQL end-to-end tests; they run when the connection string is set. This table
+records one local run, not CI. CI results are on the workflow badges in the README.
 
 ## Test layers
 

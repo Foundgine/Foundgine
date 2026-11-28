@@ -72,9 +72,7 @@ Foundgine is a configurable semantic and execution boundary for application capa
 | [`CLAUDE.md`](CLAUDE.md) | 1 | 11 B | |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | 1 | 2.5 KB | |
 | [`Directory.Build.props`](Directory.Build.props) | 1 | 2 KB | |
-| [`IMPLEMENTATION-NOTES-SUPPLYCHAIN-ADVANCED.md`](IMPLEMENTATION-NOTES-SUPPLYCHAIN-ADVANCED.md) | 1 | 7.1 KB | |
 | [`LICENSE`](LICENSE) | 1 | 10 KB | |
-| [`PARITY-SUPPLYCHAIN-ADVANCED.md`](PARITY-SUPPLYCHAIN-ADVANCED.md) | 1 | 2.3 KB | |
 | [`README.md`](README.md) | 1 | 11.9 KB | |
 | [`context7.json`](context7.json) | 1 | 1.5 KB | |
 | [`docker-compose.postgres.yml`](docker-compose.postgres.yml) | 1 | 635 B | |

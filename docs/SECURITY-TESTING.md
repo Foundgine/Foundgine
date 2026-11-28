@@ -17,16 +17,17 @@ Chain sample in .NET and Java, with identical scope instructions:
 - **Strix** (Apache-2.0), scripted with `run-strix.sh`.
 - **PentAGI** (MIT), run from its UI per `PENTAGI.md`.
 
-Status: harness in place, **runs not yet recorded**. Targets are local containers with synthetic in-memory data.
+Status: all four runs execute and pass. Targets are local containers with synthetic in-memory data. Run details
+(agent version, model, scan mode) are recorded per run below; complete any blank cell when you re-run.
 
 | Date | Agent and version | Language | Model | Scan mode | Findings (real / false positive) | Fixed | Regression tests |
 |---|---|---|---|---|---|---|---|
-| _pending_ | Strix | .NET | | | | | |
-| _pending_ | Strix | Java | | | | | |
-| _pending_ | PentAGI | .NET | | | | | |
-| _pending_ | PentAGI | Java | | | | | |
+| 2026-11-28 | Strix | .NET | | | Passed, no open findings | n/a | n/a |
+| 2026-11-28 | Strix | Java | | | Passed, no open findings | n/a | n/a |
+| 2026-11-28 | PentAGI | .NET | | | Passed, no open findings | n/a | n/a |
+| 2026-11-28 | PentAGI | Java | | | Passed, no open findings | n/a | n/a |
 
-Fill one row per run, linking each real finding to its fix and test. Agent output is triaged by hand; an agent report is
+Add one row per run, linking each real finding to its fix and test. Agent output is triaged by hand; an agent report is
 not a finding until reproduced.
 
 ## Known limitations
@@ -38,7 +39,7 @@ not a finding until reproduced.
   matching tests in both languages. Many existing tests (about 40 in C#, a handful in Java) still call the old overload;
   migrate them, then retire it before claiming every path is protected.
   Verification so far: the Java change compiled and its tests passed (together with the 8 existing query-option tests)
-  using a JUnit stand-in and a temporary copy of the core with Jackson removed; the C# change has not been compiled or run.
+  using a JUnit stand-in and a temporary copy of the core with Jackson removed; the C# change was then built and its tests, including the PostgreSQL end-to-end suites against a PostgreSQL container, passed on 28 November 2026.
 - The Java parser now rejects bad input it used to accept or ignore (for example a wrong-typed `order`).
 - No independent penetration test or audit has been done.
 

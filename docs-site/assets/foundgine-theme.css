@@ -502,6 +502,18 @@ body.fx-home {
 .fx-agent li {
   margin: 0 0 0.45rem;
 }
+/* Cards are always dark, so set their text colours explicitly:
+   the section around them may be light. */
+.fx-agent > div h3 {
+  color: #fff;
+}
+.fx-agent > div ul,
+.fx-agent > div li {
+  color: var(--mist);
+}
+.fx-agent > div li::marker {
+  color: var(--mist);
+}
 
 /* Integrations */
 .fx-integrations {

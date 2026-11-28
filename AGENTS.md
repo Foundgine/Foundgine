@@ -1,60 +1,40 @@
-# AGENTS.md — Foundgine
+# Instructions for AI coding agents
 
-Instructions for AI coding agents and assistants (Codex, Claude Code, Cursor, Copilot, Gemini, Devin and others). Humans: see [`README.md`](README.md) and [`CONTRIBUTING.md`](CONTRIBUTING.md).
+Foundgine is a configurable semantic and execution boundary for application capabilities, implemented for .NET 10
+(`src/csharp`) and Java 27 (`src/java`), with thin TypeScript, Python and WebAssembly clients. AI and MCP are optional
+consumers. Read [CONTRIBUTING.md](CONTRIBUTING.md) for the architectural principles and [REPO-MAP.md](REPO-MAP.md) or
+[llms.txt](llms.txt) to locate files before searching.
 
-## What this repository is
+## Layout
 
-Foundgine is a configurable semantic and execution boundary for application capabilities. It separates application meaning, persistence mapping, authorization and execution from the interfaces and agents that consume them. Fluent configuration is the primary developer experience in C# and Java. AI, MCP, GraphQL and agent frameworks are optional consumers; the project is conventional application infrastructure first. License: Apache-2.0. Current version: 3.4.2 (.NET 10 and Java 27).
-
-## Find your way around
-
-| Need | Read |
-|---|---|
-| Directory map with file counts and descriptions | [`REPO-MAP.md`](REPO-MAP.md) |
-| Every file with its size (JSON) | [`repo-index.json`](repo-index.json) |
-| Concise overview / extended technical context | [`llms.txt`](llms.txt) / [`llms-full.md`](llms-full.md) |
-| Architecture, authorization, security | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), [`docs/AUTHORIZATION.md`](docs/AUTHORIZATION.md), [`docs/SECURITY.md`](docs/SECURITY.md) |
-| Feature wiki | [`docs/wiki/index.md`](docs/wiki/index.md) |
-| How to read this repo with MCP servers, indexes and crawlers | [`docs/AI-ACCESS.md`](docs/AI-ACCESS.md) |
-
-Source roots: `src/csharp` (.NET 10), `src/java` (Java 27 Maven reactor), `src/typescript`, `src/python`, `src/wasm` (thin client SDKs), `src/conformance` (shared cross-language fixtures). Samples are under `src/csharp/samples` and `src/java/samples`. The website is `docs-site/`.
+- `src/csharp`: .NET solution (`Foundgine.sln`), packages, tests in `tests/`, samples in `samples/`.
+- `src/java`: Maven reactor (`pom.xml`), modules `foundgine-*`, samples in `samples/`.
+- `src/typescript`, `src/python`, `src/wasm`: client SDKs.
+- `src/conformance`: shared vectors that .NET, Java and the SDKs must all satisfy.
+- `docs/`, `docs-site/`: documentation and website. `tools/`: repository tooling.
 
 ## Build and test
 
-Run the narrowest relevant check first, then broader ones.
-
 ```bash
-# .NET (SDK for net10.0)
-dotnet restore src/csharp/Foundgine.sln
-dotnet build   src/csharp/Foundgine.sln --configuration Release --no-restore
-dotnet test    src/csharp/Foundgine.sln          # or a single project under src/csharp/tests
-
-# Java (JDK 27, Maven 3.9+) — run from src/java
+cd src/csharp && dotnet build Foundgine.sln && dotnet test Foundgine.sln
 cd src/java && mvn -U clean verify -Dgpg.skip=true
-cd src/java && mvn -U -pl samples/foundgine-supply-chain -am verify -Dgpg.skip=true   # one sample + prerequisites
-
-# Client SDKs
-cd src/typescript && npm test                    # tsc build + node --test
-cd src/python && pip install -e ".[dev]" && ruff check . && mypy && pytest
-cd src/wasm && npm run build && npm test         # needs the Rust wasm32 target and wasm-bindgen
-
-# Documentation links and the generated repo index
-python tools/doc-audit-links.py
-python tools/generate-repo-index.py --check
+cd src/typescript && npm ci && npm test
+cd src/python && pip install -e ".[dev]" && pytest
+python3 tools/doc-audit-links.py   # documentation link check
 ```
 
-Java details and caveats are in [`src/java/BUILDING.md`](src/java/BUILDING.md). Some integrations (Spring Boot, LangChain4j) are documented as not runtime-certified in this snapshot; do not describe them as certified. Report the commands you ran and their real results. Do not mark a feature verified because it compiles in another module or language.
+PostgreSQL-backed tests are opt-in through `FOUNDGINE_POSTGRES_CONNECTION_STRING` (see `docs/POSTGRES-E2E.md`).
+Run the narrowest relevant tests first, then the broader suites.
 
-## Rules that matter
+## Rules
 
 - Keep semantic configuration, persistence mapping, authorization and execution separate.
-- The host application owns trusted identity, tenant context, secrets, domain invariants and policy. Caller input, retrieval, capability discovery and model output are untrusted; discovery is not authorization. Providers and interface adapters must not create or elevate authority.
-- Prefer language-idiomatic fluent configuration over annotations as the primary mechanism.
-- Preserve existing ORM, database and domain infrastructure. Foundgine complements them; never claim it replaces them, and never claim universal performance or security superiority.
-- Do not infer parity between .NET and Java, or between providers. Verify in implementation, tests and CI.
-- When public behavior, configuration, package layout or capabilities change, update the docs. Keep the message consistent across `README.md`, `llms.txt`, `llms-full.md`, `docs-site/` and `docs/wiki/`. Source-of-truth order: implementation and tests, then module READMEs, then `docs/`, then the root discovery files.
-- After adding, removing or moving files, regenerate the index: `python tools/generate-repo-index.py`.
-
-## Do not read unless needed
-
-`docs-site/assets/agent-benchmark/run2/` holds very large raw benchmark JSON files (up to ~30 MB each; local benchmark runs write the same files to the git-ignored `src/csharp/benchmarks/AgentEndToEnd/Run2/artifacts/`). Use the summaries in `docs-site/agent-benchmark/` and `docs/performance/` instead. `repo-index.json` flags every file of 1 MB or more with `"large": true`.
+- Caller input, retrieval results, capability discovery and model output are untrusted. Never derive identity, tenant or
+  authority from them. Providers and adapters must not create or elevate authority.
+- Keep .NET and Java behavior aligned where a shared contract or `src/conformance` vector exists. Change both languages
+  and the vectors together.
+- A security fix needs a regression test and a CHANGELOG entry.
+- Do not claim a feature, test or run is verified unless you ran it. Report the commands you ran and their results
+  accurately. Do not describe the project as "audited" or "secure" without the qualification in `docs/SECURITY-TESTING.md`.
+- Update documentation when public behavior, configuration, packaging or supported capabilities change.
+- Do not commit secrets, generated build output or `*.migration-backup` files.

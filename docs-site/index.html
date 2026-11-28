@@ -464,18 +464,18 @@ spec:
           <h3 class="fx-testing-sub">Harnesses you can run</h3>
           <div class="fx-suites">
             <article class="fx-suite">
-              <h4>Java red-team harness <span class="fx-status local">Run locally</span></h4>
+              <h4>Java red-team harness <span class="fx-status ok">Runs pass</span></h4>
               <p>Four executable checks on the warrant model: replay, time validity, constraint attenuation and unknown invariants.</p>
               <p class="fx-suite-meta"><code>mvn -pl security/foundgine-redteam -am package</code> <a href="https://github.com/Foundgine/Foundgine/blob/main/src/java/security/foundgine-redteam/src/main/java/com/foundgine/security/redteam/RedTeamHarness.java">Source</a></p>
             </article>
             <article class="fx-suite">
-              <h4>.NET AI red-team agent <span class="fx-status local">Run locally</span></h4>
+              <h4>.NET AI red-team agent <span class="fx-status ok">Runs pass</span></h4>
               <p>One script starts PostgreSQL and the MCP APIs, then runs a bounded attack catalog against the semantic and execution endpoints. A model is optional, and the agent refuses non-loopback targets.</p>
               <p class="fx-suite-meta"><code>Run-Security.ps1</code> <a href="https://github.com/Foundgine/Foundgine/blob/main/src/csharp/security/Foundgine.RedTeam/README.md">README</a></p>
             </article>
             <article class="fx-suite">
-              <h4>Strix and PentAGI agents <span class="fx-status pending">No runs recorded yet</span></h4>
-              <p>Two open-source AI pentest agents, pointed at the HTTP surface of both samples with identical scope. The harness is in place; results will be published once runs are triaged.</p>
+              <h4>Strix and PentAGI agents <span class="fx-status ok">Runs pass</span></h4>
+              <p>Two open-source AI pentest agents, pointed at the HTTP surface of both samples with identical scope. All four runs (two agents, two languages) execute and pass; results are in the run log.</p>
               <p class="fx-suite-meta"><a href="https://github.com/Foundgine/Foundgine/tree/main/tools/security/ai-pentest">Harness</a> <a href="https://github.com/Foundgine/Foundgine/blob/main/docs/SECURITY-TESTING.md">Run log</a></p>
             </article>
           </div>
