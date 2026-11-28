@@ -2,8 +2,6 @@
 
 > Configurable semantic and execution boundary for application capabilities.
 
-Foundgine applies the same rules every time: meaning, validation and permissions are defined once and checked on every request, whether it comes from an app, an API, GraphQL, a workflow or an AI assistant. An AI asking for something never means it is allowed.
-
 Foundgine is a configurable semantic and execution boundary for application capabilities. It separates application meaning, persistence mapping, authorization and execution from the interfaces and agents that consume them.
 
 Applications configure their capabilities using language-idiomatic fluent APIs. Foundgine resolves operations against configured semantics, applies authorization at the execution boundary, and carries the authorized operation into provider execution. The same configured model can serve multiple interfaces and consumers.
@@ -18,8 +16,6 @@ Foundgine is designed for conventional application development first. It does no
 - Meaning, persistence mapping, authorization and execution are separated from interfaces and consumers.
 - Designed for conventional application code and APIs; AI, MCP and agent integrations are optional.
 - Complements existing ORM, database, API and domain architectures. Incremental adoption is supported by design; validate fit for each capability.
-
-- **Horizontal scaling:** run many identical replicas of an application that hosts Foundgine and scale them with an autoscaler such as KEDA (for example on request rate, CPU or outbox backlog) without changing business logic. The metadata registry is immutable after build, authorization policies are stateless, and replay, revocation and MCP session state can live in shared Redis/Valkey/Garnet anchored in PostgreSQL (fail-closed). Outbox workers use `FOR UPDATE SKIP LOCKED` plus idempotency keys. No autoscaled throughput figure is published; measure your own workload. See https://foundgine.io/#scale-out
 
 ## Canonical concepts
 

@@ -3,22 +3,22 @@ package com.foundgine.samples.supplychain;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.foundgine.migrations.schema.SchemaBuilder;
-import com.foundgine.samples.supplychain.model.SupplyChainFoundgineModel;
+import com.foundgine.samples.supplychain.model.SimplePhysicalSchemaModel;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-/** Locks the starter's schema to the three tables of the fluent model. */
+/** Locks the starter's physical projection to its three-table fluent persistence model. */
 class SimpleSchemaModelParityTest {
     @Test
-    void schemaContainsExactlyTheThreeStarterTables() {
-        var schema = SchemaBuilder.fromMetadata(new SupplyChainFoundgineModel().build());
+    void physicalProjectionContainsExactlyTheThreeStarterTables() {
+        var schema = SchemaBuilder.fromMetadata(new SimplePhysicalSchemaModel().build());
         assertEquals(List.of("products", "suppliers", "warehouses"),
                 schema.tables().stream().map(t -> t.name()).toList());
     }
 
     @Test
     void persistenceDeclarationsProduceExpectedKeysColumnsAndIndexes() {
-        var schema = SchemaBuilder.fromMetadata(new SupplyChainFoundgineModel().build());
+        var schema = SchemaBuilder.fromMetadata(new SimplePhysicalSchemaModel().build());
 
         var products = schema.table("products").orElseThrow();
         assertEquals(List.of("product_id"), products.primaryKey());

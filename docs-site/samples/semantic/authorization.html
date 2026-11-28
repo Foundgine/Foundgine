@@ -4,14 +4,13 @@
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width,initial-scale=1" name="viewport" />
-    <title>Supply chain authorization cases — Foundgine</title>
-    <meta content="#0a1020" name="theme-color" />
+    <title>SupplyChain semantic authorization cases — Foundgine</title>
     <meta
       content="Entity, field, relationship, conditional, write and named-operation authorization cases in the Foundgine SupplyChain sample."
       name="description"
     />
     <link href="https://foundgine.io/samples/semantic/authorization" rel="canonical" />
-    <meta content="Supply chain authorization cases — Foundgine" property="og:title" />
+    <meta content="SupplyChain semantic authorization cases — Foundgine" property="og:title" />
     <meta
       content="Entity, field, relationship, conditional, write and named-operation authorization cases in the Foundgine SupplyChain sample."
       property="og:description"
@@ -29,7 +28,7 @@
     <meta content="1280" property="og:image:width" />
     <meta content="320" property="og:image:height" />
     <meta content="summary_large_image" name="twitter:card" />
-    <meta content="Supply chain authorization cases — Foundgine" name="twitter:title" />
+    <meta content="SupplyChain semantic authorization cases — Foundgine" name="twitter:title" />
     <meta
       content="Entity, field, relationship, conditional, write and named-operation authorization cases in the Foundgine SupplyChain sample."
       name="twitter:description"
@@ -44,6 +43,7 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&amp;family=IBM+Plex+Mono:wght@500;600&amp;display=swap"
       rel="stylesheet"
     />
+    <link href="/assets/favicon.svg" rel="icon" type="image/svg+xml" />
     <link href="/assets/style.css" rel="stylesheet" />
     <link href="/assets/foundgine-theme.css" rel="stylesheet" />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
@@ -51,10 +51,6 @@
     <link rel="alternate" type="text/markdown" href="https://foundgine.io/llms-full.md" title="llms-full.md" />
     <link rel="code-repository" href="https://github.com/Foundgine/Foundgine" />
     <link href="/assets/site-chrome.css" rel="stylesheet" />
-      <link href="/assets/favicon.svg" rel="icon" type="image/svg+xml" />
-    <link href="/favicon.ico" rel="icon" sizes="48x48" />
-    <link href="/assets/favicon-32.png" rel="icon" sizes="32x32" type="image/png" />
-    <link href="/apple-touch-icon.png" rel="apple-touch-icon" />
   </head>
   <body>
     <a class="skip-link" href="#content">Skip to content</a>
@@ -82,8 +78,8 @@
                 <ul class="ovm-list" id="ovm-5" hidden><li><a href="/foundgine-overview#orm-sql">ORM, SQL &amp; AOT</a></li><li><a href="/foundgine-overview#extensions">GraphQL, Keycloak &amp; Temporal</a></li><li><a href="/foundgine-overview#custom-providers-spi">Custom Provider SPI</a></li><li><a href="/foundgine-overview#graphql-internals">GraphQL &amp; Federation</a></li><li><a href="/foundgine-overview#graphql-executors-deep">GraphQL Boundary Executors</a></li><li><a href="/foundgine-overview#aot-generator-internals">AOT Compiler Diagnostics</a></li><li><a href="/foundgine-overview#read-your-writes-consistency">Read-Your-Writes WAL Routing</a></li><li><a href="/foundgine-overview#custom-storage-provider-spi">Custom Storage Provider SPI</a></li><li><a href="/foundgine-overview#graphql-schema-stitching">GraphQL Federation Roots</a></li><li><a href="/foundgine-overview#ddl-migrations">Database Schema &amp; DDL</a></li></ul>
                 <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-6">AI agents, MCP &amp; SDKs <span>6</span></button>
                 <ul class="ovm-list" id="ovm-6" hidden><li><a href="/foundgine-overview#agents-sdks">Agents, MCP &amp; SDKs</a></li><li><a href="/foundgine-overview#mcp-protocol-spec">MCP 2025-06-18 Spec</a></li><li><a href="/foundgine-overview#ai-discovery-spec">AI Discovery Artifacts</a></li><li><a href="/foundgine-overview#agent-loop-walkthrough">Agent Tool &amp; Clarify Loop</a></li><li><a href="/foundgine-overview#sdk-wire-framing">Multi-Language SDK Wire</a></li><li><a href="/foundgine-overview#mcp-resources-prompts">Custom MCP Resources &amp; Prompts</a></li></ul>
-                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-7">Operations &amp; scale <span>19</span></button>
-                <ul class="ovm-list" id="ovm-7" hidden><li><a href="/foundgine-overview#deployments-wire">Topologies &amp; Wire</a></li><li><a href="/foundgine-overview#keda-horizontal-scaling">KEDA Horizontal Scaling</a></li><li><a href="/foundgine-overview#events-observability">Events, Outbox &amp; Telemetry</a></li><li><a href="/foundgine-overview#config-errors">Config &amp; Error Catalog</a></li><li><a href="/foundgine-overview#performance-tuning">Performance &amp; Caching</a></li><li><a href="/foundgine-overview#prod-ops-runbook">Production Ops &amp; Probes</a></li><li><a href="/foundgine-overview#multi-tenancy-models">Multi-Tenancy Models</a></li><li><a href="/foundgine-overview#env-diagnostics-cheatsheet">Env Vars &amp; Ports</a></li><li><a href="/foundgine-overview#incident-forensics-runbook">Incident &amp; Forensics Runbook</a></li><li><a href="/foundgine-overview#multi-region-dr">Multi-Region &amp; DR</a></li><li><a href="/foundgine-overview#runtime-footprint-profiles">Runtime Footprint Profiles</a></li><li><a href="/foundgine-overview#rfc9457-problem-details">RFC 9457 Problem Details</a></li><li><a href="/foundgine-overview#federated-service-mesh">Multi-Service Federation</a></li><li><a href="/foundgine-overview#capacity-sizing-slos">Capacity Sizing &amp; SLOs</a></li><li><a href="/foundgine-overview#diagnostic-decision-tree">Diagnostic Decision Tree</a></li><li><a href="/foundgine-overview#otel-semantic-conventions">OpenTelemetry Conventions</a></li><li><a href="/foundgine-overview#soft-delete-retention">Soft-Delete &amp; GDPR Erasure</a></li><li><a href="/foundgine-overview#active-active-conflict-resolution">Active-Active Merge Rules</a></li><li><a href="/foundgine-overview#db-index-tuning-guide">PostgreSQL Index Tuning Guide</a></li></ul>
+                <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-7">Operations &amp; scale <span>18</span></button>
+                <ul class="ovm-list" id="ovm-7" hidden><li><a href="/foundgine-overview#deployments-wire">Topologies &amp; Wire</a></li><li><a href="/foundgine-overview#events-observability">Events, Outbox &amp; Telemetry</a></li><li><a href="/foundgine-overview#config-errors">Config &amp; Error Catalog</a></li><li><a href="/foundgine-overview#performance-tuning">Performance &amp; Caching</a></li><li><a href="/foundgine-overview#prod-ops-runbook">Production Ops &amp; Probes</a></li><li><a href="/foundgine-overview#multi-tenancy-models">Multi-Tenancy Models</a></li><li><a href="/foundgine-overview#env-diagnostics-cheatsheet">Env Vars &amp; Ports</a></li><li><a href="/foundgine-overview#incident-forensics-runbook">Incident &amp; Forensics Runbook</a></li><li><a href="/foundgine-overview#multi-region-dr">Multi-Region &amp; DR</a></li><li><a href="/foundgine-overview#runtime-footprint-profiles">Runtime Footprint Profiles</a></li><li><a href="/foundgine-overview#rfc9457-problem-details">RFC 9457 Problem Details</a></li><li><a href="/foundgine-overview#federated-service-mesh">Multi-Service Federation</a></li><li><a href="/foundgine-overview#capacity-sizing-slos">Capacity Sizing &amp; SLOs</a></li><li><a href="/foundgine-overview#diagnostic-decision-tree">Diagnostic Decision Tree</a></li><li><a href="/foundgine-overview#otel-semantic-conventions">OpenTelemetry Conventions</a></li><li><a href="/foundgine-overview#soft-delete-retention">Soft-Delete &amp; GDPR Erasure</a></li><li><a href="/foundgine-overview#active-active-conflict-resolution">Active-Active Merge Rules</a></li><li><a href="/foundgine-overview#db-index-tuning-guide">PostgreSQL Index Tuning Guide</a></li></ul>
                 <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-8">Testing, evidence &amp; release <span>11</span></button>
                 <ul class="ovm-list" id="ovm-8" hidden><li><a href="/foundgine-overview#evidence">Benchmarks &amp; Packages</a></li><li><a href="/foundgine-overview#benchmark-data">Full Metrics &amp; Attack Matrix</a></li><li><a href="/foundgine-overview#compliance-threat-model">Compliance &amp; Threat Model</a></li><li><a href="/foundgine-overview#build-release-playbook">Build &amp; Release Playbook</a></li><li><a href="/foundgine-overview#deterministic-testing-harness">Chaos &amp; Clock Harness</a></li><li><a href="/foundgine-overview#repo-verification-matrix">Monorepo Quality Gates</a></li><li><a href="/foundgine-overview#testcontainers-integration">Testcontainers CI Harness</a></li><li><a href="/foundgine-overview#release-checklist-matrix">Release Verification Gates</a></li><li><a href="/foundgine-overview#production-signoff-matrix">Production Sign-Off Matrix</a></li><li><a href="/foundgine-overview#ci-smoke-script">Unified CI Release Gate</a></li><li><a href="/foundgine-overview#compliance-framework-mapping">Compliance Control Map</a></li></ul>
                 <button class="ovm-tab" type="button" aria-expanded="false" aria-controls="ovm-9">Reference <span>16</span></button>
@@ -130,7 +126,6 @@
               <a href="/agent-benchmark/run-5/">Run 5 · TransferFunds</a>
               <a href="/agent-benchmark/run-5b/">Run 5b · Individual vs batch</a>
               <a href="/agent-benchmark/supply-chain/">Supply Chain E2E</a>
-              <a href="/verified/">Verified claims</a>
               <a href="/performance/">Performance reports</a>
             </div>
           </div>
@@ -169,49 +164,15 @@
 <p class="link-row"><a href="/samples/semantic/authorization">Back to semantic execution</a> <a href="/security/">Security</a></p>
 </main>
     </div>
-    <!-- fx:rules -->
-    <aside class="fx-rules" aria-labelledby="fx-rules-title">
-      <div class="fx-rules-inner">
-        <div class="fx-rules-copy">
-          <h2 id="fx-rules-title">The same rules. Applied every time.</h2>
-          <p>You describe what things mean, what is valid and who may do what once. Foundgine checks every request against it, whether it comes from an app, an API, GraphQL, a workflow or an AI assistant.</p>
-          <p class="fx-rules-actions"><a class="fx-rules-primary" href="/getting-started/">Get started</a><a href="/how-it-works/">See how a request is checked</a></p>
-        </div>
-        <div class="fx-rules-path">
-          <div class="fx-rules-col">
-            <h3>Clients ask</h3>
-            <ul><li>Your apps</li><li>APIs and GraphQL</li><li>Workflows</li><li>AI assistants (MCP)</li></ul>
-          </div>
-          <div class="fx-rules-gate">
-            <h3>One checkpoint</h3>
-            <ul><li>Same meaning</li><li>Same validation</li><li>Same permissions</li></ul>
-          </div>
-          <div class="fx-rules-col">
-            <h3>You keep your stack</h3>
-            <ul><li>Your databases</li><li>EF Core or JPA</li><li>Your sign-in system</li><li>Your workflow tools</li></ul>
-          </div>
-        </div>
-      </div>
-    </aside>
-    <!-- /fx:rules -->
-    <!-- fx:footer -->
     <footer class="site-footer">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <a class="brand" href="/"><svg aria-hidden="true" class="brand-mark" width="20" height="20" viewBox="0 0 32 32"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M6 6v20M6 6h8M6 26h8"/></g><circle cx="24" cy="16" r="4.5" fill="currentColor"/></svg>Foundgine</a>
-          <p class="footer-tag">The same rules. Applied every time.</p>
-          <p>One shared checkpoint for your apps, APIs, databases and AI assistants.</p>
-        </div>
-        <nav class="footer-grid" aria-label="Footer">
-          <div><h2>Learn</h2><a href="/what-is-foundgine">What is Foundgine</a><a href="/getting-started/">Getting started</a><a href="/how-it-works/">How it works</a><a href="/walkthrough/">Walkthrough</a></div>
-          <div><h2>Build</h2><a href="/ai-agents/">AI agents</a><a href="/security/">Security</a><a href="/samples/">Samples</a><a href="/spec-form/">App generator</a></div>
-          <div><h2>Reference</h2><a href="/foundgine-overview">Technical overview</a><a href="/architecture/">Architecture</a><a href="/packages/">Packages</a><a href="/llms.txt">llms.txt</a></div>
-          <div><h2>Evidence</h2><a href="/agent-benchmark/">Benchmarks</a><a href="/performance/">Performance</a><a href="/verified/">Verified claims</a><a href="https://github.com/Foundgine/Foundgine">GitHub ↗</a></div>
-        </nav>
-      </div>
+      <nav class="footer-grid" aria-label="Footer">
+        <div><h2>Reference</h2><a href="/foundgine-overview">Technical overview</a><a href="/architecture/">Architecture</a><a href="/packages/">Packages</a><a href="/llms.txt">llms.txt</a></div>
+        <div><h2>Learn</h2><a href="/what-is-foundgine">What is Foundgine</a><a href="/getting-started/">Getting started</a><a href="/how-it-works/">How it works</a><a href="/walkthrough/">Walkthrough</a></div>
+        <div><h2>Build</h2><a href="/ai-agents/">AI agents</a><a href="/security/">Security</a><a href="/samples/">Samples</a><a href="/spec-form/">App generator</a></div>
+        <div><h2>Project</h2><a href="/agent-benchmark/">Benchmarks</a><a href="/performance/">Performance</a><a href="https://github.com/Foundgine/Foundgine">GitHub ↗</a></div>
+      </nav>
       <div class="footer-meta">Foundgine 3.4.2 · .NET 10 &amp; Java 27 · Apache-2.0</div>
     </footer>
-    <!-- /fx:footer -->
     <script src="/assets/site-nav.js"></script>
   </body>
 </html>

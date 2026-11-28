@@ -7,7 +7,7 @@
   <version>3.4.2</version>
   <name>Foundgine Extensions</name>
   <description>Optional transport and framework integration boundary for Foundgine.</description>
-  <url>https://github.com/CristianBarragan/Foundgine/foundgine-extensions</url>
+  <url>https://github.com/Foundgine/Foundgine/foundgine-extensions</url>
   <licenses>
     <license>
       <name>Apache License, Version 2.0</name>
@@ -19,19 +19,25 @@
     <developer>
       <name>Foundgine</name>
       <organization>Foundgine</organization>
-      <organizationUrl>https://github.com/CristianBarragan/Foundgine</organizationUrl>
+      <organizationUrl>https://github.com/Foundgine/Foundgine</organizationUrl>
     </developer>
   </developers>
   <scm>
-    <connection>scm:git:https://github.com/CristianBarragan/Foundgine.git/foundgine-extensions</connection>
-    <developerConnection>scm:git:ssh://git@github.com/CristianBarragan/Foundgine.git/foundgine-extensions</developerConnection>
-    <url>https://github.com/CristianBarragan/Foundgine/foundgine-extensions</url>
+    <connection>scm:git:https://github.com/Foundgine/Foundgine.git/foundgine-extensions</connection>
+    <developerConnection>scm:git:ssh://git@github.com/Foundgine/Foundgine.git/foundgine-extensions</developerConnection>
+    <url>https://github.com/Foundgine/Foundgine/foundgine-extensions</url>
   </scm>
   <dependencies>
     <dependency>
       <groupId>com.graphql-java</groupId>
       <artifactId>graphql-java</artifactId>
       <version>22.3</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.18.9</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -53,14 +59,4 @@
       <scope>compile</scope>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.sonatype.central</groupId>
-        <artifactId>central-publishing-maven-plugin</artifactId>
-        <version>0.8.0</version>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

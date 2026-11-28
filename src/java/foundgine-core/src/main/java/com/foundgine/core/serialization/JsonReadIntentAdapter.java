@@ -1,6 +1,7 @@
 package com.foundgine.core.serialization;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -72,9 +73,12 @@ public final class JsonReadIntentAdapter {
 
         JsonNode root;
         try {
-            root = MAPPER.readTree(json);
+            // Anything after the first document is refused rather than silently dropped.
+            root = MAPPER.reader().with(DeserializationFeature.FAIL_ON_TRAILING_TOKENS).readTree(json);
         } catch (JsonProcessingException e) {
-            throw invalid("Invalid JSON read intent: " + e.getMessage(), e);
+            // Jackson messages carry parser internals and echo the input; never return them to the caller.
+            // The original exception stays attached as the cause for server-side diagnostics.
+            throw invalid("Invalid JSON read intent: the document is not well-formed JSON.", e);
         }
         if (root == null || root.isNull() || root.isMissingNode())
             throw invalid("JSON document is empty.");
@@ -109,8 +113,8 @@ public final class JsonReadIntentAdapter {
                         : toFilter(asObject(filterNode, "filter"));
 
         List<ReadOrder> order = null;
-        JsonNode orderNode = dto.get("order");
-        if (orderNode != null && orderNode.isArray()) {
+        JsonNode orderNode = optionalArray(dto, "order");
+        if (orderNode != null) {
             order = new ArrayList<>();
             for (JsonNode item : orderNode) order.add(toOrder(asObject(item, "order")));
         }
@@ -142,8 +146,8 @@ public final class JsonReadIntentAdapter {
                     "Each selection must specify exactly one of 'field' or 'relationship'.");
 
         List<ReadSelection> children = List.of();
-        JsonNode childrenNode = dto.get("children");
-        if (childrenNode != null && childrenNode.isArray()) {
+        JsonNode childrenNode = optionalArray(dto, "children");
+        if (childrenNode != null) {
             List<ReadSelection> collected = new ArrayList<>();
             for (JsonNode child : childrenNode)
                 collected.add(toSelection(asObject(child, "selection child"), depth + 1));
@@ -265,10 +269,13 @@ public final class JsonReadIntentAdapter {
         rejectUnknown(dto, ORDER_PROPERTIES);
 
         List<String> relationshipPath = null;
-        JsonNode pathNode = dto.get("relationshipPath");
-        if (pathNode != null && pathNode.isArray()) {
+        JsonNode pathNode = optionalArray(dto, "relationshipPath");
+        if (pathNode != null) {
             relationshipPath = new ArrayList<>();
-            for (JsonNode item : pathNode) relationshipPath.add(item.textValue());
+            for (JsonNode item : pathNode) {
+                if (!item.isTextual()) throw invalidArgument("'relationshipPath' must contain only strings.");
+                relationshipPath.add(item.textValue());
+            }
         }
 
         String aggregateText = text(dto, "aggregate");
@@ -335,14 +342,28 @@ public final class JsonReadIntentAdapter {
         return (ObjectNode) node;
     }
 
+    /** Absent or null is allowed; any other non-array value is refused, never ignored. */
+    private static JsonNode optionalArray(ObjectNode dto, String field) {
+        JsonNode node = dto.get(field);
+        if (node == null || node.isNull()) return null;
+        if (!node.isArray()) throw invalidArgument("'" + field + "' must be a JSON array.");
+        return node;
+    }
+
     private static String text(ObjectNode dto, String field) {
         JsonNode node = dto.get(field);
-        return node == null || node.isNull() ? null : node.asText();
+        if (node == null || node.isNull()) return null;
+        if (!node.isTextual()) throw invalidArgument("'" + field + "' must be a string.");
+        return node.textValue();
     }
 
     private static Integer intOrNull(ObjectNode dto, String field) {
         JsonNode node = dto.get(field);
-        return node == null || node.isNull() ? null : node.asInt();
+        if (node == null || node.isNull()) return null;
+        // No coercion: asInt() would turn "abc" into 0 and truncate fractions and large numbers.
+        if (!node.isIntegralNumber() || !node.canConvertToInt())
+            throw invalidArgument("'" + field + "' must be a 32-bit integer.");
+        return node.intValue();
     }
 
     private static String required(String value, String name) {

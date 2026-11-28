@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.foundgine.samples.supplychain.Authorization;
-import com.foundgine.samples.supplychain.domain.Product;
-import com.foundgine.samples.supplychain.domain.Supplier;
+import com.foundgine.samples.supplychain.domain.Domain.Product;
+import com.foundgine.samples.supplychain.domain.Domain.Supplier;
 import com.foundgine.samples.supplychain.jpa.SupplyChainOrm;
 
 import jakarta.persistence.EntityManager;
@@ -16,18 +16,18 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-/** Database-free checks for the method-reference reader and the CRUD write gate. */
+/** Database-free checks for the method-reference reader and the CRUD write gate. Not executed where written. */
 class SupplyChainApplicationTest {
     @Test
     void methodReferencesBecomeSemanticFieldNames() {
-        assertEquals("country", SupplyChainReader.fieldName((com.foundgine.core.semantic.configuration.PropertyRef<Supplier, String>) Supplier::getCountry));
-        assertEquals("riskScore", SupplyChainReader.fieldName((com.foundgine.core.semantic.configuration.PropertyRef<Supplier, Object>) Supplier::getRiskScore));
-        assertEquals("safetyStock", SupplyChainReader.fieldName((com.foundgine.core.semantic.configuration.PropertyRef<Product, Object>) Product::getSafetyStock));
+        assertEquals("country", SupplyChainReader.fieldName((com.foundgine.core.semantic.configuration.PropertyRef<Supplier, String>) Supplier::country));
+        assertEquals("riskScore", SupplyChainReader.fieldName((com.foundgine.core.semantic.configuration.PropertyRef<Supplier, Object>) Supplier::riskScore));
+        assertEquals("safetyStock", SupplyChainReader.fieldName((com.foundgine.core.semantic.configuration.PropertyRef<Product, Object>) Product::safetyStock));
     }
 
     @Test
     void plainLambdasAreRejected() {
-        com.foundgine.core.semantic.configuration.PropertyRef<Supplier, Object> lambda = s -> s.getCountry();
+        com.foundgine.core.semantic.configuration.PropertyRef<Supplier, Object> lambda = s -> s.country();
         assertThrows(IllegalArgumentException.class, () -> SupplyChainReader.fieldName(lambda));
     }
 

@@ -1313,6 +1313,72 @@ jobs:
   # ============================================================
   # Penetration gate (aggregates every penetration job)
   # ============================================================
+  # ============================================================
+  # Intent-boundary red-team and injection tests
+  # ============================================================
+  security-penetration-intent:
+    needs:
+      - build-pack
+    name: Security Penetration Test — Intent Boundary Red Team
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Run intent-boundary penetration tests
+        run: |
+          set -euo pipefail
+          for suite in IntentRedTeamPenetrationTests IntentInjectionCorpusTests; do
+            dotnet test \
+              src/csharp/samples/Foundgine.SupplyChain.Advanced/Semantic/Tests/Foundgine.SupplyChain.Advanced.Tests.csproj \
+              --configuration Release \
+              --filter "FullyQualifiedName~$suite" \
+              --results-directory artifacts/pentest/security-penetration-intent \
+              --logger "trx;LogFileName=$suite.trx" \
+              --logger "console;verbosity=normal"
+          done
+
+      - name: Upload penetration test evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: security-penetration-intent-results
+          path: artifacts/pentest/security-penetration-intent/**
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Verify penetration tests executed
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Guard against a silent zero-test pass: each suite must have a TRX with executed tests.
+          python3 - IntentRedTeamPenetrationTests IntentInjectionCorpusTests <<'PY'
+          import os, sys
+          import xml.etree.ElementTree as ET
+
+          failed = False
+          for suite in sys.argv[1:]:
+              path = f"artifacts/pentest/security-penetration-intent/{suite}.trx"
+              executed = 0
+              if os.path.exists(path):
+                  for el in ET.parse(path).getroot().iter():
+                      if el.tag.rsplit("}", 1)[-1] == "Counters":
+                          executed = int(el.get("executed", 0))
+                          break
+              print(f"{suite}: {executed} executed")
+              if executed == 0:
+                  print(f"::error::{suite} executed no tests.")
+                  failed = True
+          sys.exit(1 if failed else 0)
+          PY
+
   security-penetration-gate:
     name: security-penetration-gate
     if: always()
@@ -1322,6 +1388,7 @@ jobs:
       - security-adversarial
       - security-semantic-penetration
       - security-penetration-mcp
+      - security-penetration-intent
     runs-on: ubuntu-latest
     timeout-minutes: 5
 

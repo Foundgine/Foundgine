@@ -1,0 +1,8 @@
+POST __PATH__ HTTP/1.1
+Host: __HOSTPORT__
+Content-Type: application/json
+Accept: application/json
+X-Foundgine-Tenant: __TENANT__
+X-Foundgine-Role: __ROLE__
+
+{"rootEntity":"Product","selections":[{"field":"Sku"},{"field":"UnitPrice"}],"filter":{"kind":"field","field":"Category","operator":"Eq","value":"Electronics*"},"order":[{"field":"UnitPrice","direction":"Desc*"}],"limit":2*}

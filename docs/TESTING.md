@@ -145,3 +145,7 @@ Do not fix a semantic bug inside a transport adapter merely because that is wher
 ---
 
 Next: [Source coverage](SOURCE-COVERAGE.md)
+
+## Security testing
+
+Red-team, injection and AI-agent testing are described in [SECURITY-TESTING.md](SECURITY-TESTING.md).
