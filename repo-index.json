@@ -2,7 +2,7 @@
  "schema": "https://github.com/Foundgine/Foundgine/blob/main/docs/AI-ACCESS.md#repo-indexjson",
  "name": "Foundgine",
  "description": "Configurable semantic and execution boundary for application capabilities (.NET 10 and Java 27).",
- "version": "3.4.2",
+ "version": "3.4.3",
  "license": "Apache-2.0",
  "repository": "https://github.com/Foundgine/Foundgine",
  "defaultBranch": "main",

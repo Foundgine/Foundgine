@@ -101,7 +101,7 @@ Do not claim that Foundgine universally replaces ORMs, API frameworks, databases
 ## Complete public website and technical reference
 
 - [Website home](https://foundgine.io/): guided documentation and product overview.
-- [Complete technical overview (HTML)](https://foundgine.io/foundgine-overview): detailed v3.4.2 reference covering architecture, semantic configuration, the execution lifecycle, authorization, mutations, retrieval, providers, GraphQL, MCP, Temporal, agent integrations, SDKs, tests, deployment and operational guidance.
+- [Complete technical overview (HTML)](https://foundgine.io/foundgine-overview): detailed v3.4.3 reference covering architecture, semantic configuration, the execution lifecycle, authorization, mutations, retrieval, providers, GraphQL, MCP, Temporal, agent integrations, SDKs, tests, deployment and operational guidance.
 - [Website full-context Markdown](https://foundgine.io/llms-full.md): machine-readable technical context.
 - [Website sitemap](https://foundgine.io/sitemap.xml): indexable public documentation URLs.
 - [Website crawler policy](https://foundgine.io/robots.txt): crawler access and sitemap discovery.

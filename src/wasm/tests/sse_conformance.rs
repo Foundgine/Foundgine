@@ -8,7 +8,7 @@ use serde_json::Value;
 use std::path::PathBuf;
 
 fn vectors() -> Value {
-    let dir = std::env::var("FOUNDGINE_CONFORMANCE_DIR").map(PathBuf::from).unwrap_or_else(|_| PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../conformance"));
+    let dir = std::env::var("FOUNDGINE_CONFORMANCE_DIR").map(PathBuf::from).unwrap_or_else(|_| PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../conformance"));
     let path = dir.join("mcp-sse-scenarios.json");
     let text = std::fs::read_to_string(&path).unwrap_or_else(|e| panic!("shared vectors not found at {}: {e}", path.display()));
     serde_json::from_str(&text).expect("vectors are valid JSON")

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Builds the four Foundgine NuGet packages (Foundgine.Core, Foundgine.Runtime, Foundgine.Providers, Foundgine.Extensions) and verifies the result.
-# Usage: ci/pack-providers.sh <version> [output-dir]      e.g. ci/pack-providers.sh 3.4.2 ./artifacts
+# Usage: ci/pack-providers.sh <version> [output-dir]      e.g. ci/pack-providers.sh 3.4.3 ./artifacts
 #
 # Every package depends on Foundgine.Core/Runtime (and Extensions on Providers) at the version it is packed with, so all
 # packages are packed with the same explicit version. NuGet versions are immutable: never re-pack an already
